@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         let config = {
                             class: 'alert-info',
                             iconBg: 'bg-info',
-                            icon: 'hgi-time-02',
+                            icon: 'hgi-clock-01',
                             text: 'طلبك قيد المراجعة من قبل اللجنة وسيتم تحديث حالته قريباً.',
                             textColor: 'text-info-emphasis'
                         };
@@ -1120,9 +1120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </select>
             </td>
             <td class="text-center">
-                <button type="button" class="btn btn-outline-danger btn-sm delete-course-btn">
-                    <i class="hgi-stroke hgi-standard hgi-delete-02"></i>
-                </button>
+                <i class="hgi-stroke hgi-standard hgi-delete-02 text-danger delete-course-btn mx-auto d-block" style="font-size: 1.25rem; cursor: pointer;"></i>
             </td>
         `;
         coursesTableBody.appendChild(newRow);
@@ -1235,18 +1233,38 @@ document.addEventListener('DOMContentLoaded', function () {
             const imgPreview = fileInfo.querySelector('.img-preview');
             const pdfIcon = fileInfo.querySelector('.pdf-icon');
             const successIcon = fileInfo.querySelector('.success-icon');
+            const progressBarContainer = fileInfo.querySelector('.progress');
+            const progressBar = fileInfo.querySelector('.progress-bar');
 
             // Reset Display
             if (imgPreview) imgPreview.style.display = 'none';
             if (pdfIcon) pdfIcon.style.display = 'none';
             if (successIcon) successIcon.style.display = 'none';
+            if (progressBarContainer) progressBarContainer.style.display = 'none';
+            if (progressBar) progressBar.style.width = '0%';
 
             // Show Loading State
             if (filenameEl) filenameEl.textContent = "جاري المعالجة...";
 
+            if (defaultContent) defaultContent.classList.add('d-none');
+            if (fileInfo) {
+                fileInfo.classList.remove('d-none');
+                fileInfo.classList.add('d-flex');
+            }
+
             try {
-                // 1. Process File (No Compression)
-                const base64Data = await processFile(file);
+                // Show Progress Bar
+                if (progressBarContainer) progressBarContainer.style.display = 'block';
+
+                // 1. Process File (No Compression) with Progress
+                const base64Data = await processFile(file, (percent) => {
+                    if (progressBar) progressBar.style.width = `${percent}%`;
+                });
+
+                // Hide Progress Bar after completion (small delay for UX)
+                setTimeout(() => {
+                    if (progressBarContainer) progressBarContainer.style.display = 'none';
+                }, 500);
 
                 // 2. Store for Submission
                 if (!window.wizardFiles) window.wizardFiles = {};
@@ -1275,17 +1293,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Show Success Icon
                 if (successIcon) successIcon.style.display = 'block';
 
-                if (defaultContent) defaultContent.classList.add('d-none');
-                if (fileInfo) {
-                    fileInfo.classList.remove('d-none');
-                    fileInfo.classList.add('d-flex');
-                }
                 label.style.borderColor = 'var(--bs-success)'; // Success Green
 
             } catch (e) {
                 console.error("File Processing Failed", e);
                 alert("حدث خطأ أثناء معالجة الملف");
+                if (progressBarContainer) progressBarContainer.style.display = 'none';
                 input.value = ''; // Reset
+                // Reset UI on error
+                if (defaultContent) defaultContent.classList.remove('d-none');
+                if (fileInfo) {
+                    fileInfo.classList.add('d-none');
+                    fileInfo.classList.remove('d-flex');
+                }
             }
         });
 
@@ -1301,8 +1321,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const defaultContent = label.querySelector('.default-content');
                 const fileInfo = label.querySelector('.file-info');
                 const successIcon = fileInfo.querySelector('.success-icon');
+                const progressBarContainer = fileInfo.querySelector('.progress');
 
                 if (successIcon) successIcon.style.display = 'none';
+                if (progressBarContainer) progressBarContainer.style.display = 'none';
 
                 if (defaultContent) defaultContent.classList.remove('d-none');
                 if (fileInfo) {
@@ -1320,9 +1342,19 @@ document.addEventListener('DOMContentLoaded', function () {
     handleFileUpload('fileCollege', 'fileCollege', 'college');
 
     // Helper: Read File as Base64 (No Compression)
-    function processFile(file) {
+    function processFile(file, onProgress) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
+
+            if (onProgress) {
+                reader.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        onProgress(percent);
+                    }
+                };
+            }
+
             reader.readAsDataURL(file);
             reader.onload = (e) => resolve(e.target.result);
             reader.onerror = (e) => reject(e);

@@ -152,10 +152,10 @@
 
                     <!-- Row 3: Pagination -->
                     <!-- ... (keeping pagination as is for now, maybe hide it if empty) ... -->
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                    <div class="d-flex justify-content-between align-items-center p-3">
                         <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
                         <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-end mb-0">
+                            <ul class="pagination justify-content-end mb-0 gap-2">
                                 <li class="page-item disabled">
                                     <a class="page-link" href="#" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
@@ -204,7 +204,7 @@
                             <div class="d-flex align-items-center gap-2" id="stepIndicator2">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
-                                    <i class="hgi-stroke hgi-standard hgi-list-view fs-6"></i>
+                                    <i class="hgi-stroke hgi-standard hgi-help-circle fs-6"></i>
                                 </div>
                                 <div class="step-label fw-medium text-muted">نوع العذر</div>
                             </div>
@@ -216,7 +216,7 @@
                             <div class="d-flex align-items-center gap-2" id="stepIndicator3">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
-                                    <i class="hgi-stroke hgi-standard hgi-calendar-01 fs-6"></i>
+                                    <i class="hgi-stroke hgi-standard hgi-calendar-02 fs-6"></i>
                                 </div>
                                 <div class="step-label fw-medium text-muted">تفاصيل الغياب</div>
                             </div>
@@ -228,7 +228,7 @@
                             <div class="d-flex align-items-center gap-2" id="stepIndicator4">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
-                                    <i class="hgi-stroke hgi-standard hgi-edit-02 fs-6"></i>
+                                    <i class="hgi-stroke hgi-standard hgi-file-02 fs-6"></i>
                                 </div>
                                 <div class="step-label fw-medium text-muted">المستندات</div>
                             </div>
@@ -333,7 +333,7 @@
                             <div class="mb-3">
                                 <div class="table-responsive rounded border">
                                     <table class="table align-middle mb-0 overflow-hidden">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr>
                                                 <th style="width: 45%;" class="fw-medium">المساق/الدورة</th>
                                                 <th style="width: 45%;" class="fw-medium">سبب الغياب</th>
@@ -343,12 +343,13 @@
                                         <tbody id="coursesTableBody">
                                             <!-- Dynamic Rows -->
                                         </tbody>
-                                        <tfoot class="table-light">
+                                        <tfoot>
                                             <tr>
                                                 <td colspan="3" class="px-4 py-2 border-0">
-                                                    <button type="button" class="btn btn-primary w-100 py-2 fw-medium"
+                                                    <button type="button"
+                                                        class="btn btn-primary w-100 py-2 fw-medium d-flex align-items-center justify-content-center gap-2"
                                                         id="addCourseBtn">
-                                                        <i class="hgi-stroke hgi-standard hgi-add-01 me-2"></i> إضافة
+                                                        <i class="hgi-stroke hgi-standard hgi-add-01"></i> إضافة
                                                         المزيد
                                                     </button>
                                                 </td>
@@ -375,7 +376,7 @@
                                     <label class="form-label fw-medium d-block mb-2">التقرير الطبي</label>
                                     <label for="fileMedical"
                                         class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
-                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
                                         <div class="default-content text-center">
                                             <i
                                                 class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
@@ -399,6 +400,11 @@
                                             <button type="button"
                                                 class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
                                                 style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                            <div class="progress w-75 mt-2 rounded-pill"
+                                                style="height: 4px; display: none;">
+                                                <div class="progress-bar bg-primary rounded-pill" role="progressbar"
+                                                    style="width: 0%"></div>
+                                            </div>
                                         </div>
                                     </label>
                                     <input type="file" class="d-none" id="fileMedical" accept="image/*,.pdf" required>
@@ -411,7 +417,7 @@
                                     <label class="form-label fw-medium d-block mb-2">عذر منصة صحتي</label>
                                     <label for="fileSehaty"
                                         class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
-                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
                                         <div class="default-content text-center">
                                             <i
                                                 class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
@@ -433,6 +439,11 @@
                                             <button type="button"
                                                 class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
                                                 style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                            <div class="progress w-75 mt-2 rounded-pill"
+                                                style="height: 4px; display: none;">
+                                                <div class="progress-bar bg-primary rounded-pill" role="progressbar"
+                                                    style="width: 0%"></div>
+                                            </div>
                                         </div>
                                     </label>
                                     <input type="file" class="d-none" id="fileSehaty" accept="image/*,.pdf" required>
@@ -446,7 +457,7 @@
                                         المعتمد</label>
                                     <label for="fileCollege"
                                         class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
-                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
                                         <div class="default-content text-center">
                                             <i
                                                 class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
@@ -468,6 +479,11 @@
                                             <button type="button"
                                                 class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
                                                 style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                            <div class="progress w-75 mt-2 rounded-pill"
+                                                style="height: 4px; display: none;">
+                                                <div class="progress-bar bg-primary rounded-pill" role="progressbar"
+                                                    style="width: 0%"></div>
+                                            </div>
                                         </div>
                                     </label>
                                     <input type="file" class="d-none" id="fileCollege" accept="image/*,.pdf" required>
@@ -481,8 +497,8 @@
                         <!-- Navigation Buttons -->
                         <div class="d-flex justify-content-end gap-2 mt-4 pt-3">
                             <button type="button" class="btn btn-secondary px-4" id="prevBtn">إلغاء</button>
-                            <button type="button" class="btn btn-primary px-4" id="nextBtn">التالي <i
-                                    class="hgi-stroke hgi-standard hgi-arrow-left-01"></i></button>
+                            <button type="button" class="btn btn-primary px-4 d-flex align-items-center gap-2"
+                                id="nextBtn">التالي <i class="hgi-stroke hgi-standard hgi-arrow-left-01"></i></button>
                         </div>
                     </form>
                 </div>
@@ -495,8 +511,8 @@
     <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">تفاصيل العذر</h5>
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">عرض تفاصيل العذر</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -544,7 +560,7 @@
                             <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
                                 <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
                                     style="width: 32px; height: 32px;">
-                                    <i class="hgi hgi-stroke hgi-standard hgi-user"></i>
+                                    <i class="hgi hgi-stroke hgi-standard hgi-user-03"></i>
                                 </div>
                                 <h6 class="fw-medium mb-0">البيانات الشخصية</h6>
                             </div>
@@ -572,7 +588,7 @@
                             <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
                                 <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
                                     style="width: 32px; height: 32px;">
-                                    <i class="hgi-stroke hgi-standard hgi-question"></i>
+                                    <i class="hgi-stroke hgi-standard hgi-help-circle"></i>
                                 </div>
                                 <h6 class="fw-medium mb-0">نوع العذر</h6>
                             </div>
@@ -594,7 +610,7 @@
                             <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
                                 <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
                                     style="width: 32px; height: 32px;">
-                                    <i class="hgi-stroke hgi-standard hgi-calendar-03"></i>
+                                    <i class="hgi-stroke hgi-standard hgi-calendar-02"></i>
                                 </div>
                                 <h6 class="fw-medium mb-0">تفاصيل الغياب</h6>
                             </div>
@@ -615,7 +631,7 @@
                             <div class="mb-4">
                                 <div class="table-responsive rounded border">
                                     <table class="table align-middle mb-0 overflow-hidden">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr>
                                                 <th style="width: 50%;" class="fw-medium">المساق/الدورة</th>
                                                 <th style="width: 50%;" class="fw-medium">سبب الغياب</th>
@@ -643,7 +659,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
                 </div>
             </div>
