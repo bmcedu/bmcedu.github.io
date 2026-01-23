@@ -258,7 +258,7 @@ body {
     bottom: 0;
     width: 60%;
     /* Limit width so it doesn't overlap text area too much */
-    background-image: url('../images/welcome-image-2.avif');
+    background-image: url('../images/welcome-image-2.png');
     background-repeat: no-repeat;
     background-position: right top;
     /* Align to right (start) top */
