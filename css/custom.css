@@ -269,3 +269,8 @@ body {
     z-index: 0;
     pointer-events: none;
 }
+
+/* Custom Border Radius */
+.rounded-tr-24 {
+    border-top-right-radius: 24px !important;
+}
