@@ -1,0 +1,704 @@
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساحة الطالب - نظام إدارة الأعذار | كلية البترجي الطبية</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-CfCrinSRH2IR6a4e6fy2q6ioOX7O6Mtm1L9vRvFZ1trBncWmMePhzvafv7oIcWiW" crossorigin="anonymous">
+
+    <!-- Hugeicons -->
+    <link rel="stylesheet" href="https://sets.hugeicons.com/sy6ko98f5o.css" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="bg-body-tertiary">
+    <!-- Navbar -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container-fluid px-0">
+            <!-- Top Row: Brand + Logout -->
+            <div class="d-flex justify-content-between align-items-center w-100 py-1 px-4">
+                <a class="navbar-brand d-flex align-items-center gap-4 mb-0" href="#">
+                    <img src="images/logo.svg" alt="BMC Logo" height="40" class="d-inline-block align-text-top ms-2">
+                    <span class="fw-bold text-primary">نظام إدارة الأعذار - ساحة الطالب</span>
+                </a>
+                <button id="logoutBtn" class="btn btn-outline-danger btn-sm">
+                    <i class="hgi-stroke hgi-standard hgi-logout-01"></i> تسجيل خروج
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container-fluid p-4">
+        <!-- Welcome Banner -->
+        <div
+            class="welcome-banner bg-white rounded border p-4 mb-3 d-flex align-items-center position-relative overflow-hidden">
+
+
+            <div class="row align-items-center w-100 position-relative z-1">
+                <div class="col-12 text-center">
+                    <h4 class="fw-medium mb-2" id="dashboardTitle">أهلأ وسهلاً بك،</h4>
+                    <p class="text-muted mb-0">
+                        هنا يمكنك إدارة الأعذار الخاصة بك
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row g-3">
+            <!-- Column 1 -->
+            <div class="col-md-3">
+                <div class="bg-white rounded border p-4 mb-3 position-relative overflow-hidden" style="height: 200px;">
+                    <img src="images/profile-bg.avif" alt=""
+                        class="position-absolute top-0 start-50 translate-middle-x object-fit-cover"
+                        style="width: 100%; height: 85px;">
+
+                    <div class="position-relative z-1 text-center mt-5">
+                        <div id="studentAvatar"
+                            class="d-inline-flex align-items-center justify-content-center bg-primary text-white border border-5 border-white mb-2"
+                            style="width: 120px; height: 120px; font-size: 3.5rem; border-radius: 11px;">
+                            <!-- Avatar Letter -->
+                        </div>
+                        <h5 class="mb-1" id="profileName">اسم الطالب</h5>
+                        <p class="text-muted small">عرض الملف الشخصي</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded border p-4">
+                    <h5 class="mb-3">المعلومات الشخصية</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-mortarboard-01 ms-2"></i>رقم
+                                الطالب الجامعي</span>
+                            <span id="info-studentId" class="fw-bold text-dark">-</span>
+                        </li>
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i
+                                    class="hgi-stroke hgi-standard hgi-book-open-01 ms-2"></i>التخصص</span>
+                            <span id="info-major" class="fw-bold text-dark">-</span>
+                        </li>
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i
+                                    class="hgi-stroke hgi-standard hgi-layers-01 ms-2"></i>المستوى</span>
+                            <span id="info-level" class="fw-bold text-dark">-</span>
+                        </li>
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-id-card ms-2"></i>رقم
+                                الهوية</span>
+                            <span id="info-nationalId" class="fw-bold text-dark">-</span>
+                        </li>
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-call-02 ms-2"></i>رقم
+                                الهاتف</span>
+                            <span id="info-phone" class="fw-bold text-dark" dir="ltr">-</span>
+                        </li>
+
+                        <li class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-mail-01 ms-2"></i>البريد
+                                الإلكتروني</span>
+                            <span id="info-email" class="fw-bold text-dark">-</span>
+                        </li>
+                        <li class="mb-0 d-flex justify-content-between align-items-center">
+                            <span class="text-muted"><i
+                                    class="hgi-stroke hgi-standard hgi-location-01 ms-2"></i>العنوان</span>
+                            <span id="info-address" class="fw-bold text-dark">-</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Column 2 (Data Table) -->
+            <div class="col-md-9">
+                <div class="bg-white rounded border">
+                    <!-- Row 1: Title and Add Button -->
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <h5 class="mb-0">الأعذار المقدّمة سابقاً</h5>
+                        <button class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal"
+                            data-bs-target="#addRequestModal">
+                            <i class="hgi-stroke hgi-standard hgi-add-01"></i>
+                            <span>طلب عذر جديد</span>
+                        </button>
+                    </div>
+
+                    <!-- Row 2: Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">رقم العذر</th>
+                                    <th scope="col" class="ps-4">تاريخ تقديم العذر</th>
+                                    <th scope="col" class="ps-4">تاريخ العذر</th>
+                                    <th scope="col" class="ps-4">نوع العذر</th>
+                                    <th scope="col" class="ps-4">النتيجة</th>
+                                    <th scope="col" class="ps-4">التفاصيل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <!-- Requests will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Row 3: Pagination -->
+                    <!-- ... (keeping pagination as is for now, maybe hide it if empty) ... -->
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                        <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-end mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Request Modal -->
+    <div class="modal fade" id="addRequestModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 justify-content-between">
+                    <h5 class="modal-title fw-bold">تقديم عذر جديد</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Wizard Progress -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
+
+                            <!-- Step 1 -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator1">
+                                <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-primary text-white shadow-sm"
+                                    style="width: 35px; height: 35px; transition: all 0.3s;">
+                                    <i class="hgi hgi-stroke hgi-standard hgi-user-03 fs-6"></i>
+                                </div>
+                                <div class="step-label fw-medium text-primary">البيانات الشخصية</div>
+                            </div>
+
+                            <!-- Chevron -->
+                            <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
+
+                            <!-- Step 2 -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator2">
+                                <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
+                                    style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
+                                    <i class="hgi-stroke hgi-standard hgi-list-view fs-6"></i>
+                                </div>
+                                <div class="step-label fw-medium text-muted">نوع العذر</div>
+                            </div>
+
+                            <!-- Chevron -->
+                            <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
+
+                            <!-- Step 3 -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator3">
+                                <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
+                                    style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
+                                    <i class="hgi-stroke hgi-standard hgi-calendar-01 fs-6"></i>
+                                </div>
+                                <div class="step-label fw-medium text-muted">تفاصيل الغياب</div>
+                            </div>
+
+                            <!-- Chevron -->
+                            <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
+
+                            <!-- Step 4 -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator4">
+                                <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
+                                    style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
+                                    <i class="hgi-stroke hgi-standard hgi-edit-02 fs-6"></i>
+                                </div>
+                                <div class="step-label fw-medium text-muted">المستندات</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <form id="addRequestForm">
+                        <!-- Step 1: Personal Data -->
+                        <div class="wizard-step" id="step1">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">اسم الطالب</label>
+                                    <input type="text" class="form-control bg-light" id="wizardStudentName" disabled
+                                        readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">رقم الطالب الجامعي</label>
+                                    <input type="text" class="form-control bg-light" id="wizardStudentId" disabled
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">التخصص</label>
+                                    <input type="text" class="form-control bg-light" id="wizardMajor" disabled readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">المستوى الدراسي</label>
+                                    <input type="text" class="form-control bg-light" id="wizardLevel" disabled readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Type -->
+                        <div class="wizard-step d-none" id="step2">
+                            <div class="mb-3">
+                                <label for="excuseType" class="form-label fw-medium">نوع العذر</label>
+                                <select class="form-select" id="excuseType" required>
+                                    <option value="" selected disabled>-- اختر النوع --</option>
+                                    <option value="health">عذر صحي</option>
+                                    <option value="death">حالة وفاة</option>
+                                </select>
+                                <div class="invalid-feedback">يرجى اختيار نوع العذر.</div>
+                            </div>
+
+                            <!-- Conditional Fields for Health Excuse -->
+                            <!-- Conditional Fields for Health Excuse -->
+                            <div class="row g-3 d-none mb-3" id="healthFieldsRow">
+                                <div class="col-md-6" id="hospitalTypeDiv">
+                                    <label for="hospitalType" class="form-label fw-medium">نوع المستشفى</label>
+                                    <select class="form-select" id="hospitalType">
+                                        <option value="" selected disabled>-- اختر نوع المستشفى --</option>
+                                    </select>
+                                    <div class="invalid-feedback">يرجى اختيار نوع المستشفى.</div>
+                                </div>
+
+                                <div class="col-md-6" id="locationDiv">
+                                    <label for="location" class="form-label fw-medium">الموقع الجغرافي</label>
+                                    <select class="form-select" id="location">
+                                        <option value="" selected disabled>-- اختر الموقع --</option>
+                                        <option value="inside_jeddah">داخل منطقة جدة</option>
+                                        <option value="outside_jeddah">خارج منطقة جدة</option>
+                                    </select>
+                                    <div class="invalid-feedback">يرجى اختيار الموقع الجغرافي.</div>
+                                </div>
+                            </div>
+
+                            <!-- Conditional Fields for Death Excuse -->
+                            <div class="mb-3 d-none" id="deathFieldsDiv">
+                                <label for="relationshipType" class="form-label fw-medium">درجة القرابة</label>
+                                <select class="form-select" id="relationshipType">
+                                    <option value="" selected disabled>-- اختر درجة القرابة --</option>
+                                    <option value="father">أب</option>
+                                    <option value="mother">أم</option>
+                                    <option value="sibling">أخ / أخت</option>
+                                    <option value="grandparent">جد / جدة</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                                <div class="invalid-feedback">يرجى اختيار درجة القرابة.</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Absence Details (Date & Reason) -->
+                        <div class="wizard-step d-none" id="step3">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="excuseDate" class="form-label fw-medium">تاريخ العذر</label>
+                                    <input type="date" class="form-control" id="excuseDate"
+                                        style="direction: ltr; text-align: right;" required>
+                                    <div class="invalid-feedback">يرجى تحديد التاريخ.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">عدد أيام العذر</label>
+                                    <input type="number" class="form-control" id="daysCount"
+                                        placeholder="أدخل عدد الأيام" style="direction: ltr; text-align: right;"
+                                        required>
+                                    <div class="invalid-feedback">يرجى تحديد عدد الأيام.</div>
+                                </div>
+                            </div>
+                            <!-- Affected Courses Section -->
+                            <div class="mb-3">
+                                <div class="table-responsive rounded border">
+                                    <table class="table align-middle mb-0 overflow-hidden">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 45%;">المساق/الدورة</th>
+                                                <th style="width: 45%;">سبب الغياب</th>
+                                                <th style="width: 10%;" class="text-center">حذف</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="coursesTableBody">
+                                            <!-- Dynamic Rows -->
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td colspan="3" class="px-4 py-2 border-0">
+                                                    <button type="button" class="btn btn-primary w-100 py-2 fw-medium"
+                                                        id="addCourseBtn">
+                                                        <i class="hgi-stroke hgi-standard hgi-add-01 me-2"></i> إضافة
+                                                        المزيد
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="additionalDetails" class="form-label fw-medium">تفاصيل إضافية</label>
+                                <textarea class="form-control" id="additionalDetails" rows="5"
+                                    placeholder="اكتب تفاصيل إضافية هنا..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Documents -->
+                        <div class="wizard-step d-none" id="step4">
+                            <p class="text-muted small mb-4">يجب رفع المستندات التالية لإكمال طلب العذر.
+                                جميع المستندات يجب أن تكون واضحة ومعتمدة.</p>
+
+                            <div class="row g-3">
+                                <!-- Doc 1: Medical Report -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium d-block mb-2">التقرير الطبي</label>
+                                    <label for="fileMedical"
+                                        class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        <div class="default-content text-center">
+                                            <i
+                                                class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
+                                            <div class="text-muted small">قم برفع ملف أو صورة</div>
+                                            <div class="text-muted small mt-1" style="font-size: 0.75rem;">PNG, PDF, JPG
+                                            </div>
+                                            <div class="text-muted small" style="font-size: 0.75rem;">(الحد الأقصى 10MB)
+                                            </div>
+                                        </div>
+                                        <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
+                                            style="z-index: 5;">
+                                            <img class="img-preview mb-2 rounded shadow-sm bg-white"
+                                                style="max-height: 80px; max-width: 90%; display: none; object-fit: contain;">
+                                            <i class="hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2 pdf-icon"
+                                                style="display: none;"></i>
+                                            <i class="hgi-stroke hgi-tick-02 text-success fs-3 position-absolute top-0 start-0 m-2 success-icon"
+                                                style="display: none; z-index: 10;"></i>
+                                            <div
+                                                class="filename small text-dark fw-bold text-truncate w-75 text-center">
+                                            </div>
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
+                                                style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                        </div>
+                                    </label>
+                                    <input type="file" class="d-none" id="fileMedical" accept="image/*,.pdf" required>
+                                    <div class="invalid-feedback mt-2 d-none" id="msgMedical">
+                                        يرجى رفع الملف.</div>
+                                </div>
+
+                                <!-- Doc 2: Sehaty -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium d-block mb-2">عذر منصة صحتي</label>
+                                    <label for="fileSehaty"
+                                        class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        <div class="default-content text-center">
+                                            <i
+                                                class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
+                                            <div class="text-muted small">قم برفع ملف أو صورة</div>
+                                            <div class="text-muted small mt-1" style="font-size: 0.75rem;">PNG, PDF, JPG
+                                            </div>
+                                            <div class="text-muted small" style="font-size: 0.75rem;">(الحد الأقصى 10MB)
+                                            </div>
+                                        </div>
+                                        <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
+                                            style="z-index: 5;">
+                                            <img class="img-preview mb-2 rounded shadow-sm bg-white"
+                                                style="max-height: 80px; max-width: 90%; display: none; object-fit: contain;">
+                                            <i class="hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2 pdf-icon"
+                                                style="display: none;"></i>
+                                            <div
+                                                class="filename small text-dark fw-bold text-truncate w-75 text-center">
+                                            </div>
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
+                                                style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                        </div>
+                                    </label>
+                                    <input type="file" class="d-none" id="fileSehaty" accept="image/*,.pdf" required>
+                                    <div class="invalid-feedback mt-2 d-none" id="msgSehaty">يرجى
+                                        رفع الملف.</div>
+                                </div>
+
+                                <!-- Doc 3: College Form -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium d-block mb-2">فورم الكلية
+                                        المعتمد</label>
+                                    <label for="fileCollege"
+                                        class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-body-tertiary w-100 position-relative"
+                                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 200px; transition: all 0.2s;">
+                                        <div class="default-content text-center">
+                                            <i
+                                                class="hgi-stroke hgi-standard hgi-image-01 fs-3 text-secondary mb-2"></i>
+                                            <div class="text-muted small">قم برفع ملف أو صورة</div>
+                                            <div class="text-muted small mt-1" style="font-size: 0.75rem;">PNG, PDF, JPG
+                                            </div>
+                                            <div class="text-muted small" style="font-size: 0.75rem;">(الحد الأقصى 10MB)
+                                            </div>
+                                        </div>
+                                        <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
+                                            style="z-index: 5;">
+                                            <img class="img-preview mb-2 rounded shadow-sm bg-white"
+                                                style="max-height: 80px; max-width: 90%; display: none; object-fit: contain;">
+                                            <i class="hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2 pdf-icon"
+                                                style="display: none;"></i>
+                                            <div
+                                                class="filename small text-dark fw-bold text-truncate w-75 text-center">
+                                            </div>
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
+                                                style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;">&times;</button>
+                                        </div>
+                                    </label>
+                                    <input type="file" class="d-none" id="fileCollege" accept="image/*,.pdf" required>
+                                    <div class="invalid-feedback mt-2 d-none" id="msgCollege">
+                                        يرجى رفع الملف.</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3">
+                            <button type="button" class="btn btn-secondary px-4" id="prevBtn">إلغاء</button>
+                            <button type="button" class="btn btn-primary px-4" id="nextBtn">التالي <i
+                                    class="hgi-stroke hgi-standard hgi-arrow-left-01"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Request Details Modal -->
+    <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">تفاصيل العذر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Nav Tabs -->
+                    <ul class="nav nav-pills nav-fill mb-3 gap-1 border-0" id="detailsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-medium" id="decision-tab" data-bs-toggle="tab"
+                                data-bs-target="#decision-pane" type="button" role="tab" aria-controls="decision-pane"
+                                aria-selected="true">قرار اللجنة</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-medium" id="details-tab" data-bs-toggle="tab"
+                                data-bs-target="#details-pane" type="button" role="tab" aria-controls="details-pane"
+                                aria-selected="false">تفاصيل العذر</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="detailsTabsContent">
+                        <!-- Tab 1: Committee Decision -->
+                        <div class="tab-pane fade show active" id="decision-pane" role="tabpanel"
+                            aria-labelledby="decision-tab">
+                            <div class="mb-4" id="detailStatusContainer">
+                                <div id="detailStatus"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2">تعليق اللجنة:</label>
+                                <div id="detailComment" class="p-3 bg-light border rounded" style="min-height: 80px;">
+                                    <span class="text-muted small">لا يوجد تعليق</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2">توقيع المشرف:</label>
+                                <div id="detailSignature" class="p-2 border-bottom fw-bold text-primary">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Excuse Details -->
+                        <div class="tab-pane fade" id="details-pane" role="tabpanel" aria-labelledby="details-tab">
+
+                            <!-- Section 1: Personal Info -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi hgi-stroke hgi-standard hgi-user"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">البيانات الشخصية</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">رقم الطالب</label>
+                                    <input type="text" class="form-control bg-light" id="detailStudentId" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">اسم الطالب</label>
+                                    <input type="text" class="form-control bg-light" id="detailStudentName" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">المستوى الدراسي</label>
+                                    <input type="text" class="form-control bg-light" id="detailLevel" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">التخصص</label>
+                                    <input type="text" class="form-control bg-light" id="detailMajor" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Excuse Type -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi-stroke hgi-standard hgi-question"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">نوع العذر</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">نوع العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailType" readonly>
+                                </div>
+                                <!-- Wrapper for conditional fields to maintain grid -->
+                                <div class="col-12 mt-3">
+                                    <div class="row g-3" id="detailExtraFields">
+                                        <!-- Injected via JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Absence Details -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi-stroke hgi-standard hgi-calendar-03"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">تفاصيل الغياب</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">عدد أيام العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailDuration" value="-"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">تاريخ العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailExcuseDate" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Courses Table -->
+                            <div class="mb-4">
+                                <div class="table-responsive rounded border">
+                                    <table class="table align-middle mb-0 overflow-hidden">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 50%;">المساق/الدورة</th>
+                                                <th style="width: 50%;">سبب الغياب</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="detailCoursesTableBody">
+                                            <!-- Dynamic Rows -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Additional Reason -->
+                            <div class="mb-4">
+                                <label class="form-label text-muted small">تفاصيل إضافية</label>
+                                <textarea class="form-control bg-light" id="detailReason" rows="3" readonly></textarea>
+                            </div>
+
+                            <!-- Attachments -->
+                            <div class="mb-2">
+                                <h6 class="fw-medium mb-3 border-bottom pb-2">المرفقات</h6>
+                                <div id="detailFiles" class="d-flex flex-wrap gap-3"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Agreement Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="hgi-stroke hgi-standard hgi-file-validation text-primary me-2"></i>
+                        الشروط والأحكام
+                    </h5>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 d-flex align-items-start gap-3 mb-4">
+                        <i class="hgi-stroke hgi-standard hgi-information-circle fs-4 mt-1"></i>
+                        <div>
+                            <strong>مهم:</strong> يرجى قراءة الشروط والأحكام التالية بعناية. يجب الموافقة عليها قبل
+                            البدء في تقديم أي طلبات أعذار.
+                        </div>
+                    </div>
+
+                    <div class="bg-light rounded p-4 mb-4" id="termsContent">
+                        <div class="text-center py-4" id="termsLoading">
+                            <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin fs-3"></i>
+                            <p class="mt-2 mb-0 text-muted">جاري تحميل الشروط والأحكام...</p>
+                        </div>
+                        <div id="termsList" style="display: none;"></div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="termsCheckbox">
+                        <label class="form-check-label fw-medium" for="termsCheckbox">
+                            أوافق على جميع الشروط والأحكام المذكورة أعلاه
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 justify-content-center">
+                    <button type="button" class="btn btn-primary px-4" id="acceptTermsBtn" disabled>
+                        <i class="hgi-stroke hgi-standard hgi-checkmark-circle-02 me-1"></i>
+                        موافق وتحميل نسخة PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/student.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المسؤول - نظام إدارة الأعذار | كلية البترجي الطبية</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-CfCrinSRH2IR6a4e6fy2q6ioOX7O6Mtm1L9vRvFZ1trBncWmMePhzvafv7oIcWiW" crossorigin="anonymous">
+
+    <!-- Hugeicons -->
+    <link rel="stylesheet" href="https://sets.hugeicons.com/sy6ko98f5o.css" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+
+<body>
+    <div class="container-fluid row p-2 vh-100 overflow-hidden m-0 position-relative">
+
+        <!-- Student Login Switch -->
+        <a href="index.html"
+            class="btn btn-light position-absolute top-0 start-0 m-4 z-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm"
+            style="width: auto;">
+            <i class="hgi hgi-stroke hgi-standard hgi-user-group me-2"></i> <!-- Changed icon to group/student -->
+            <span class="fw-medium">دخول الطلاب</span>
+        </a>
+
+        <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center">
+            <div class="col-md-6">
+                <img src="images/logo.svg" alt="BMC Logo" class="mb-4 d-block mx-auto" style="height: 48px;">
+                <h5 class="fw-medium mb-3">نظام إدارة أعذار الطلاب / ساحة الإدارة</h5>
+                <p class="text-muted">
+                    حل شامل ومتكامل لكلية البترجي الطبية لإدارة واستلام ومراجعة أعذار الطلاب بكفاءة ومهنية عالية
+                </p>
+            </div>
+            <div class="col-md-6 mt-5">
+                <form id="loginForm" novalidate>
+                    <!-- Step 1: Email Input -->
+                    <div id="step1" class="step">
+                        <div class="mb-3 text-start">
+                            <label for="email" class="form-label fw-medium">البريد الإلكتروني</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted"><i
+                                        class="hgi hgi-stroke hgi-standard hgi-mail-01"></i></span>
+                                <input type="email" class="form-control" id="email"
+                                    placeholder="أدخل البريد الإلكتروني الوظيفي"
+                                    style="direction: ltr; text-align: right;" required>
+                            </div>
+                            <div id="emailError" class="text-danger small mt-1 d-none fw-medium"></div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" id="requestOtpBtn" class="btn btn-primary rounded-3">
+                                <i class="hgi hgi-stroke hgi-standard hgi-mail-send-01 me-1"></i>
+                                إرسال رمز التحقق
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: OTP Input -->
+                    <div id="step2" class="step d-none">
+                        <div class="alert alert-info border-0 d-flex align-items-start gap-2 mb-3">
+                            <i class="hgi hgi-stroke hgi-standard hgi-information-circle mt-1"></i>
+                            <div>
+                                <small>تم إرسال رمز التحقق إلى بريدك الإلكتروني. الرمز صالح لمدة 5 دقائق.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="otp" class="form-label fw-medium">رمز التحقق</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted"><i
+                                        class="hgi hgi-stroke hgi-standard hgi-key-01"></i></span>
+                                <input type="text" class="form-control text-center fw-medium" id="otp"
+                                    placeholder="أدخل رمز التحقق المرسل عبر البريد الإلكتروني" maxlength="6"
+                                    style="letter-spacing: 8px;" required>
+                            </div>
+                            <div id="otpError" class="text-danger small mt-1 d-none fw-medium"></div>
+                        </div>
+
+                        <!-- Resend Code Section -->
+                        <div class="mb-4 text-center">
+                            <a href="#" id="resendLink" class="text-decoration-none small text-muted disabled"
+                                style="pointer-events: none;">
+                                <i class="hgi hgi-stroke hgi-standard hgi-refresh me-1"></i>
+                                إعادة إرسال الرمز <span id="resendTimer">(00:30)</span>
+                            </a>
+                        </div>
+
+                        <div id="loginError" class="text-danger d-none mt-1 small fw-medium text-center mb-3"
+                            role="alert"></div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" id="loginBtn" class="btn btn-primary rounded-3">
+                                <i class="hgi hgi-stroke hgi-standard hgi-login-02 me-1"></i>
+                                تسجيل الدخول
+                            </button>
+                            <button type="button" id="backBtn" class="btn btn-outline-secondary rounded-3">
+                                <i class="hgi hgi-stroke hgi-standard hgi-arrow-right-01 me-1"></i>
+                                رجوع
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-6 bg-primary pt-5 ps-5 h-100 overflow-hidden pe-0 rounded-4">
+            <img src="images/admin-login-image.avif" alt="" class="w-100 custom-shadow">
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin-main.js"></script>
+</body>
+
+</html>

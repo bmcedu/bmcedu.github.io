@@ -1,0 +1,293 @@
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساحة الإدارة - نظام إدارة الأعذار | كلية البترجي الطبية</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-CfCrinSRH2IR6a4e6fy2q6ioOX7O6Mtm1L9vRvFZ1trBncWmMePhzvafv7oIcWiW" crossorigin="anonymous">
+
+    <!-- Hugeicons -->
+    <link rel="stylesheet" href="https://sets.hugeicons.com/sy6ko98f5o.css" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="bg-body-tertiary">
+    <!-- Navbar -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container-fluid px-0">
+            <!-- Top Row: Brand + Logout -->
+            <div class="d-flex justify-content-between align-items-center w-100 py-1 px-4">
+                <a class="navbar-brand d-flex align-items-center gap-4 mb-0" href="#">
+                    <img src="images/logo.svg" alt="BMC Logo" height="40" class="d-inline-block align-text-top ms-2">
+                    <span class="fw-bold text-primary">نظام إدارة الأعذار - ساحة الإدارة</span>
+                </a>
+                <button id="logoutBtn" class="btn btn-outline-danger btn-sm">
+                    <i class="hgi-stroke hgi-standard hgi-logout-01"></i> تسجيل خروج
+                </button>
+            </div>
+            <!-- Bottom Row: Navigation -->
+            <div class="w-100 border-top pt-2 px-4">
+                <ul class="navbar-nav flex-row gap-2">
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm" href="#">
+                            <i class="hgi-stroke hgi-standard hgi-home-01 me-1"></i>
+                            الرئيسية
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container-fluid p-4">
+        <!-- Welcome Banner -->
+        <!-- Welcome Banner -->
+        <div
+            class="welcome-banner bg-white rounded border p-4 mb-3 d-flex align-items-center position-relative overflow-hidden">
+
+
+            <div class="row align-items-center w-100 position-relative z-1">
+                <div class="col-12 text-center">
+                    <h4 class="fw-medium mb-2" id="dashboardTitle">أهلأ وسهلاً بك،</h4>
+                    <p class="text-muted mb-0">
+                        هنا يمكنك إدارة ومراجعة أعذار جميع الطلاب
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row g-3">
+
+
+            <!-- Column 2 (Data Table) -->
+            <div class="col-12">
+                <div class="bg-white rounded border">
+                    <!-- Row 1: Title (No Add Button for Admin) -->
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <h5 class="mb-0">جميع أعذار الطلاب</h5>
+                    </div>
+
+                    <!-- Row 2: Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="ps-4 fw-medium">رقم العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">الطالب</th>
+                                    <th scope="col" class="ps-4 fw-medium">نوع العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">تاريخ تقديم العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">تاريخ العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">النتيجة</th>
+                                    <th scope="col" class="ps-4 fw-medium">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <!-- Requests will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Row 3: Pagination -->
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                        <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
+                        <nav aria-label="Page navigation">
+                            <ul id="pagination" class="pagination justify-content-end mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Details Modal -->
+    <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">تفاصيل العذر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Nav Tabs -->
+                    <ul class="nav nav-pills nav-fill mb-3 gap-1 border-0" id="detailsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-medium" id="decision-tab" data-bs-toggle="tab"
+                                data-bs-target="#decision-pane" type="button" role="tab" aria-controls="decision-pane"
+                                aria-selected="true">قرار اللجنة</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-medium" id="details-tab" data-bs-toggle="tab"
+                                data-bs-target="#details-pane" type="button" role="tab" aria-controls="details-pane"
+                                aria-selected="false">تفاصيل العذر</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="detailsTabsContent">
+                        <!-- Tab 1: Committee Decision -->
+                        <div class="tab-pane fade show active" id="decision-pane" role="tabpanel"
+                            aria-labelledby="decision-tab">
+                            <div class="mb-4" id="detailStatusContainer">
+                                <div id="detailStatus"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2">تعليق اللجنة:</label>
+                                <div id="detailComment" class="p-3 bg-light border rounded" style="min-height: 80px;">
+                                    <span class="text-muted small">لا يوجد تعليق</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2">توقيع المشرف:</label>
+                                <div id="detailSignature" class="p-2 border-bottom fw-bold text-primary">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Excuse Details -->
+                        <div class="tab-pane fade" id="details-pane" role="tabpanel" aria-labelledby="details-tab">
+
+                            <!-- Section 1: Personal Info -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi hgi-stroke hgi-standard hgi-user"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">البيانات الشخصية</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">رقم الطالب</label>
+                                    <input type="text" class="form-control bg-light" id="detailStudentId" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">اسم الطالب</label>
+                                    <input type="text" class="form-control bg-light" id="detailStudentName" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">المستوى الدراسي</label>
+                                    <input type="text" class="form-control bg-light" id="detailLevel" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">التخصص</label>
+                                    <input type="text" class="form-control bg-light" id="detailMajor" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Excuse Type -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi-stroke hgi-standard hgi-question"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">نوع العذر</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label text-muted small">نوع العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailType" readonly>
+                                </div>
+                                <!-- Wrapper for conditional fields to maintain grid -->
+                                <div class="col-12 mt-3">
+                                    <div class="row g-3" id="detailExtraFields">
+                                        <!-- Injected via JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Absence Details -->
+                            <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="hgi-stroke hgi-standard hgi-calendar-03"></i>
+                                </div>
+                                <h6 class="fw-medium mb-0">تفاصيل الغياب</h6>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">عدد أيام العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailDuration" value="-"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">تاريخ العذر</label>
+                                    <input type="text" class="form-control bg-light" id="detailExcuseDate" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Courses Table -->
+                            <div class="mb-4">
+                                <div class="table-responsive rounded border">
+                                    <table class="table align-middle mb-0 overflow-hidden">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 50%;">المساق/الدورة</th>
+                                                <th style="width: 50%;">سبب الغياب</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="detailCoursesTableBody">
+                                            <!-- Dynamic Rows -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Additional Reason -->
+                            <div class="mb-4">
+                                <label class="form-label text-muted small">تفاصيل إضافية</label>
+                                <textarea class="form-control bg-light" id="detailReason" rows="3" readonly></textarea>
+                            </div>
+
+                            <!-- Attachments -->
+                            <div class="mb-2">
+                                <h6 class="fw-medium mb-3 border-bottom pb-2">المرفقات</h6>
+                                <div id="detailFiles" class="d-flex flex-wrap gap-3"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin-portal.js"></script>
+</body>
+
+</html>

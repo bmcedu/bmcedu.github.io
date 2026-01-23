@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap');
+
+:root {
+    /* Branding Color: User Preferred Blue */
+    --bs-primary: #004185;
+    --bs-primary-rgb: 0, 65, 133;
+
+    /* Link Colors */
+    --bs-link-color: #004185;
+    --bs-link-hover-color: #003366;
+}
+
+/* Backgrounds & Text */
+.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+.text-primary {
+    color: var(--bs-primary) !important;
+}
+
+.border-primary {
+    border-color: var(--bs-primary) !important;
+}
+
+/* Button Overrides */
+.btn-primary {
+    --bs-btn-bg: #004185;
+    --bs-btn-border-color: #004185;
+    --bs-btn-hover-bg: #003366;
+    --bs-btn-hover-border-color: #003366;
+    --bs-btn-active-bg: #003366;
+    --bs-btn-active-border-color: #003366;
+    --bs-btn-disabled-bg: #004185;
+    --bs-btn-disabled-border-color: #004185;
+    box-shadow: 0 4px 6px -1px rgba(var(--bs-primary-rgb), 0.5), 0 2px 4px -1px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #004185;
+    --bs-btn-border-color: #004185;
+    --bs-btn-hover-bg: #004185;
+    --bs-btn-hover-border-color: #004185;
+    --bs-btn-active-bg: #004185;
+    --bs-btn-active-border-color: #004185;
+    --bs-btn-disabled-color: #004185;
+    --bs-btn-disabled-border-color: #004185;
+}
+
+/* Pagination Overrides */
+.pagination {
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-pagination-active-border-color: var(--bs-primary);
+    --bs-pagination-color: var(--bs-primary);
+    --bs-pagination-hover-color: #003366;
+    --bs-pagination-focus-color: #003366;
+}
+
+.page-item.active .page-link {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.page-link {
+    color: var(--bs-primary);
+}
+
+.page-link:hover {
+    color: #003366;
+}
+
+/* Focus Rings */
+.btn-check:focus+.btn-primary,
+.btn-primary:focus {
+    background-color: #003366;
+    border-color: #003366;
+    box-shadow: 0 0 0 0.25rem rgba(0, 65, 133, 0.5);
+}
+
+/* Custom Pill Buttons for Tabs */
+.nav-pills .nav-link {
+    background-color: #e9ecef;
+    /* Inactive: Light Gray */
+    color: #495057;
+    /* Inactive: Gray Text */
+    border-radius: 6px;
+    margin: 0 4px;
+    transition: all 0.2s;
+    font-size: 15px;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #dee2e6;
+    color: #000;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .nav-link.active:hover {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+/* Hugeicons Spin Animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.hgi-spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+/* Custom Icon Stroke - Font Icons */
+.hgi-stroke {
+    font-weight: bold !important;
+}
+
+/* Modern Input Groups (Seamless - Group Border Strategy) */
+.input-group {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    /* Clips children corners */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.input-group-text {
+    background-color: #fff;
+    border: 0 !important;
+    /* Remove all child borders */
+    padding-left: 4px;
+}
+
+.input-group .form-control {
+    border: 0 !important;
+    /* Remove all child borders */
+    box-shadow: none !important;
+    /* No native focus shadow */
+}
+
+/* Fix focus ring (Tailwind Style) */
+.input-group:focus-within {
+    box-shadow: 0 0 0 1px var(--bs-primary);
+    border-color: var(--bs-primary);
+    z-index: 3;
+}
+
+.input-group .btn {
+    border: 0 !important;
+    background-color: #fff;
+    /* Match group background */
+    box-shadow: none !important;
+    z-index: 2;
+    /* Ensure it's clickable */
+}
+
+/* Error State */
+.input-group.is-invalid {
+    border-color: #dc3545 !important;
+    /* Red border */
+}
+
+.input-group.is-invalid:focus-within {
+    box-shadow: 0 0 0 1px #dc3545;
+    border-color: #dc3545;
+}
+
+/* Standardized Form Input Focus Styles */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 1px var(--bs-primary);
+    outline: none;
+}
+
+/* Form Input Base Styles */
+.form-control,
+.form-select {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Terms Modal - Nearly Fullscreen with margins */
+#termsModal .modal-dialog {
+    max-width: 800px;
+    height: 90vh;
+}
+
+#termsModal .modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#termsModal .modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#termsModal .modal-body>.bg-light {
+    flex: 1;
+    overflow-y: auto;
+    max-height: none;
+}
+
+/* Global Font */
+body {
+    font-family: 'Noto Kufi Arabic', sans-serif !important;
+}
+
+/* Custom Shadow */
+.custom-shadow {
+    box-shadow: 18px 18px 18px 0px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Decorative Circles (Replaces welcome images) */
+/* Decorative Circles (Using Pseudo-elements) */
+.welcome-banner {
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--bs-primary);
+    opacity: 0.04;
+    z-index: 0;
+    pointer-events: none;
+    width: 172px;
+    height: 172px;
+
+    /* Circle 1 Position */
+    top: -100px;
+    left: -80px;
+
+    /* Circle 2 via Box Shadow (Delta X: 320px, Delta Y: 170px) */
+    box-shadow: 320px 170px 0 0 var(--bs-primary);
+}
+
+/* Background Image (Replaces welcome-image-2.avif) */
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* RTL Start */
+    bottom: 0;
+    width: 60%;
+    /* Limit width so it doesn't overlap text area too much */
+    background-image: url('../images/welcome-image-2.avif');
+    background-repeat: no-repeat;
+    background-position: right top;
+    /* Align to right (start) top */
+    background-size: auto 100%;
+    /* Mimic h-100 object-fit-cover */
+    opacity: 0.6;
+    /* 60% opacity */
+    z-index: 0;
+    pointer-events: none;
+}

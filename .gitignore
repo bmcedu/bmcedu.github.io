@@ -1,0 +1,11 @@
+# System Files
+.DS_Store
+
+# Backend Code (Local Only)
+backend/
+backend/*.gs
+backend/appsscript.json
+
+# Dependencies
+node_modules/
+.clasp.json
