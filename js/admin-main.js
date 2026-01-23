@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Check if already logged in as admin
     if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-        window.location.href = 'admin.html';
+        window.location.href = 'admin';
         return;
     }
 
