@@ -32,7 +32,7 @@
                     <img src="images/logo.svg" alt="BMC Logo" height="40" class="d-inline-block align-text-top ms-2">
                     <span class="fw-bold text-primary">نظام إدارة الأعذار - ساحة الطالب</span>
                 </a>
-                <button id="logoutBtn" class="btn btn-outline-danger btn-sm">
+                <button id="logoutBtn" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2">
                     <i class="hgi-stroke hgi-standard hgi-logout-01"></i> تسجيل خروج
                 </button>
             </div>
@@ -60,59 +60,59 @@
         <div class="row g-3">
             <!-- Column 1 -->
             <div class="col-md-3">
-                <div class="bg-white rounded border p-4 mb-3 position-relative overflow-hidden" style="height: 200px;">
+                <div class="bg-white rounded border p-3 mb-3 position-relative overflow-hidden">
                     <img src="images/profile-bg.avif" alt=""
                         class="position-absolute top-0 start-50 translate-middle-x object-fit-cover"
                         style="width: 100%; height: 85px;">
 
-                    <div class="position-relative z-1 text-center mt-5">
+                    <div class="position-relative z-1 mt-5 d-flex align-items-end gap-3">
                         <div id="studentAvatar"
-                            class="d-inline-flex align-items-center justify-content-center bg-primary text-white border border-5 border-white mb-2"
-                            style="width: 120px; height: 120px; font-size: 3.5rem; border-radius: 11px;">
+                            class="d-inline-flex align-items-center justify-content-center bg-primary text-white border border-5 border-white"
+                            style="width: 100px; height: 100px; font-size: 3rem; border-radius: 11px; flex-shrink: 0;">
                             <!-- Avatar Letter -->
                         </div>
-                        <h5 class="mb-1" id="profileName">اسم الطالب</h5>
-                        <p class="text-muted small">عرض الملف الشخصي</p>
+                        <div class="d-flex flex-column mb-2 g-1">
+                            <h5 class="fw-bold text-dark" id="profileName">اسم الطالب</h5>
+                            <button class="btn btn-sm btn-light border d-flex align-items-center gap-1 text-muted"
+                                style="width: fit-content;">
+                                <i class="hgi-stroke hgi-standard hgi-help-circle"></i>
+                                <span>طلب مساعدة</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white rounded border p-4">
-                    <h5 class="mb-3">المعلومات الشخصية</h5>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-mortarboard-01 ms-2"></i>رقم
-                                الطالب الجامعي</span>
-                            <span id="info-studentId" class="fw-bold text-dark">-</span>
+                <div class="bg-white rounded border p-3">
+                    <h6 class="mb-3 text-muted">المعلومات الشخصية</h6>
+                    <ul class="list-unstyled fs-6">
+                        <li class="mb-3 d-flex align-items-center gap-2">
+                            <span class="text-muted d-flex align-items-center gap-2"><i
+                                    class="hgi-stroke hgi-standard hgi-mortarboard-01"></i>رقم
+                                الطالب:</span>
+                            <span id="info-studentId" class="text-dark">-</span>
                         </li>
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i
-                                    class="hgi-stroke hgi-standard hgi-book-open-01 ms-2"></i>التخصص</span>
-                            <span id="info-major" class="fw-bold text-dark">-</span>
+                        <li class="mb-3 d-flex align-items-center gap-2">
+                            <span class="text-muted d-flex align-items-center gap-2"><i
+                                    class="hgi-stroke hgi-standard hgi-passport"></i>رقم
+                                الهوية:</span>
+                            <span id="info-nationalId" class="text-dark">-</span>
                         </li>
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i
-                                    class="hgi-stroke hgi-standard hgi-layers-01 ms-2"></i>المستوى</span>
-                            <span id="info-level" class="fw-bold text-dark">-</span>
+                        <li class="mb-3 d-flex align-items-center gap-2">
+                            <span class="text-muted d-flex align-items-center gap-2"><i
+                                    class="hgi-stroke hgi-standard hgi-call-02"></i>رقم
+                                الهاتف:</span>
+                            <span id="info-phone" class="text-dark" dir="ltr">-</span>
                         </li>
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-id-card ms-2"></i>رقم
-                                الهوية</span>
-                            <span id="info-nationalId" class="fw-bold text-dark">-</span>
+                        <li class="mb-3 d-flex align-items-center gap-2">
+                            <span class="text-muted d-flex align-items-center gap-2"><i
+                                    class="hgi-stroke hgi-standard hgi-mail-01"></i>بريد
+                                الطالب:</span>
+                            <span id="info-email" class="text-dark">-</span>
                         </li>
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-call-02 ms-2"></i>رقم
-                                الهاتف</span>
-                            <span id="info-phone" class="fw-bold text-dark" dir="ltr">-</span>
-                        </li>
-
-                        <li class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i class="hgi-stroke hgi-standard hgi-mail-01 ms-2"></i>البريد
-                                الإلكتروني</span>
-                            <span id="info-email" class="fw-bold text-dark">-</span>
-                        </li>
-                        <li class="mb-0 d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i
-                                    class="hgi-stroke hgi-standard hgi-location-01 ms-2"></i>العنوان</span>
-                            <span id="info-address" class="fw-bold text-dark">-</span>
+                        <li class="mb-0 d-flex align-items-center gap-2">
+                            <span class="text-muted d-flex align-items-center gap-2"><i
+                                    class="hgi-stroke hgi-standard hgi-location-01"></i>عنوان
+                                الطالب:</span>
+                            <span id="info-address" class="text-dark">-</span>
                         </li>
                     </ul>
                 </div>

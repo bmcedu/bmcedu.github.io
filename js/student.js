@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // PAGINATION STATE
                     let currentPage = 1;
-                    const rowsPerPage = 8;
+                    const rowsPerPage = 7;
                     const allRequests = data;
 
                     // Function to render specific page
