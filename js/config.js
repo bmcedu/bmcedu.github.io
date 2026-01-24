@@ -1,5 +1,5 @@
 // Configuration
 const CONFIG = {
     // URL for Backend (Modular Single Script)
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz_JBcEsFT4DdStXUjfdLoZDQ9TnEqROF3OzmPbOd2lMIJLZ7J6rL7RSYcoijkfh0oUZQ/exec'
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz5tnhXmuDpohW7YuXGZiRwO5S1YmqDDUUU9SilQsuaUiMbAycx15Otx8uLasjfh6kuig/exec'
 };

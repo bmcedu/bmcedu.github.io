@@ -196,6 +196,14 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+/* Readonly inputs should not have any hover/focus effects that cause jitter */
+.form-control[readonly] {
+    transition: none;
+    pointer-events: none;
+    user-select: text;
+    cursor: default;
+}
+
 /* Terms Modal - Nearly Fullscreen with margins */
 #termsModal .modal-dialog {
     max-width: 800px;

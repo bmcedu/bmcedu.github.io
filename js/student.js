@@ -643,20 +643,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
 
-                    // Check Resend Button (Show only if Pending)
-                    const resendBtn = document.getElementById('resendEmailBtn');
-                    if (resendBtn) {
-                        // Assuming 'pending' status allows reminder. 
-                        // req.status might be capitalized or lowercase, let's normalize.
-                        const status = (req.status || 'pending').toLowerCase();
-                        if (status === 'pending') {
-                            resendBtn.style.display = 'flex';
-                            resendBtn.dataset.requestId = req.id;
-                        } else {
-                            resendBtn.style.display = 'none';
-                        }
-                    }
-
                     modal.show();
                 }
 
@@ -1516,59 +1502,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Handle Resend Email Button
-const resendEmailBtn = document.getElementById('resendEmailBtn');
-if (resendEmailBtn) {
-    resendEmailBtn.addEventListener('click', async function () {
-        const id = this.dataset.requestId;
-        if (!id) return;
 
-        // Confirm
-        const result = await Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: "سيتم إرسال تذكير للإدارة.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'نعم، إرسال تذكير',
-            cancelButtonText: 'إلغاء',
-            confirmButtonColor: 'var(--bs-primary)'
-        });
-
-        if (result.isConfirmed) {
-            try {
-                // Show Loading
-                this.disabled = true;
-                const originalHtml = this.innerHTML;
-                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جاري الإرسال...';
-
-                const response = await fetch(CONFIG.SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'resend_email', id: id })
-                });
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'تم الإرسال',
-                        text: 'تم إرسال التذكير بنجاح.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                } else {
-                    throw new Error(data.message || 'Unknown Error');
-                }
-            } catch (e) {
-                console.error(e);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'خطأ',
-                    text: 'فشل إرسال التذكير: ' + e.message
-                });
-            } finally {
-                this.disabled = false;
-                this.innerHTML = '<i class="hgi-stroke hgi-standard hgi-notification-01"></i> إرسال تذكير';
-            }
-        }
-    });
-}
