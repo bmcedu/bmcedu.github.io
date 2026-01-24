@@ -728,7 +728,13 @@ function saveItem() {
     const name = document.getElementById('itemName').value.trim();
 
     if (!name) {
-        Swal.fire('خطأ', 'الرجاء إدخال الاسم', 'error');
+        Swal.fire({
+            title: 'خطأ',
+            text: 'الرجاء إدخال الاسم',
+            icon: 'error',
+            confirmButtonText: 'موافق',
+            confirmButtonColor: '#004185'
+        });
         return;
     }
 
@@ -747,14 +753,32 @@ function saveItem() {
         .then(data => {
             if (data.status === 'success') {
                 itemModal.hide();
-                Swal.fire('تم', id ? 'تم تحديث العنصر بنجاح' : 'تمت إضافة العنصر بنجاح', 'success');
+                Swal.fire({
+                    title: 'تم',
+                    text: id ? 'تم تحديث العنصر بنجاح' : 'تمت إضافة العنصر بنجاح',
+                    icon: 'success',
+                    confirmButtonText: 'موافق',
+                    confirmButtonColor: '#004185'
+                });
                 loadSettingsData();
             } else {
-                Swal.fire('خطأ', data.message || 'فشلت العملية', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: data.message || 'فشلت العملية',
+                    icon: 'error',
+                    confirmButtonText: 'موافق',
+                    confirmButtonColor: '#004185'
+                });
             }
         })
         .catch(err => {
-            Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+            Swal.fire({
+                title: 'خطأ',
+                text: 'حدث خطأ في الاتصال',
+                icon: 'error',
+                confirmButtonText: 'موافق',
+                confirmButtonColor: '#004185'
+            });
         });
 }
 
@@ -783,14 +807,32 @@ function deleteSettingsItem(category, id) {
                 .then(r => r.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire('تم الحذف', 'تم حذف العنصر بنجاح', 'success');
+                        Swal.fire({
+                            title: 'تم الحذف',
+                            text: 'تم حذف العنصر بنجاح',
+                            icon: 'success',
+                            confirmButtonText: 'موافق',
+                            confirmButtonColor: '#004185'
+                        });
                         loadSettingsData();
                     } else {
-                        Swal.fire('خطأ', data.message || 'فشل الحذف', 'error');
+                        Swal.fire({
+                            title: 'خطأ',
+                            text: data.message || 'فشل الحذف',
+                            icon: 'error',
+                            confirmButtonText: 'موافق',
+                            confirmButtonColor: '#004185'
+                        });
                     }
                 })
                 .catch(err => {
-                    Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+                    Swal.fire({
+                        title: 'خطأ',
+                        text: 'حدث خطأ في الاتصال',
+                        icon: 'error',
+                        confirmButtonText: 'موافق',
+                        confirmButtonColor: '#004185'
+                    });
                 });
         }
     });
@@ -811,13 +853,31 @@ function saveTerms() {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'success') {
-                Swal.fire('تم', 'تم حفظ الشروط والأحكام بنجاح', 'success');
+                Swal.fire({
+                    title: 'تم',
+                    text: 'تم حفظ الشروط والأحكام بنجاح',
+                    icon: 'success',
+                    confirmButtonText: 'موافق',
+                    confirmButtonColor: '#004185'
+                });
             } else {
-                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: data.message || 'فشل الحفظ',
+                    icon: 'error',
+                    confirmButtonText: 'موافق',
+                    confirmButtonColor: '#004185'
+                });
             }
         })
         .catch(err => {
-            Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+            Swal.fire({
+                title: 'خطأ',
+                text: 'حدث خطأ في الاتصال',
+                icon: 'error',
+                confirmButtonText: 'موافق',
+                confirmButtonColor: '#004185'
+            });
         });
 }
 
