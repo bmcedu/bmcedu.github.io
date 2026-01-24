@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             coursesTableBody.innerHTML = `
                                 <tr>
                                     <td colspan="2" class="text-center text-muted py-3">
-                                        لا يوجد مساقات محددة
+                                        لا يوجد مواد محددة
                                     </td>
                                 </tr>
                              `;
@@ -1145,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Generate Options
         const courseOptions = portalData.courses.length > 0
             ? portalData.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-            : '<option disabled>لا توجد مساقات متاحة</option>';
+            : '<option disabled>لا توجد مواد متاحة</option>';
 
         const reasonOptions = portalData.reasons.length > 0
             ? portalData.reasons.map(r => `<option value="${r.id}">${r.name}</option>`).join('')
@@ -1154,7 +1154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         newRow.innerHTML = `
             <td>
                 <select class="form-select" required>
-                    <option value="" selected disabled>-- اختر المساق --</option>
+                    <option value="" selected disabled>-- اختر المادة --</option>
                     ${courseOptions}
                 </select>
             </td>
