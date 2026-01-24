@@ -147,6 +147,22 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // --- Global Warning Listener for Days Count ---
+    const daysCountInput = document.getElementById('daysCount');
+    const daysWarning = document.getElementById('daysWarning');
+
+    if (daysCountInput && daysWarning) {
+        daysCountInput.addEventListener('input', function () {
+            const days = parseInt(this.value, 10);
+            if (days > 5) {
+                // Revert to default text in HTML (Automatic Rejection Warning)
+                daysWarning.classList.remove('d-none');
+            } else {
+                daysWarning.classList.add('d-none');
+            }
+        });
+    }
+
     // --- Terms Agreement Check ---
     const termsAgreed = sessionStorage.getItem('termsAgreed');
     const termsModal = document.getElementById('termsModal');

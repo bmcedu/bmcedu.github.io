@@ -316,6 +316,15 @@
                         <!-- Step 3: Absence Details (Date & Reason) -->
                         <div class="wizard-step d-none" id="step3">
                             <div class="row g-3 mb-3">
+                                <div class="col-12 d-none" id="daysWarning">
+                                    <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert">
+                                        <i class="hgi-stroke hgi-standard hgi-alert-02 fs-5"></i>
+                                        <div>
+                                            <strong>تنبيه:</strong> الأعذار التي تتجاوز مدتها 5 أيام قد تخضع للرفض
+                                            التلقائي وفقاً لسياسة الكلية.
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <label for="excuseDate" class="form-label fw-medium">تاريخ العذر</label>
                                     <input type="date" class="form-control" id="excuseDate"
