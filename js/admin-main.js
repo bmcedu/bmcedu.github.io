@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // ==================== TAB COMMUNICATION ====================
+    // Listen for successful login from magic link tab
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'admin_login_success') {
+            // Another tab (magic link) logged in successfully
+            // Redirect this tab to dashboard as well
+            window.location.href = 'admin';
+        }
+    });
+
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const otpInput = document.getElementById('otp');
@@ -202,6 +212,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     sessionStorage.setItem('adminId', admin.id || '');
                     sessionStorage.setItem('adminName', admin.name || '');
                     sessionStorage.setItem('adminEmail', admin.email || adminEmail);
+
+                    // Notify other tabs (original login tab) about successful login
+                    localStorage.setItem('admin_login_success', Date.now().toString());
+                    localStorage.removeItem('admin_login_success'); // Clean up immediately
 
                     // Redirect to admin dashboard
                     window.location.href = 'admin';
