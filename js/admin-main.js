@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (emailInput) {
         emailInput.addEventListener('input', function () {
             const email = this.value.trim();
-            const emailGroup = this.closest('.input-group').parentElement;
+            const emailGroup = this.closest('.input-group');
             const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
             if (!email) {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.value = this.value.replace(/\D/g, '');
 
             const otp = this.value.trim();
-            const otpGroup = this.closest('.input-group').parentElement;
+            const otpGroup = this.closest('.input-group');
 
             if (!otp) {
                 setError(otpError, 'رمز التحقق مطلوب.', otpGroup);
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (requestOtpBtn) {
         requestOtpBtn.addEventListener('click', async function () {
             const email = emailInput.value.trim();
-            const emailGroup = emailInput.closest('.input-group').parentElement;
+            const emailGroup = emailInput.closest('.input-group');
 
             // Validate email
             if (!email) {
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const otp = otpInput.value.trim();
-            const otpGroup = otpInput.closest('.input-group').parentElement;
+            const otpGroup = otpInput.closest('.input-group');
 
             // Validate OTP
             if (!otp || otp.length !== 6) {
