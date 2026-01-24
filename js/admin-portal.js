@@ -59,11 +59,8 @@ function loadAllExcuses() {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">جاري التحميل...</span>
-                    </div>
-                    <p class="text-muted mt-2">جاري تحميل الأعذار...</p>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i>جاري تحميل الأعذار...
                 </td>
             </tr>
         `;
