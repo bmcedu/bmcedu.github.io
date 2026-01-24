@@ -215,7 +215,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Notify other tabs (original login tab) about successful login
                     localStorage.setItem('admin_login_success', Date.now().toString());
-                    localStorage.removeItem('admin_login_success'); // Clean up immediately
+                    // Clean up after a short delay to ensure other tabs detect the change
+                    setTimeout(() => localStorage.removeItem('admin_login_success'), 100);
 
                     // Redirect to admin dashboard
                     window.location.href = 'admin';
