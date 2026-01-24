@@ -239,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Resend OTP Logic ---
     const resendLink = document.getElementById('resendLink');
-    const resendTimerSpan = document.getElementById('resendTimer');
     let resendInterval;
 
     function startResendTimer(duration) {
@@ -255,15 +254,16 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clear existing interval if any
         if (resendInterval) clearInterval(resendInterval);
 
-        // Update function for reuse
+        // Update function for reuse - gets span dynamically each time
         const updateDisplay = () => {
+            const timerSpan = document.getElementById('resendTimer');
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            if (resendTimerSpan) resendTimerSpan.textContent = "(" + minutes + ":" + seconds + ")";
+            if (timerSpan) timerSpan.textContent = "(" + minutes + ":" + seconds + ")";
         };
 
         updateDisplay(); // Run once immediately
@@ -276,7 +276,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     resendLink.classList.remove('disabled', 'text-muted');
                     resendLink.classList.add('text-primary');
                     resendLink.style.pointerEvents = 'auto';
-                    if (resendTimerSpan) resendTimerSpan.textContent = "";
+                    const timerSpan = document.getElementById('resendTimer');
+                    if (timerSpan) timerSpan.textContent = "";
                 }
             } else {
                 updateDisplay();
