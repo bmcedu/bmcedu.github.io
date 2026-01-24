@@ -641,9 +641,8 @@ function loadSettingsData() {
 
     // Show loading state
     const loadingHTML = `
-        <div class="text-center py-5">
-            <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin text-primary mb-3" style="font-size: 3rem;"></i>
-            <p class="text-muted fw-medium">جاري تحميل البيانات...</p>
+        <div class="text-center py-5 text-muted">
+            <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i>جاري تحميل البيانات...
         </div>
     `;
 
