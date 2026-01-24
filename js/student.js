@@ -8,8 +8,120 @@ document.addEventListener('DOMContentLoaded', function () {
     // State for Dynamic Data
     const portalData = {
         courses: [],
-        reasons: []
+        reasons: [],
+        hospitals: []
     };
+
+    // ==================== FORM DATA CACHE SYSTEM ====================
+    const CACHE_KEY = 'bmc_form_data';
+    const CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+    /**
+     * Get cached form data from localStorage if still valid
+     */
+    function getCachedFormData() {
+        try {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return null;
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp > CACHE_TTL) {
+                localStorage.removeItem(CACHE_KEY);
+                return null; // Expired
+            }
+            return parsed.data;
+        } catch (e) {
+            localStorage.removeItem(CACHE_KEY);
+            return null;
+        }
+    }
+
+    /**
+     * Save form data to localStorage with timestamp
+     */
+    function setCachedFormData(data) {
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                timestamp: Date.now(),
+                data: data
+            }));
+        } catch (e) {
+            console.warn('Failed to cache form data:', e);
+        }
+    }
+
+    /**
+     * Prefetch all form data (combined API call with localStorage cache)
+     */
+    function prefetchFormData() {
+        // Check cache first
+        const cached = getCachedFormData();
+        if (cached) {
+            console.log('Form data loaded from cache');
+            portalData.courses = cached.courses || [];
+            portalData.reasons = cached.reasons || [];
+            portalData.hospitals = cached.hospitals || [];
+            populateHospitalsDropdown();
+            return Promise.resolve(cached);
+        }
+
+        // Fetch from API
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+        if (!scriptUrl) return Promise.resolve(null);
+
+        console.log('Fetching form data from API...');
+        return fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'get_form_data' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    portalData.courses = data.courses || [];
+                    portalData.reasons = data.reasons || [];
+                    portalData.hospitals = data.hospitals || [];
+
+                    // Cache for next time
+                    setCachedFormData({
+                        courses: portalData.courses,
+                        reasons: portalData.reasons,
+                        hospitals: portalData.hospitals
+                    });
+
+                    populateHospitalsDropdown();
+                    console.log('Form data fetched and cached');
+                }
+                return data;
+            })
+            .catch(err => {
+                console.error('Error fetching form data:', err);
+                return null;
+            });
+    }
+
+    /**
+     * Populate hospitals dropdown from cached data
+     */
+    function populateHospitalsDropdown() {
+        const hospitalSelect = document.getElementById('hospitalType');
+        if (!hospitalSelect || portalData.hospitals.length === 0) return;
+
+        // Clear existing options except first
+        while (hospitalSelect.options.length > 1) {
+            hospitalSelect.remove(1);
+        }
+
+        portalData.hospitals.forEach(hospital => {
+            const option = document.createElement('option');
+            if (typeof hospital === 'object') {
+                option.value = hospital.id;
+                option.textContent = hospital.name;
+            } else {
+                option.value = hospital;
+                option.textContent = hospital;
+            }
+            hospitalSelect.appendChild(option);
+        });
+    }
 
     // Excuse Type ID to Label Mapping (for display)
     const excuseTypeLabels = {
@@ -654,75 +766,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Initial Fetch
-    // Initial Fetch
     fetchRequests();
-    fetchHospitals();
-    fetchPortalData();
-
-    // Fetch Courses and Reasons
-    function fetchPortalData() {
-        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
-        if (!scriptUrl) return;
-
-        // Fetch Courses
-        fetch(scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'get_courses' })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') portalData.courses = data.courses || [];
-            })
-            .catch(err => console.error('Error fetching courses:', err));
-
-        // Fetch Reasons
-        fetch(scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'get_reasons' })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') portalData.reasons = data.reasons || [];
-            })
-            .catch(err => console.error('Error fetching reasons:', err));
-    }
-
-    // 4b. Fetch Hospitals Function
-    function fetchHospitals() {
-        const hospitalSelect = document.getElementById('hospitalType');
-        if (!hospitalSelect) return;
-
-        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
-        if (!scriptUrl) return;
-
-        fetch(scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'get_hospitals' })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success' && Array.isArray(data.hospitals)) {
-                    // Clear existing options except the first one (placeholder)
-                    while (hospitalSelect.options.length > 1) {
-                        hospitalSelect.remove(1);
-                    }
-
-                    data.hospitals.forEach(hospital => {
-                        const option = document.createElement('option');
-                        // Handle both legacy (string) and new (object) formats for robustness
-                        if (typeof hospital === 'object') {
-                            option.value = hospital.id;
-                            option.textContent = hospital.name;
-                        } else {
-                            option.value = hospital;
-                            option.textContent = hospital;
-                        }
-                        hospitalSelect.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => console.error('Error fetching hospitals:', error));
-    }
+    prefetchFormData(); // Single combined call with cache
 
     // 5. Wizard Logic
     const wizardState = {
