@@ -588,3 +588,236 @@ function deleteExcuseSimple(id) {
         })
         .catch(err => alert('حدث خطأ في الاتصال'));
 }
+
+// ==================== SETTINGS MANAGEMENT ====================
+
+let settingsData = { hospitals: [], courses: [], reasons: [], terms: '' };
+let itemModal = null;
+
+// Initialize settings functionality on DOM load
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize modal
+    const itemModalEl = document.getElementById('itemModal');
+    if (itemModalEl) {
+        itemModal = new bootstrap.Modal(itemModalEl);
+    }
+
+    // Navigation Tab Switching
+    const navDashboard = document.getElementById('navDashboard');
+    const navSettings = document.getElementById('navSettings');
+    const dashboardSection = document.querySelector('.container-fluid.p-4:not(#settingsSection)');
+    const settingsSection = document.getElementById('settingsSection');
+
+    if (navDashboard && navSettings) {
+        navDashboard.addEventListener('click', function (e) {
+            e.preventDefault();
+            navDashboard.classList.remove('btn-outline-secondary');
+            navDashboard.classList.add('btn-primary');
+            navSettings.classList.remove('btn-primary');
+            navSettings.classList.add('btn-outline-secondary');
+            if (dashboardSection) dashboardSection.classList.remove('d-none');
+            if (settingsSection) settingsSection.classList.add('d-none');
+        });
+
+        navSettings.addEventListener('click', function (e) {
+            e.preventDefault();
+            navSettings.classList.remove('btn-outline-secondary');
+            navSettings.classList.add('btn-primary');
+            navDashboard.classList.remove('btn-primary');
+            navDashboard.classList.add('btn-outline-secondary');
+            if (dashboardSection) dashboardSection.classList.add('d-none');
+            if (settingsSection) settingsSection.classList.remove('d-none');
+            loadSettingsData();
+        });
+    }
+});
+
+/**
+ * Load all settings data from backend
+ */
+function loadSettingsData() {
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+    if (!scriptUrl) return;
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'get_settings_data' })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                settingsData = {
+                    hospitals: data.hospitals || [],
+                    courses: data.courses || [],
+                    reasons: data.reasons || [],
+                    terms: data.terms || ''
+                };
+                renderSettingsLists();
+            }
+        })
+        .catch(err => console.error('Error loading settings:', err));
+}
+
+/**
+ * Render all settings lists
+ */
+function renderSettingsLists() {
+    renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
+    renderItemList('coursesList', settingsData.courses, 'courses');
+    renderItemList('reasonsList', settingsData.reasons, 'reasons');
+
+    const termsTextarea = document.getElementById('termsTextarea');
+    if (termsTextarea) termsTextarea.value = settingsData.terms;
+}
+
+/**
+ * Render a single category list
+ */
+function renderItemList(containerId, items, category) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+        container.innerHTML = '<div class="text-muted text-center py-4">لا توجد عناصر</div>';
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <span>${item.name}</span>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" onclick="openEditModal('${category}', ${item.id}, '${item.name.replace(/'/g, "\\'")}')">
+                    <i class="hgi hgi-stroke hgi-standard hgi-edit-02"></i>
+                </button>
+                <button class="btn btn-outline-danger" onclick="deleteSettingsItem('${category}', ${item.id})">
+                    <i class="hgi hgi-stroke hgi-standard hgi-delete-02"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * Open Add Modal
+ */
+function openAddModal(category, label) {
+    document.getElementById('itemModalTitle').textContent = `إضافة ${label}`;
+    document.getElementById('itemCategory').value = category;
+    document.getElementById('itemId').value = '';
+    document.getElementById('itemName').value = '';
+    itemModal.show();
+}
+
+/**
+ * Open Edit Modal
+ */
+function openEditModal(category, id, name) {
+    document.getElementById('itemModalTitle').textContent = 'تعديل العنصر';
+    document.getElementById('itemCategory').value = category;
+    document.getElementById('itemId').value = id;
+    document.getElementById('itemName').value = name;
+    itemModal.show();
+}
+
+/**
+ * Save Item (Add or Update)
+ */
+function saveItem() {
+    const category = document.getElementById('itemCategory').value;
+    const id = document.getElementById('itemId').value;
+    const name = document.getElementById('itemName').value.trim();
+
+    if (!name) {
+        Swal.fire('خطأ', 'الرجاء إدخال الاسم', 'error');
+        return;
+    }
+
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+    if (!scriptUrl) return;
+
+    const action = id ? 'update_item' : 'add_item';
+    const payload = { action, category, name };
+    if (id) payload.id = id;
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                itemModal.hide();
+                Swal.fire('تم', id ? 'تم تحديث العنصر بنجاح' : 'تمت إضافة العنصر بنجاح', 'success');
+                loadSettingsData();
+            } else {
+                Swal.fire('خطأ', data.message || 'فشلت العملية', 'error');
+            }
+        })
+        .catch(err => {
+            Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+        });
+}
+
+/**
+ * Delete Settings Item
+ */
+function deleteSettingsItem(category, id) {
+    Swal.fire({
+        title: 'تأكيد الحذف',
+        text: 'هل أنت متأكد من حذف هذا العنصر؟',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'نعم، احذف',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+            if (!scriptUrl) return;
+
+            fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete_item', category, id })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('تم الحذف', 'تم حذف العنصر بنجاح', 'success');
+                        loadSettingsData();
+                    } else {
+                        Swal.fire('خطأ', data.message || 'فشل الحذف', 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+                });
+        }
+    });
+}
+
+/**
+ * Save Terms
+ */
+function saveTerms() {
+    const text = document.getElementById('termsTextarea').value;
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+    if (!scriptUrl) return;
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'update_terms', text })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire('تم', 'تم حفظ الشروط والأحكام بنجاح', 'success');
+            } else {
+                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+            }
+        })
+        .catch(err => {
+            Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+        });
+}
+

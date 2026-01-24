@@ -40,9 +40,15 @@
             <div class="w-100 border-top pt-2 px-4">
                 <ul class="navbar-nav flex-row gap-2">
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-sm" href="#">
-                            <i class="hgi-stroke hgi-standard hgi-home-01 me-1"></i>
+                        <a class="btn btn-primary btn-sm" href="#" id="navDashboard">
+                            <i class="hgi hgi-stroke hgi-standard hgi-home-01 me-1"></i>
                             الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-secondary btn-sm" href="#" id="navSettings">
+                            <i class="hgi hgi-stroke hgi-standard hgi-settings-02 me-1"></i>
+                            الإعدادات
                         </a>
                     </li>
                 </ul>
@@ -278,6 +284,116 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Section (Hidden by default) -->
+    <div id="settingsSection" class="container-fluid p-4 d-none">
+        <div class="bg-white rounded border">
+            <div class="p-3 border-bottom">
+                <h5 class="mb-0">إدارة البيانات</h5>
+            </div>
+
+            <!-- Inner Tabs -->
+            <ul class="nav nav-tabs px-3 pt-3" id="settingsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="hospitals-tab" data-bs-toggle="tab"
+                        data-bs-target="#hospitals-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-hospital-02 me-1"></i> المستشفيات
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-pane"
+                        type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-book-02 me-1"></i> المقررات
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reasons-tab" data-bs-toggle="tab" data-bs-target="#reasons-pane"
+                        type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-note-01 me-1"></i> الأسباب
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-pane"
+                        type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-file-validation me-1"></i> الشروط
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Panes -->
+            <div class="tab-content p-3">
+                <!-- Hospitals Pane -->
+                <div class="tab-pane fade show active" id="hospitals-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted small">قائمة المستشفيات المتاحة للطلاب</span>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('hospitals', 'مستشفى')">
+                            <i class="hgi hgi-stroke hgi-standard hgi-add-01 me-1"></i> إضافة مستشفى
+                        </button>
+                    </div>
+                    <div id="hospitalsList" class="list-group"></div>
+                </div>
+
+                <!-- Courses Pane -->
+                <div class="tab-pane fade" id="courses-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted small">قائمة المقررات الدراسية</span>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('courses', 'مقرر')">
+                            <i class="hgi hgi-stroke hgi-standard hgi-add-01 me-1"></i> إضافة مقرر
+                        </button>
+                    </div>
+                    <div id="coursesList" class="list-group"></div>
+                </div>
+
+                <!-- Reasons Pane -->
+                <div class="tab-pane fade" id="reasons-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted small">قائمة أسباب الأعذار</span>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('reasons', 'سبب')">
+                            <i class="hgi hgi-stroke hgi-standard hgi-add-01 me-1"></i> إضافة سبب
+                        </button>
+                    </div>
+                    <div id="reasonsList" class="list-group"></div>
+                </div>
+
+                <!-- Terms Pane -->
+                <div class="tab-pane fade" id="terms-pane">
+                    <div class="mb-3">
+                        <span class="text-muted small d-block mb-2">نص الشروط والأحكام الذي يظهر للطلاب</span>
+                        <textarea id="termsTextarea" class="form-control" rows="10" dir="rtl"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveTerms()">
+                        <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ التغييرات
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalTitle">إضافة عنصر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="itemCategory">
+                    <input type="hidden" id="itemId">
+                    <div class="mb-3">
+                        <label for="itemName" class="form-label">الاسم</label>
+                        <input type="text" class="form-control" id="itemName" placeholder="أدخل الاسم" dir="rtl">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveItem()">
+                        <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ
+                    </button>
                 </div>
             </div>
         </div>
