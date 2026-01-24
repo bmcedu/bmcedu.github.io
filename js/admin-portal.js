@@ -409,7 +409,7 @@ function showExcuseDetails(excuse) {
                 `;
             });
         } else {
-            coursesHtml = '<tr><td colspan="2" class="text-center text-muted py-3">لا توجد مساقات</td></tr>';
+            coursesHtml = '<tr><td colspan="2" class="text-center text-muted py-3">لا توجد مواد</td></tr>';
         }
         detailCoursesTableBody.innerHTML = coursesHtml;
     }
