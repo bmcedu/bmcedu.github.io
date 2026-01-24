@@ -639,6 +639,22 @@ function loadSettingsData() {
     const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
     if (!scriptUrl) return;
 
+    // Show loading state
+    const loadingHTML = `
+        <div class="text-center py-5">
+            <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin text-primary mb-3" style="font-size: 3rem;"></i>
+            <p class="text-muted fw-medium">جاري تحميل البيانات...</p>
+        </div>
+    `;
+
+    const hospitalsList = document.getElementById('hospitalsList');
+    const coursesList = document.getElementById('coursesList');
+    const reasonsList = document.getElementById('reasonsList');
+
+    if (hospitalsList) hospitalsList.innerHTML = loadingHTML;
+    if (coursesList) coursesList.innerHTML = loadingHTML;
+    if (reasonsList) reasonsList.innerHTML = loadingHTML;
+
     fetch(scriptUrl, {
         method: 'POST',
         body: JSON.stringify({ action: 'get_settings_data' })
