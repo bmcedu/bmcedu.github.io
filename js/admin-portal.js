@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 let coursesLookup = {};
 let reasonsLookup = {};
 let allExcuses = [];
+let filteredExcuses = []; // Stores filtered data
 let currentPage = 1;
 const itemsPerPage = 8;
 
@@ -69,7 +70,8 @@ function loadAllExcuses() {
     // Fetch lookups first, then excuses
     Promise.all([
         fetchLookupData('get_courses', 'courses'),
-        fetchLookupData('get_reasons', 'reasons')
+        fetchLookupData('get_reasons', 'reasons'),
+        fetchLookupData('get_all_students', 'students') // Fetch full student list
     ]).then(() => {
         // Now fetch excuses
         const payload = { action: 'get_all_excuses' };
@@ -78,10 +80,24 @@ function loadAllExcuses() {
             method: 'POST',
             body: JSON.stringify(payload)
         })
-            .then(response => response.json())
+            .then(response => {
+                return response.json();
+            })
             .then(data => {
                 allExcuses = Array.isArray(data) ? data : [];
+
+                // Handle error response from backend
+                if (data && data.status === 'error') {
+                    console.error('Backend returned error:', data.message);
+                    allExcuses = []; // Ensure empty array on error
+                }
+
+                filteredExcuses = [...allExcuses]; // Initialize filtered with all
                 currentPage = 1;
+
+                // Extract dynamic filter options
+                extractFilterOptions();
+
                 renderExcusesTable();
             })
             .catch(error => {
@@ -97,14 +113,19 @@ function loadAllExcuses() {
                     `;
                 }
             });
+    }).catch(err => {
+        console.error('Error in lookup promises:', err);
     });
 }
 
+// Global storage for full student list
+let allStudentsList = [];
+
 /**
- * Fetch lookup data (courses/reasons)
+ * Fetch lookup data (courses/reasons/students)
  */
 function fetchLookupData(action, key) {
-    const scriptUrl = CONFIG.SCRIPT_URL;
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
     return fetch(scriptUrl, {
         method: 'POST',
         body: JSON.stringify({ action: action })
@@ -118,10 +139,443 @@ function fetchLookupData(action, key) {
                 if (key === 'reasons' && data.reasons) {
                     data.reasons.forEach(r => { reasonsLookup[String(r.id)] = r.name; });
                 }
+                if (key === 'students' && data.students) {
+                    allStudentsList = data.students || []; // Store full student list
+                }
             }
         })
         .catch(err => console.error(`Error fetching ${key}:`, err));
 }
+
+/**
+ * Extract Filter Options from Data
+ */
+function extractFilterOptions() {
+    // --- Course Dropdown (Custom Searchable) ---
+    const courseDropdownList = document.getElementById('courseDropdownList');
+    if (courseDropdownList) {
+        // Use global coursesLookup to get ALL courses
+        const allCourses = Object.values(coursesLookup).sort();
+
+        // Fallback to extracting from excuses if lookup is empty
+        let coursesToDisplay = allCourses;
+        if (coursesToDisplay.length === 0) {
+            const uniqueCourses = new Set();
+            allExcuses.forEach(item => {
+                if (item.course_name) uniqueCourses.add(item.course_name.trim());
+            });
+            coursesToDisplay = [...uniqueCourses].sort();
+        }
+
+        // Populate Dropdown List
+        let listHtml = `<div class="dropdown-item p-2 cursor-pointer text-muted small" data-value="">الكل</div>`;
+        coursesToDisplay.forEach(course => {
+            listHtml += `<div class="dropdown-item p-2 cursor-pointer text-wrap" style="color: inherit;" data-value="${course}">${course}</div>`;
+        });
+        courseDropdownList.innerHTML = listHtml;
+
+        setupSearchableCourseDropdown();
+    }
+
+    // --- Student Names Dropdown (Custom Searchable) ---
+    const dropdownList = document.getElementById('studentNameDropdownList');
+    if (dropdownList) {
+        // Merge excused students with full student list
+        const uniqueNames = new Map();
+
+        // 1. Add students from the master list (id, name)
+        allStudentsList.forEach(s => {
+            if (s.name) uniqueNames.set(s.name.trim(), s.name.trim());
+        });
+
+        // 2. Add students from excuses
+        allExcuses.forEach(item => {
+            if (item.student_name) uniqueNames.set(item.student_name.trim(), item.student_name.trim());
+        });
+
+        const sortedNames = [...uniqueNames.values()].sort();
+        console.log('[Debug] Found', sortedNames.length, 'unique student names');
+
+        // Populate Dropdown List
+        let listHtml = `<div class="dropdown-item p-2 cursor-pointer text-muted small" data-value="">الكل</div>`;
+        sortedNames.forEach(name => {
+            listHtml += `<div class="dropdown-item p-2 cursor-pointer text-wrap" style="color: inherit;" data-value="${name}">${name}</div>`;
+        });
+        dropdownList.innerHTML = listHtml;
+
+        // Initialize Custom Dropdown Logic
+        setupSearchableDropdown();
+    }
+
+    // --- Student ID Dropdown (Custom Searchable) ---
+    const idDropdownList = document.getElementById('studentIdDropdownList');
+    if (idDropdownList) {
+        const uniqueStudents = new Map();
+
+        // 1. Add students from the master list (id, name)
+        allStudentsList.forEach(s => {
+            if (s.id) uniqueStudents.set(String(s.id).trim(), { id: s.id, name: s.name || 'غير معروف' });
+        });
+
+        // 2. Add students from excuses
+        allExcuses.forEach(item => {
+            if (item.student_id) {
+                const id = String(item.student_id).trim();
+                // Prefer master list name if available, else excuse name
+                if (!uniqueStudents.has(id)) {
+                    uniqueStudents.set(id, { id: id, name: item.student_name || 'غير معروف' });
+                }
+            }
+        });
+
+        const sortedStudents = [...uniqueStudents.values()].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+
+        // Populate Dropdown List
+        let listHtml = `<div class="dropdown-item p-2 cursor-pointer text-muted small" data-value="">الكل</div>`;
+        sortedStudents.forEach(student => {
+            listHtml += `
+                <div class="dropdown-item p-2 cursor-pointer border-bottom border-light" data-value="${student.id}">
+                    <div>${student.name}</div>
+                    <div class="small text-muted">${student.id}</div>
+                </div>
+            `;
+        });
+        idDropdownList.innerHTML = listHtml;
+
+        setupSearchableIdDropdown();
+    }
+}
+
+/**
+ * Setup logic for custom searchable dropdown (Single-Select)
+ */
+function setupSearchableDropdown() {
+    const input = document.getElementById('filterStudentNameInput');
+    const hiddenInput = document.getElementById('filterStudentName');
+    const dropdown = document.getElementById('studentNameDropdownList');
+
+    if (!input || !dropdown) return;
+
+    // Helper to toggle icon
+    const getArrow = () => input.parentNode.querySelector('.hgi-arrow-down-01');
+    const setArrowState = (open) => {
+        const arrow = getArrow();
+        if (arrow) {
+            if (open) arrow.classList.add('rotate-180');
+            else arrow.classList.remove('rotate-180');
+        }
+    };
+
+    // Show/Filter on Input
+    input.addEventListener('input', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+        const filter = this.value.toLowerCase();
+        const items = dropdown.querySelectorAll('.dropdown-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            const value = item.getAttribute('data-value');
+
+            // Hide if filtered out
+            if (text.includes(filter)) {
+                item.classList.remove('d-none');
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+
+        // If user clears input, clear hidden and apply
+        if (this.value === '') {
+            hiddenInput.value = '';
+            applyFilters();
+        }
+    });
+
+    // Show on focus
+    input.addEventListener('focus', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+    });
+
+    // Select Item
+    dropdown.addEventListener('click', function (e) {
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
+            const value = item.getAttribute('data-value');
+            const text = item.textContent;
+
+            // If "All" selected
+            if (!value) {
+                input.value = '';
+                hiddenInput.value = '';
+            } else {
+                input.value = text;
+                hiddenInput.value = text; // Use text as value for filtering
+            }
+
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+
+            applyFilters();
+        }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+        }
+    });
+}
+
+/**
+ * Setup logic for custom searchable Student ID dropdown
+ */
+function setupSearchableIdDropdown() {
+    const input = document.getElementById('filterStudentIdInput');
+    const hiddenInput = document.getElementById('filterStudentId');
+    const dropdown = document.getElementById('studentIdDropdownList');
+
+    if (!input || !dropdown) return;
+
+    // Helper to toggle icon
+    const getArrow = () => input.parentNode.querySelector('.hgi-arrow-down-01');
+    const setArrowState = (open) => {
+        const arrow = getArrow();
+        if (arrow) {
+            if (open) arrow.classList.add('rotate-180');
+            else arrow.classList.remove('rotate-180');
+        }
+    };
+
+    // Show/Filter on Input
+    input.addEventListener('input', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+        const filter = this.value.toLowerCase();
+        const items = dropdown.querySelectorAll('.dropdown-item');
+
+        items.forEach(item => {
+            // Check both ID and Name text within the item
+            const text = item.textContent.toLowerCase();
+            // Hide if filtered out
+            if (text.includes(filter)) {
+                item.classList.remove('d-none');
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+
+        // If user clears input, clear hidden and apply
+        if (this.value === '') {
+            hiddenInput.value = '';
+            applyFilters();
+        }
+    });
+
+    // Show on focus
+    input.addEventListener('focus', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+    });
+
+    // Select Item
+    dropdown.addEventListener('click', function (e) {
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
+            const value = item.getAttribute('data-value');
+
+            // If "All" selected
+            if (!value) {
+                input.value = '';
+                hiddenInput.value = '';
+            } else {
+                input.value = value; // Show ID in input
+                hiddenInput.value = value;
+            }
+
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+
+            applyFilters();
+        }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+
+            // Optional: Revert input if invalid
+        }
+    });
+}
+
+/**
+ * Setup logic for custom searchable Course dropdown
+ */
+function setupSearchableCourseDropdown() {
+    const input = document.getElementById('filterCourseInput');
+    const hiddenInput = document.getElementById('filterCourse');
+    const dropdown = document.getElementById('courseDropdownList');
+
+    if (!input || !dropdown) return;
+
+    // Helper to toggle icon
+    const getArrow = () => input.parentNode.querySelector('.hgi-arrow-down-01');
+    const setArrowState = (open) => {
+        const arrow = getArrow();
+        if (arrow) {
+            if (open) arrow.classList.add('rotate-180');
+            else arrow.classList.remove('rotate-180');
+        }
+    };
+
+    // Show/Filter on Input
+    input.addEventListener('input', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+        const filter = this.value.toLowerCase();
+        const items = dropdown.querySelectorAll('.dropdown-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            // Hide if filtered out
+            if (text.includes(filter)) {
+                item.classList.remove('d-none');
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+
+        // If user clears input, clear hidden and apply
+        if (this.value === '') {
+            hiddenInput.value = '';
+            applyFilters();
+        }
+    });
+
+    // Show on focus
+    input.addEventListener('focus', function () {
+        dropdown.classList.remove('d-none');
+        dropdown.classList.add('show');
+        setArrowState(true);
+    });
+
+    // Select Item
+    dropdown.addEventListener('click', function (e) {
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
+            const value = item.getAttribute('data-value');
+            const text = item.textContent;
+
+            // If "All" selected
+            if (!value) {
+                input.value = '';
+                hiddenInput.value = '';
+            } else {
+                input.value = text;
+                hiddenInput.value = text;
+            }
+
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+
+            applyFilters();
+        }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+        }
+    });
+}
+
+/**
+ * Setup logic for static custom dropdowns (Status, Type)
+ * @param {string} wrapperId - ID of the wrapper element (optional context) or just use IDs directly
+ */
+function setupStaticDropdown(inputId, hiddenId, listId) {
+    const input = document.getElementById(inputId);
+    const hiddenInput = document.getElementById(hiddenId);
+    const dropdown = document.getElementById(listId);
+
+    if (!input || !dropdown) return;
+
+    // Helper to toggle icon
+    const getArrow = () => input.parentNode.querySelector('.hgi-arrow-down-01');
+    const setArrowState = (open) => {
+        const arrow = getArrow();
+        if (arrow) {
+            if (open) arrow.classList.add('rotate-180');
+            else arrow.classList.remove('rotate-180');
+        }
+    };
+
+    // Toggle on click
+    input.addEventListener('click', function () {
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+        } else {
+            dropdown.classList.remove('d-none');
+            dropdown.classList.add('show');
+            setArrowState(true);
+        }
+    });
+
+    // Select Item
+    dropdown.addEventListener('click', function (e) {
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
+            const value = item.getAttribute('data-value');
+            const text = item.textContent;
+
+            hiddenInput.value = value;
+            input.value = value ? text : ''; // Show text or empty if "All"
+
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+
+            applyFilters();
+        }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+            dropdown.classList.add('d-none');
+            setArrowState(false);
+        }
+    });
+}
+
+// Initialize Static Dropdowns
+document.addEventListener('DOMContentLoaded', function () {
+    setupStaticDropdown('filterStatusInput', 'filterStatus', 'statusDropdownList');
+    setupStaticDropdown('filterTypeInput', 'filterType', 'typeDropdownList');
+});
+
 
 /**
  * Render the excuses table
@@ -132,12 +586,12 @@ function renderExcusesTable() {
 
     if (!tableBody) return;
 
-    if (allExcuses.length === 0) {
+    if (filteredExcuses.length === 0) {
         tableBody.innerHTML = `
             <tr>
                 <td colspan="7" class="text-center py-5 text-muted">
                     <i class="hgi-stroke hgi-standard hgi-inbox fs-1 mb-2 d-block"></i>
-                    لا توجد أعذار مسجلة
+                    لا توجد أعذار مطابقة للبحث
                 </td>
             </tr>
         `;
@@ -147,14 +601,14 @@ function renderExcusesTable() {
     }
 
     // Sort by date (newest first)
-    allExcuses.sort((a, b) => {
+    filteredExcuses.sort((a, b) => {
         const dateA = new Date(a.date || 0);
         const dateB = new Date(b.date || 0);
         return dateB - dateA;
     });
 
     // Pagination Logic
-    const totalItems = allExcuses.length;
+    const totalItems = filteredExcuses.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     if (currentPage > totalPages) currentPage = totalPages;
@@ -162,24 +616,18 @@ function renderExcusesTable() {
 
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    const paginatedExcuses = allExcuses.slice(start, end);
+    const paginatedExcuses = filteredExcuses.slice(start, end);
 
     let html = '';
-    paginatedExcuses.forEach((excuse, index) => {
-        // Correct index for data-index (needs to map back to original array if needed, BUT we just need valid object)
-        // Actually, let's use the object directly or map index to allExcuses index if we assume sorting didn't change?
-        // Sorting changed allExcuses in place. So we need the index in allExcuses.
-        // We can just find the index in allExcuses or pass the object ID.
-        // Or simpler: We know `paginatedExcuses` contains references to objects in `allExcuses`.
-        // Let's store the ACTUAL index in allExcuses in a data attribute?
-        // Or better: showExcuseDetails takes the object.
-
+    paginatedExcuses.forEach((excuse) => {
+        // Find index in original array for editing
         const realIndex = allExcuses.indexOf(excuse);
 
         const statusBadge = getStatusBadge(excuse.status);
         const excuseTypeAr = getExcuseTypeArabic(excuse.excuse_type);
         const submissionDate = formatSubmissionDate(excuse.date);
 
+        // ... [existing html generation] ...
         html += `
             <tr>
                 <td class="ps-4 text-primary">${excuse.id || '-'}</td>
@@ -223,6 +671,150 @@ function renderExcusesTable() {
             confirmDelete(id);
         });
     });
+}
+
+
+// ... [existing renderPagination] ...
+
+
+// ==================== FILTER LOGIC ====================
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Filter Elements
+    // filterStudentId handled by custom logic setupSearchableIdDropdown
+    const filterStudentIdInput = document.getElementById('filterStudentIdInput');
+
+    // filterStudentName handled by custom logic setupSearchableDropdown
+    const filterStatus = document.getElementById('filterStatus');
+    const filterType = document.getElementById('filterType');
+    // filterCourse handled by custom logic setupSearchableCourseDropdown
+    const filterDateRange = document.getElementById('filterDateRange');
+    const btnResetFilters = document.getElementById('btnResetFilters');
+
+    // Initialize Flatpickr
+    let datePickerInstance = null;
+    if (filterDateRange) {
+        datePickerInstance = flatpickr(filterDateRange, {
+            mode: "range",
+            locale: {
+                ...flatpickr.l10ns.ar,
+                firstDayOfWeek: 0,
+                rtl: true
+            },
+            dateFormat: "Y-m-d",
+            onChange: function (selectedDates, dateStr, instance) {
+                applyFilters();
+            }
+        });
+    }
+
+    // Attach Listeners
+    // Student ID, Name, Course handled by custom logic
+    // Status & Type handled by custom static logic (trigger change on hidden input via setupStaticDropdown)
+    // Date handled by Flatpickr onChange
+
+    if (btnResetFilters) {
+        btnResetFilters.addEventListener('click', function () {
+            // Reset Student ID
+            const inputId = document.getElementById('filterStudentIdInput');
+            const hiddenId = document.getElementById('filterStudentId');
+            if (inputId) inputId.value = '';
+            if (hiddenId) hiddenId.value = '';
+
+            // Reset Student Name
+            const inputStudent = document.getElementById('filterStudentNameInput');
+            const hiddenStudent = document.getElementById('filterStudentName');
+            if (inputStudent) inputStudent.value = '';
+            if (hiddenStudent) hiddenStudent.value = '';
+
+            // Reset Course
+            const inputCourse = document.getElementById('filterCourseInput');
+            const hiddenCourse = document.getElementById('filterCourse');
+            if (inputCourse) inputCourse.value = '';
+            if (hiddenCourse) hiddenCourse.value = '';
+
+            // Reset Status
+            const inputStatus = document.getElementById('filterStatusInput');
+            const hiddenStatus = document.getElementById('filterStatus');
+            if (inputStatus) inputStatus.value = '';
+            if (hiddenStatus) hiddenStatus.value = '';
+
+            // Reset Type
+            const inputType = document.getElementById('filterTypeInput');
+            const hiddenType = document.getElementById('filterType');
+            if (inputType) inputType.value = '';
+            if (hiddenType) hiddenType.value = '';
+
+            // Reset Date Range
+            if (datePickerInstance) {
+                datePickerInstance.clear();
+            } else if (filterDateRange) {
+                filterDateRange.value = '';
+            }
+
+            applyFilters();
+        });
+    }
+});
+
+/**
+ * Apply Filters to allExcuses -> filteredExcuses
+ */
+function applyFilters() {
+    // Use hidden input for student ID filter
+    const studentId = document.getElementById('filterStudentId')?.value.trim().toLowerCase() || '';
+    // Use hidden input for student name filter
+    const studentName = document.getElementById('filterStudentName')?.value.trim().toLowerCase() || '';
+    const status = document.getElementById('filterStatus')?.value || '';
+    const type = document.getElementById('filterType')?.value || '';
+    // Use hidden input for course filter
+    const course = document.getElementById('filterCourse')?.value || '';
+
+    // Parse Date Range
+    let dateStart = '';
+    let dateEnd = '';
+    const dateRangeVal = document.getElementById('filterDateRange')?.value || '';
+    if (dateRangeVal.includes(' to ')) {
+        [dateStart, dateEnd] = dateRangeVal.split(' to ');
+    } else if (dateRangeVal) { // Single day selected
+        dateStart = dateRangeVal;
+        dateEnd = dateRangeVal;
+    }
+
+    filteredExcuses = allExcuses.filter(excuse => {
+        // 1. Student Number
+        if (studentId && !String(excuse.student_id || '').toLowerCase().includes(studentId)) return false;
+
+        // 2. Student Name
+        if (studentName && !(excuse.student_name || '').toLowerCase().includes(studentName)) return false;
+
+        // 3. Status
+        if (status && (excuse.status || 'pending') !== status) return false;
+
+        // 4. Type
+        if (type && excuse.excuse_type !== type) return false;
+
+        // 5. Course (Was Major)
+        if (course && (excuse.course_name || '').trim() !== course) return false;
+
+        // 6. Date Range (Submission Date)
+        if (dateStart || dateEnd) {
+            const excuseDate = new Date(excuse.date).setHours(0, 0, 0, 0);
+            if (dateStart) {
+                const start = new Date(dateStart).setHours(0, 0, 0, 0);
+                if (excuseDate < start) return false;
+            }
+            if (dateEnd) {
+                const end = new Date(dateEnd).setHours(0, 0, 0, 0);
+                if (excuseDate > end) return false;
+            }
+        }
+
+        return true;
+    });
+
+    currentPage = 1;
+    renderExcusesTable();
 }
 
 /**
@@ -274,12 +866,13 @@ function renderPagination(totalItems) {
  * Change Page
  */
 window.changePage = function (page) {
-    const totalPages = Math.ceil(allExcuses.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredExcuses.length / itemsPerPage);
     if (page < 1 || page > totalPages) return;
 
     currentPage = page;
     renderExcusesTable();
 };
+
 
 /**
  * Get status badge HTML

@@ -48,6 +48,19 @@
 }
 
 /* Pagination Overrides */
+/* ... existing content ... */
+
+/* Utility: Rotate 180 deg */
+.rotate-180 {
+    transform: translateY(-50%) rotate(180deg) !important;
+    transition: transform 0.2s ease;
+}
+
+/* Ensure original state has transition too */
+.hgi-arrow-down-01 {
+    transition: transform 0.2s ease;
+}
+
 .pagination {
     --bs-pagination-active-bg: var(--bs-primary);
     --bs-pagination-active-border-color: var(--bs-primary);
@@ -197,9 +210,10 @@
 }
 
 /* Readonly inputs should not have any hover/focus effects that cause jitter */
+/* Readonly inputs should not have any hover/focus effects that cause jitter */
 .form-control[readonly] {
     transition: none;
-    pointer-events: none;
+    /* pointer-events: none; removed to allow clicks (e.g. for date pickers) */
     user-select: text;
     cursor: default;
 }
