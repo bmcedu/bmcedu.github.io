@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (emailInput) {
             emailInput.addEventListener('input', function () {
                 const email = this.value.trim();
-                const emailGroup = this.closest('.mb-3');
+                const emailGroup = this.closest('.input-group');
                 const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
                 if (emailGroup) {
@@ -57,19 +57,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (passwordInput) {
             passwordInput.addEventListener('input', function () {
                 const password = this.value.trim();
-                const passwordGroup = this.closest('.mb-4');
+                const passwordGroup = this.closest('.input-group');
 
                 if (passwordGroup) {
                     if (!password) {
                         passwordGroup.classList.add('is-invalid');
                         if (passwordError) {
                             passwordError.textContent = 'كلمة المرور مطلوبة.';
-                            passwordError.classList.remove('d-none');
-                        }
-                    } else if (!/^\d+$/.test(password)) {
-                        passwordGroup.classList.add('is-invalid');
-                        if (passwordError) {
-                            passwordError.textContent = 'كلمة المرور يجب أن تكون أرقاماً فقط.';
                             passwordError.classList.remove('d-none');
                         }
                     } else {
@@ -101,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Reset Errors
 
-            const emailGroup = emailInput.closest('.mb-3'); // Assuming .mb-3 is the parent for styling
-            const passwordGroup = passwordInput.closest('.mb-4'); // Assuming .mb-4 is the parent for styling
+            const emailGroup = emailInput.closest('.input-group');
+            const passwordGroup = passwordInput.closest('.input-group');
 
             emailGroup.classList.remove('is-invalid');
             emailGroup.classList.remove('is-invalid');
@@ -138,14 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 passwordGroup.classList.add('is-invalid');
                 if (passwordError) {
                     passwordError.textContent = 'كلمة المرور مطلوبة.';
-                    passwordError.classList.remove('d-none');
-                }
-                hasError = true;
-            } else if (!/^\d+$/.test(studentId)) {
-                // Validate Student ID is a number (if not empty)
-                passwordGroup.classList.add('is-invalid');
-                if (passwordError) {
-                    passwordError.textContent = 'كلمة المرور يجب أن تكون أرقاماً فقط.';
                     passwordError.classList.remove('d-none');
                 }
                 hasError = true;
