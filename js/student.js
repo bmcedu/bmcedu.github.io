@@ -942,14 +942,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!policyCheckbox || !policyCheckbox.checked) {
                 if (policyCheckbox) policyCheckbox.classList.add('is-invalid');
                 isValid = false;
-                // Show alert
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'يرجى الموافقة على سياسة الكلية',
-                    text: 'يجب الموافقة على سياسة الكلية قبل المتابعة.',
-                    confirmButtonText: 'حسناً',
-                    confirmButtonColor: '#004185'
-                });
             }
         } else if (step === 2) {
             // Step 2: Personal Data - Always valid (read-only fields)
