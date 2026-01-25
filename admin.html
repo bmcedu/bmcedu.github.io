@@ -510,13 +510,28 @@
                     <div id="reasonsList" class="list-group"></div>
                 </div>
 
-                <!-- Terms Pane -->
+                <!-- Policy Pane -->
                 <div class="tab-pane fade" id="terms-pane">
                     <div class="mb-3">
-                        <span class="text-muted small d-block mb-2">نص الشروط والأحكام الذي يظهر للطلاب</span>
-                        <textarea id="termsTextarea" class="form-control" rows="10" dir="rtl"></textarea>
+                        <span class="text-muted small d-block mb-2">نص السياسة الذي يظهر للطلاب</span>
+                        <textarea id="termsTextarea" class="form-control" rows="8" dir="rtl"></textarea>
                     </div>
-                    <button class="btn btn-primary" onclick="saveTerms()">
+
+                    <!-- PDF Upload Section -->
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">
+                            <i class="hgi hgi-stroke hgi-standard hgi-file-02 me-1"></i>
+                            ملف السياسة (PDF)
+                        </label>
+                        <div id="currentPolicyFile" class="small text-muted mb-2" style="display: none;">
+                            <i class="hgi hgi-stroke hgi-standard hgi-checkmark-circle-02 text-success me-1"></i>
+                            <span id="policyFileStatus">يوجد ملف سياسة محفوظ</span>
+                        </div>
+                        <input type="file" class="form-control" id="policyFileInput" accept="application/pdf">
+                        <div class="form-text">سيتم تحميل هذا الملف للطالب عند موافقته على السياسة</div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="savePolicy()" id="savePolicyBtn">
                         <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ التغييرات
                     </button>
                 </div>

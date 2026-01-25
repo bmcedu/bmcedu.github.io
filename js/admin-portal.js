@@ -1263,16 +1263,31 @@ function loadSettingsData() {
         .catch(err => console.error('Error loading settings:', err));
 }
 
-/**
- * Render all settings lists
- */
 function renderSettingsLists() {
     renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
     renderItemList('coursesList', settingsData.courses, 'courses');
     renderItemList('reasonsList', settingsData.reasons, 'reasons');
 
+    // Render Policy/Terms
+    const termsData = settingsData.terms;
+    let policyText = '';
+    let policyFileId = null;
+
+    if (typeof termsData === 'object' && termsData !== null) {
+        policyText = termsData.text || '';
+        policyFileId = termsData.fileId || null;
+    } else {
+        policyText = termsData || '';
+    }
+
     const termsTextarea = document.getElementById('termsTextarea');
-    if (termsTextarea) termsTextarea.value = settingsData.terms;
+    if (termsTextarea) termsTextarea.value = policyText;
+
+    // Show/Hide Policy File Status
+    const fileStatus = document.getElementById('currentPolicyFile');
+    if (fileStatus) {
+        fileStatus.style.display = policyFileId ? 'block' : 'none';
+    }
 }
 
 /**
@@ -1444,45 +1459,111 @@ function deleteSettingsItem(category, id) {
 }
 
 /**
- * Save Terms
+ * Save Policy (Text + PDF)
  */
-function saveTerms() {
+async function savePolicy() {
     const text = document.getElementById('termsTextarea').value;
+    const fileInput = document.getElementById('policyFileInput');
+    const saveBtn = document.getElementById('savePolicyBtn');
     const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
     if (!scriptUrl) return;
 
-    fetch(scriptUrl, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'update_terms', text })
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    title: 'تم',
-                    text: 'تم حفظ الشروط والأحكام بنجاح',
-                    icon: 'success',
-                    confirmButtonText: 'موافق',
-                    confirmButtonColor: '#004185'
-                });
-            } else {
-                Swal.fire({
-                    title: 'خطأ',
-                    text: data.message || 'فشل الحفظ',
-                    icon: 'error',
-                    confirmButtonText: 'موافق',
-                    confirmButtonColor: '#004185'
-                });
+    // Disable button and show loading
+    const originalBtnText = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-1"></i> جاري الحفظ...';
+
+    let fileId = null;
+
+    try {
+        // Step 1: Upload PDF if provided
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+
+            // Validate file type
+            if (file.type !== 'application/pdf') {
+                throw new Error('يجب أن يكون الملف بصيغة PDF');
             }
-        })
-        .catch(err => {
+
+            // Convert to base64
+            const base64Data = await fileToBase64(file);
+
+            // Upload to Drive
+            const uploadResponse = await fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'upload_policy_file',
+                    fileData: base64Data,
+                    mimeType: 'application/pdf'
+                })
+            });
+            const uploadResult = await uploadResponse.json();
+
+            if (uploadResult.status !== 'success') {
+                throw new Error(uploadResult.message || 'فشل رفع الملف');
+            }
+            fileId = uploadResult.fileId;
+        }
+
+        // Step 2: Update policy text and file ID
+        const updateResponse = await fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'update_policy',
+                text: text,
+                fileId: fileId
+            })
+        });
+        const updateResult = await updateResponse.json();
+
+        if (updateResult.status === 'success') {
             Swal.fire({
-                title: 'خطأ',
-                text: 'حدث خطأ في الاتصال',
-                icon: 'error',
+                title: 'تم',
+                text: fileId ? 'تم حفظ السياسة والملف بنجاح' : 'تم حفظ السياسة بنجاح',
+                icon: 'success',
                 confirmButtonText: 'موافق',
                 confirmButtonColor: '#004185'
             });
+
+            // Clear file input and show status
+            fileInput.value = '';
+            if (fileId) {
+                document.getElementById('currentPolicyFile').style.display = 'block';
+            }
+        } else {
+            throw new Error(updateResult.message || 'فشل حفظ السياسة');
+        }
+    } catch (err) {
+        Swal.fire({
+            title: 'خطأ',
+            text: err.message || 'حدث خطأ في الاتصال',
+            icon: 'error',
+            confirmButtonText: 'موافق',
+            confirmButtonColor: '#004185'
         });
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalBtnText;
+    }
 }
 
+// Legacy alias for backward compatibility
+function saveTerms() {
+    savePolicy();
+}
+
+/**
+ * Convert file to base64
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            // Remove data URL prefix (e.g., "data:application/pdf;base64,")
+            const base64 = reader.result.split(',')[1];
+            resolve(base64);
+        };
+        reader.onerror = error => reject(error);
+    });
+}
