@@ -770,7 +770,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fetch(scriptUrl, {
             method: 'POST',
-            body: JSON.stringify({ action: 'get_terms' })
+            body: JSON.stringify({ action: 'get_terms' }) // 'get_terms' now returns {terms, fileId}
         })
             .then(res => res.json())
             .then(data => {
@@ -785,8 +785,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     policyContent.innerHTML = '<p class="text-muted">لا توجد سياسة متاحة حالياً.</p>';
                 }
+
                 policyLoading.style.display = 'none';
                 policyContent.style.display = 'block';
+
+                // Handle Policy File Download Button
+                const textContainer = policyContent.parentElement;
+                const existingBtn = document.getElementById('policyDownloadBtn');
+                if (existingBtn) existingBtn.remove(); // Remove if exists to re-check
+
+                if (data.status === 'success' && data.fileId) {
+                    const btnDiv = document.createElement('div');
+                    btnDiv.className = 'd-flex justify-content-end mb-4';
+                    btnDiv.id = 'policyDownloadBtn';
+                    btnDiv.innerHTML = `
+                        <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-2" onclick="downloadPolicyPdfWrapper()">
+                            <i class="hgi hgi-stroke hgi-standard hgi-download-01"></i>
+                            تحميل نسخة PDF
+                        </button>
+                    `;
+                    textContainer.insertAdjacentElement('afterend', btnDiv);
+                }
             })
             .catch(err => {
                 console.error('Error loading policy:', err);
@@ -795,6 +814,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 policyContent.style.display = 'block';
             });
     }
+
+    // Wrapper to access download function globally or close
+    window.downloadPolicyPdfWrapper = function () {
+        downloadPolicyPdf();
+    };
 
     // Download Policy PDF from Google Drive
     function downloadPolicyPdf() {

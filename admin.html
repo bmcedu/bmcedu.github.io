@@ -527,8 +527,29 @@
                             <i class="hgi hgi-stroke hgi-standard hgi-checkmark-circle-02 text-success me-1"></i>
                             <span id="policyFileStatus">يوجد ملف سياسة محفوظ</span>
                         </div>
-                        <input type="file" class="form-control" id="policyFileInput" accept="application/pdf">
-                        <div class="form-text">سيتم تحميل هذا الملف للطالب عند موافقته على السياسة</div>
+
+                        <label for="policyFileInput"
+                            class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-light-subtle w-100 position-relative"
+                            style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
+                            <div class="default-content text-center">
+                                <i class="hgi hgi-stroke hgi-standard hgi-upload-02 fs-3 text-secondary mb-2"></i>
+                                <div class="text-muted small">اضغط هنا لرفع ملف PDF</div>
+                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">(الحد الأقصى 10MB)</div>
+                            </div>
+                            <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
+                                style="z-index: 5;">
+                                <i class="hgi hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2"></i>
+                                <div class="filename small text-dark fw-bold text-truncate w-75 text-center"
+                                    id="policyFileName">
+                                </div>
+                                <button type="button"
+                                    class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
+                                    style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;"
+                                    id="removePolicyFileBtn">&times;</button>
+                            </div>
+                        </label>
+                        <input type="file" class="d-none" id="policyFileInput" accept="application/pdf">
+                        <div class="form-text">سيتم استبدال الملف الحالي (إن وجد) عند الحفظ</div>
                     </div>
 
                     <button class="btn btn-primary" onclick="savePolicy()" id="savePolicyBtn">

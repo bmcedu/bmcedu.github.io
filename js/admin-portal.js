@@ -1192,6 +1192,9 @@ document.addEventListener('DOMContentLoaded', function () {
         itemModal = new bootstrap.Modal(itemModalEl);
     }
 
+    // Initialize Policy File Upload
+    setupPolicyFileUpload();
+
     // Navigation Tab Switching
     const navDashboard = document.getElementById('navDashboard');
     const navSettings = document.getElementById('navSettings');
@@ -1527,6 +1530,7 @@ async function savePolicy() {
 
             // Clear file input and show status
             fileInput.value = '';
+            resetPolicyUploadUI();
             if (fileId) {
                 document.getElementById('currentPolicyFile').style.display = 'block';
             }
@@ -1566,4 +1570,77 @@ function fileToBase64(file) {
         };
         reader.onerror = error => reject(error);
     });
+}
+
+/**
+ * Setup Policy File Upload UI
+ */
+function setupPolicyFileUpload() {
+    const fileInput = document.getElementById('policyFileInput');
+    const removeBtn = document.getElementById('removePolicyFileBtn');
+
+    if (!fileInput) return;
+
+    // Handle File Selection
+    fileInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+
+            // Check type (redundant with accept attribute but good for safety)
+            if (file.type !== 'application/pdf') {
+                Swal.fire({
+                    title: 'خطأ',
+                    text: 'يجب أن يكون الملف بصيغة PDF',
+                    icon: 'error',
+                    confirmButtonText: 'موافق',
+                    confirmButtonColor: '#004185'
+                });
+                this.value = ''; // Clear input
+                return;
+            }
+
+            // Update UI
+            const uploadBox = document.querySelector('label[for="policyFileInput"]');
+            const defaultContent = uploadBox.querySelector('.default-content');
+            const fileInfo = uploadBox.querySelector('.file-info');
+            const fileName = document.getElementById('policyFileName');
+
+            if (fileName) fileName.textContent = file.name;
+            if (defaultContent) defaultContent.classList.add('d-none');
+            if (fileInfo) {
+                fileInfo.classList.remove('d-none');
+                fileInfo.classList.add('d-flex');
+            }
+        }
+    });
+
+    // Handle File Removal
+    if (removeBtn) {
+        removeBtn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent opening file dialog
+            e.stopPropagation(); // Stop bubbling
+
+            fileInput.value = '';
+            resetPolicyUploadUI();
+        });
+    }
+}
+
+/**
+ * Reset Policy Upload UI
+ */
+function resetPolicyUploadUI() {
+    const uploadBox = document.querySelector('label[for="policyFileInput"]');
+    if (!uploadBox) return;
+
+    const defaultContent = uploadBox.querySelector('.default-content');
+    const fileInfo = uploadBox.querySelector('.file-info');
+    const fileName = document.getElementById('policyFileName');
+
+    if (fileName) fileName.textContent = '';
+    if (defaultContent) defaultContent.classList.remove('d-none');
+    if (fileInfo) {
+        fileInfo.classList.add('d-none');
+        fileInfo.classList.remove('d-flex');
+    }
 }
