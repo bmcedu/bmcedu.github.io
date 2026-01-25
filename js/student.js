@@ -789,22 +789,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 policyLoading.style.display = 'none';
                 policyContent.style.display = 'block';
 
-                // Handle Policy File Download Button
-                const textContainer = policyContent.parentElement;
-                const existingBtn = document.getElementById('policyDownloadBtn');
-                if (existingBtn) existingBtn.remove(); // Remove if exists to re-check
-
                 if (data.status === 'success' && data.fileId) {
-                    const btnDiv = document.createElement('div');
-                    btnDiv.className = 'd-flex justify-content-end mb-4';
-                    btnDiv.id = 'policyDownloadBtn';
-                    btnDiv.innerHTML = `
-                        <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-2" onclick="downloadPolicyPdfWrapper()">
-                            <i class="hgi hgi-stroke hgi-standard hgi-download-01"></i>
-                            تحميل نسخة PDF
-                        </button>
-                    `;
-                    textContainer.insertAdjacentElement('afterend', btnDiv);
+                    // Set flag or store globally if needed, but for now just rely on backend attempt
                 }
             })
             .catch(err => {
@@ -823,9 +809,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Download Policy PDF from Google Drive
     function downloadPolicyPdf() {
         const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
-        if (!scriptUrl) return;
+        if (!scriptUrl) return Promise.reject('No Script URL');
 
-        fetch(scriptUrl, {
+        return fetch(scriptUrl, {
             method: 'POST',
             body: JSON.stringify({ action: 'get_policy_download_url' })
         })
@@ -834,15 +820,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === 'success' && data.downloadUrl) {
                     const pdfLink = document.createElement('a');
                     pdfLink.href = data.downloadUrl;
-                    pdfLink.download = 'سياسة_الكلية.pdf';
+                    pdfLink.download = 'BMC_College_Policy.pdf';
                     pdfLink.target = '_blank';
+                    document.body.appendChild(pdfLink); // Required for Firefox
                     pdfLink.click();
+                    document.body.removeChild(pdfLink);
+                    return true;
                 } else {
                     console.warn('No policy PDF available');
+                    return false; // No file to download is not a critical error
                 }
             })
             .catch(err => {
                 console.error('Error downloading policy PDF:', err);
+                throw err;
             });
     }
 
@@ -1207,14 +1198,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (nextBtn) {
-        nextBtn.addEventListener('click', function () {
+        nextBtn.addEventListener('click', async function () {
             if (wizardState.currentStep < wizardState.totalSteps) {
                 // Next Action
                 if (validateStep(wizardState.currentStep)) {
-                    // Download policy PDF when leaving Step 1 (Policy Agreement)
+
+                    // Step 1: Policy - Block until download is attempted
                     if (wizardState.currentStep === 1) {
-                        downloadPolicyPdf();
+                        // UI Loading State
+                        const originalBtnText = nextBtn.innerHTML;
+                        nextBtn.disabled = true;
+                        nextBtn.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i> تحميل السياسة...';
+
+                        try {
+                            await downloadPolicyPdf();
+                            // Wait a moment for download to start visually before moving
+                            await new Promise(r => setTimeout(r, 1000));
+                        } catch (e) {
+                            console.warn("Download failed, but proceeding", e);
+                            // Proceed anyway? Or block? Usually soft-fail is better if just network glitch
+                        } finally {
+                            nextBtn.disabled = false;
+                            nextBtn.innerHTML = originalBtnText;
+                        }
                     }
+
                     wizardState.currentStep++;
                     updateWizardUI();
                 }
