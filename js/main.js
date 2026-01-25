@@ -187,7 +187,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         sessionStorage.setItem('address', student.address || '');
                         sessionStorage.setItem('major', student.major || '');
                         sessionStorage.setItem('level', student.level || '');
-                        sessionStorage.setItem('termsAgreed', student.termsAgreed ? 'true' : 'false');
 
                         // Redirect
                         window.location.href = 'student';

@@ -163,113 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Terms Agreement Check ---
-    const termsAgreed = sessionStorage.getItem('termsAgreed');
-    const termsModal = document.getElementById('termsModal');
-    const termsCheckbox = document.getElementById('termsCheckbox');
-    const acceptTermsBtn = document.getElementById('acceptTermsBtn');
-
-    // Show terms modal if not agreed
-    if (termsAgreed !== 'true' && termsModal) {
-        const modal = new bootstrap.Modal(termsModal);
-        modal.show();
-
-        // Load terms from backend
-        loadTermsFromSheet();
-
-        // Enable/disable button based on checkbox
-        if (termsCheckbox && acceptTermsBtn) {
-            termsCheckbox.addEventListener('change', function () {
-                acceptTermsBtn.disabled = !this.checked;
-            });
-
-            // Handle accept button click
-            acceptTermsBtn.addEventListener('click', async function () {
-                if (!termsCheckbox.checked) return;
-
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-1"></i> جاري الحفظ...';
-                this.disabled = true;
-
-                try {
-                    // Call backend to save agreement
-                    const response = await fetch(CONFIG.SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'accept_terms',
-                            student_id: studentId
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        // Update sessionStorage
-                        sessionStorage.setItem('termsAgreed', 'true');
-
-                        // Download PDF if available (placeholder - user will add PDF later)
-                        const pdfUrl = 'files/terms.pdf'; // User will provide this later
-                        const link = document.createElement('a');
-                        link.href = pdfUrl;
-                        link.download = 'شروط_واحكام_نظام_الاعذار.pdf';
-                        link.click();
-
-                        // Close modal
-                        modal.hide();
-
-                        // Show success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'تم بنجاح',
-                            text: 'تم حفظ موافقتك على الشروط والأحكام',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        throw new Error(data.message || 'Failed to save agreement');
-                    }
-                } catch (error) {
-                    console.error('Error accepting terms:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'خطأ',
-                        text: 'حدث خطأ أثناء حفظ الموافقة. يرجى المحاولة مرة أخرى.'
-                    });
-                    this.innerHTML = originalText;
-                    this.disabled = !termsCheckbox.checked;
-                }
-            });
-        }
-    }
-
-    // Load terms from Google Sheet
-    async function loadTermsFromSheet() {
-        const termsLoading = document.getElementById('termsLoading');
-        const termsList = document.getElementById('termsList');
-
-        try {
-            const response = await fetch(CONFIG.SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'get_terms' })
-            });
-
-            const data = await response.json();
-
-            if (data.status === 'success' && data.terms) {
-                // Display single text (can contain newlines, will preserve formatting)
-                termsList.innerHTML = data.terms.replace(/\n/g, '<br>');
-                termsLoading.style.display = 'none';
-                termsList.style.display = 'block';
-            } else {
-                // No terms found - show fallback message
-                termsLoading.innerHTML = '<p class="text-muted mb-0">لا توجد شروط وأحكام متاحة حالياً.</p>';
-            }
-        } catch (error) {
-            console.error('Failed to load terms:', error);
-            termsLoading.innerHTML = '<p class="text-danger mb-0">فشل في تحميل الشروط والأحكام. يرجى المحاولة مرة أخرى.</p>';
-        }
-    }
-
     // Verify Session & Refresh User Data
     async function verifyAndRefreshSession() {
         try {
@@ -295,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 sessionStorage.setItem('address', s.address || '');
                 sessionStorage.setItem('major', s.major || '');
                 sessionStorage.setItem('level', s.level || '');
-                sessionStorage.setItem('termsAgreed', s.termsAgreed ? 'true' : 'false');
 
                 // Refresh displayed info
                 refreshDisplayedUserInfo();
