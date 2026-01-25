@@ -860,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (wizardState.currentStep === wizardState.totalSteps) {
                 nextBtn.innerHTML = 'إرسال الطلب <i class="hgi-stroke hgi-standard hgi-arrow-left-01"></i>';
             } else if (wizardState.currentStep === 1) {
-                nextBtn.innerHTML = '<i class="hgi-stroke hgi-standard hgi-checkmark-circle-02 me-1"></i> موافق وتحميل نسخة PDF';
+                nextBtn.innerHTML = 'موافق وتحميل نسخة PDF <i class="hgi-stroke hgi-standard hgi-arrow-left-01"></i>';
             } else {
                 nextBtn.innerHTML = 'التالي <i class="hgi-stroke hgi-standard hgi-arrow-left-01"></i>';
             }
