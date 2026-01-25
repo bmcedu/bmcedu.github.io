@@ -1308,12 +1308,16 @@ function renderItemList(containerId, items, category) {
     container.innerHTML = items.map(item => `
         <div class="list-group-item d-flex justify-content-between align-items-center">
             <span>${item.name}</span>
-            <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-primary" onclick="openEditModal('${category}', ${item.id}, '${item.name.replace(/'/g, "\\'")}')">
-                    <i class="hgi hgi-stroke hgi-standard hgi-edit-02"></i>
+            <div class="d-flex align-items-center gap-1">
+                <button class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center p-0 rounded-2" 
+                    style="width: 28px; height: 28px; border-color: #dc3545;"
+                    onclick="deleteSettingsItem('${category}', ${item.id})">
+                    <i class="hgi-stroke hgi-standard hgi-delete-02" style="font-size: 14px;"></i>
                 </button>
-                <button class="btn btn-outline-danger" onclick="deleteSettingsItem('${category}', ${item.id})">
-                    <i class="hgi hgi-stroke hgi-standard hgi-delete-02"></i>
+                <button class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center p-0 rounded-2" 
+                    style="width: 28px; height: 28px; border-color: #0d6efd;"
+                    onclick="openEditModal('${category}', ${item.id}, '${item.name.replace(/'/g, "\\'")}')">
+                    <i class="hgi-stroke hgi-standard hgi-pencil-edit-02" style="font-size: 14px;"></i>
                 </button>
             </div>
         </div>
