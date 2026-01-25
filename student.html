@@ -187,22 +187,34 @@
                 <div class="modal-body p-4">
                     <!-- Wizard Progress -->
                     <div class="mb-4">
-                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
 
-                            <!-- Step 1 -->
+                            <!-- Step 1 (College Policy) -->
                             <div class="d-flex align-items-center gap-2" id="stepIndicator1">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-primary text-white shadow-sm"
                                     style="width: 35px; height: 35px; transition: all 0.3s;">
-                                    <i class="hgi hgi-stroke hgi-standard hgi-user-03 fs-6"></i>
+                                    <i class="hgi hgi-stroke hgi-standard hgi-file-validation fs-6"></i>
                                 </div>
-                                <div class="step-label fw-medium text-primary">البيانات الشخصية</div>
+                                <div class="step-label fw-medium text-primary">سياسة الكلية</div>
                             </div>
 
                             <!-- Chevron -->
                             <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
 
-                            <!-- Step 2 -->
+                            <!-- Step 2 (Personal Data) -->
                             <div class="d-flex align-items-center gap-2" id="stepIndicator2">
+                                <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
+                                    style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
+                                    <i class="hgi hgi-stroke hgi-standard hgi-user-03 fs-6"></i>
+                                </div>
+                                <div class="step-label fw-medium text-muted">البيانات الشخصية</div>
+                            </div>
+
+                            <!-- Chevron -->
+                            <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
+
+                            <!-- Step 3 (Excuse Type) -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator3">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
                                     <i class="hgi-stroke hgi-standard hgi-help-circle fs-6"></i>
@@ -213,8 +225,8 @@
                             <!-- Chevron -->
                             <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
 
-                            <!-- Step 3 -->
-                            <div class="d-flex align-items-center gap-2" id="stepIndicator3">
+                            <!-- Step 4 (Details) -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator4">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
                                     <i class="hgi-stroke hgi-standard hgi-calendar-02 fs-6"></i>
@@ -225,8 +237,8 @@
                             <!-- Chevron -->
                             <i class="hgi-stroke hgi-standard hgi-arrow-left-01 text-muted opacity-25"></i>
 
-                            <!-- Step 4 -->
-                            <div class="d-flex align-items-center gap-2" id="stepIndicator4">
+                            <!-- Step 5 (Documents) -->
+                            <div class="d-flex align-items-center gap-2" id="stepIndicator5">
                                 <div class="step-icon d-flex align-items-center justify-content-center rounded-3 bg-light text-muted"
                                     style="width: 35px; height: 35px; transition: all 0.3s; border: 1px solid #dee2e6;">
                                     <i class="hgi-stroke hgi-standard hgi-file-02 fs-6"></i>
@@ -238,8 +250,34 @@
                     </div>
 
                     <form id="addRequestForm">
-                        <!-- Step 1: Personal Data -->
+                        <!-- Step 1: College Policy -->
                         <div class="wizard-step" id="step1">
+                            <div class="alert alert-info border-0 d-flex align-items-start gap-3 mb-4">
+                                <i class="hgi-stroke hgi-standard hgi-information-circle fs-4 mt-1"></i>
+                                <div>
+                                    <strong>مهم:</strong> يرجى قراءة سياسة الكلية التالية بعناية. يجب الموافقة عليها قبل
+                                    تقديم أي طلبات أعذار.
+                                </div>
+                            </div>
+
+                            <div class="bg-light rounded p-4 mb-4" style="max-height: 300px; overflow-y: auto;">
+                                <div class="text-center py-4" id="policyLoading">
+                                    <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin fs-3"></i>
+                                    <p class="mt-2 mb-0 text-muted">جاري تحميل سياسة الكلية...</p>
+                                </div>
+                                <div id="policyContent" style="display: none;"></div>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="policyCheckbox">
+                                <label class="form-check-label fw-medium" for="policyCheckbox">
+                                    أوافق على جميع بنود سياسة الكلية المذكورة أعلاه
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Personal Data -->
+                        <div class="wizard-step d-none" id="step2">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">اسم الطالب</label>
@@ -264,8 +302,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Type -->
-                        <div class="wizard-step d-none" id="step2">
+                        <!-- Step 3: Type -->
+                        <div class="wizard-step d-none" id="step3">
                             <div class="mb-3">
                                 <label for="excuseType" class="form-label fw-medium">نوع العذر</label>
                                 <select class="form-select" id="excuseType" required>
@@ -313,8 +351,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: Absence Details (Date & Reason) -->
-                        <div class="wizard-step d-none" id="step3">
+                        <!-- Step 4: Absence Details (Date & Reason) -->
+                        <div class="wizard-step d-none" id="step4">
                             <div class="row g-3 mb-3">
                                 <div class="col-12 d-none" id="daysWarning">
                                     <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert">
@@ -375,8 +413,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 4: Documents -->
-                        <div class="wizard-step d-none" id="step4">
+                        <!-- Step 5: Documents -->
+                        <div class="wizard-step d-none" id="step5">
                             <p class="text-muted small mb-4">يجب رفع المستندات التالية لإكمال طلب العذر.
                                 جميع المستندات يجب أن تكون واضحة ومعتمدة.</p>
 
@@ -671,51 +709,6 @@
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Terms Agreement Modal -->
-    <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-        data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title fw-bold">
-                        <i class="hgi-stroke hgi-standard hgi-file-validation text-primary me-2"></i>
-                        الشروط والأحكام
-                    </h5>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="alert alert-info border-0 d-flex align-items-start gap-3 mb-4">
-                        <i class="hgi-stroke hgi-standard hgi-information-circle fs-4 mt-1"></i>
-                        <div>
-                            <strong>مهم:</strong> يرجى قراءة الشروط والأحكام التالية بعناية. يجب الموافقة عليها قبل
-                            البدء في تقديم أي طلبات أعذار.
-                        </div>
-                    </div>
-
-                    <div class="bg-light rounded p-4 mb-4" id="termsContent">
-                        <div class="text-center py-4" id="termsLoading">
-                            <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin fs-3"></i>
-                            <p class="mt-2 mb-0 text-muted">جاري تحميل الشروط والأحكام...</p>
-                        </div>
-                        <div id="termsList" style="display: none;"></div>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="termsCheckbox">
-                        <label class="form-check-label fw-medium" for="termsCheckbox">
-                            أوافق على جميع الشروط والأحكام المذكورة أعلاه
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-footer border-top-0 justify-content-center">
-                    <button type="button" class="btn btn-primary px-4" id="acceptTermsBtn" disabled>
-                        <i class="hgi-stroke hgi-standard hgi-checkmark-circle-02 me-1"></i>
-                        موافق وتحميل نسخة PDF
-                    </button>
                 </div>
             </div>
         </div>

@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 5. Wizard Logic
     const wizardState = {
         currentStep: 1,
-        totalSteps: 4
+        totalSteps: 5
     };
 
     // Reset Modal on Close
@@ -801,6 +801,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // 2. Reset Form Fields
             const form = document.getElementById('addRequestForm');
             if (form) form.reset();
+
+            // 2b. Reset Policy Checkbox (uncheck it for next time)
+            const policyCheckbox = document.getElementById('policyCheckbox');
+            if (policyCheckbox) {
+                policyCheckbox.checked = false;
+                policyCheckbox.classList.remove('is-invalid');
+            }
 
             // 3. Hide Conditional Fields
             document.getElementById('healthFieldsRow')?.classList.add('d-none');
@@ -844,6 +851,56 @@ document.addEventListener('DOMContentLoaded', function () {
             // 8. Update Wizard UI
             updateWizardUI();
         });
+
+        // Load Policy Content on Modal Open
+        addRequestModal.addEventListener('shown.bs.modal', function () {
+            loadPolicyContent();
+        });
+    }
+
+    // Load Policy Content from API
+    function loadPolicyContent() {
+        const policyLoading = document.getElementById('policyLoading');
+        const policyContent = document.getElementById('policyContent');
+
+        if (!policyContent) return;
+
+        // If already loaded, skip
+        if (policyContent.innerHTML.trim() !== '') {
+            policyLoading.style.display = 'none';
+            policyContent.style.display = 'block';
+            return;
+        }
+
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+        if (!scriptUrl) return;
+
+        fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'get_terms' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.terms) {
+                    // Convert terms text to HTML list
+                    const termsHtml = data.terms
+                        .split('\n')
+                        .filter(line => line.trim())
+                        .map(line => `<div class="mb-2">${line}</div>`)
+                        .join('');
+                    policyContent.innerHTML = termsHtml;
+                } else {
+                    policyContent.innerHTML = '<p class="text-muted">لا توجد سياسة متاحة حالياً.</p>';
+                }
+                policyLoading.style.display = 'none';
+                policyContent.style.display = 'block';
+            })
+            .catch(err => {
+                console.error('Error loading policy:', err);
+                policyContent.innerHTML = '<p class="text-danger">حدث خطأ في تحميل السياسة.</p>';
+                policyLoading.style.display = 'none';
+                policyContent.style.display = 'block';
+            });
     }
 
     const nextBtn = document.getElementById('nextBtn');
@@ -959,8 +1016,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (step === 1) {
-            return true;
+            // Step 1: College Policy - Must accept policy checkbox
+            const policyCheckbox = document.getElementById('policyCheckbox');
+            if (!policyCheckbox || !policyCheckbox.checked) {
+                if (policyCheckbox) policyCheckbox.classList.add('is-invalid');
+                isValid = false;
+                // Show alert
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'يرجى الموافقة على سياسة الكلية',
+                    text: 'يجب الموافقة على سياسة الكلية قبل المتابعة.',
+                    confirmButtonText: 'حسناً',
+                    confirmButtonColor: '#004185'
+                });
+            }
         } else if (step === 2) {
+            // Step 2: Personal Data - Always valid (read-only fields)
+            return true;
+        } else if (step === 3) {
+            // Step 3: Type
             const type = document.getElementById('excuseType');
             if (!type.value) {
                 markInvalid('excuseType');
@@ -975,7 +1049,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!relationship.value) markInvalid('relationshipType');
                 }
             }
-        } else if (step === 3) {
+        } else if (step === 4) {
+            // Step 4: Absence Details
             const date = document.getElementById('excuseDate');
             if (!date.value) markInvalid('excuseDate');
 
