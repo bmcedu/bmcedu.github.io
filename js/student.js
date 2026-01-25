@@ -225,7 +225,11 @@ document.addEventListener('DOMContentLoaded', function () {
         setText('info-phone', sessionStorage.getItem('phone'));
 
         setText('info-email', sessionStorage.getItem('email'));
+        setText('info-email', sessionStorage.getItem('email'));
         setText('info-address', sessionStorage.getItem('address'));
+
+        // Prefetch Policy Content for better UX
+        loadPolicyContent();
     }
 
     // Start session verification (non-blocking)
@@ -746,7 +750,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Load Policy Content on Modal Open
         addRequestModal.addEventListener('shown.bs.modal', function () {
-            loadPolicyContent();
             updateWizardUI(); // Update button text for Step 1
         });
     }
