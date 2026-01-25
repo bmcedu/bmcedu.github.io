@@ -796,6 +796,32 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    // Download Policy PDF from Google Drive
+    function downloadPolicyPdf() {
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+        if (!scriptUrl) return;
+
+        fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'get_policy_download_url' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.downloadUrl) {
+                    const pdfLink = document.createElement('a');
+                    pdfLink.href = data.downloadUrl;
+                    pdfLink.download = 'سياسة_الكلية.pdf';
+                    pdfLink.target = '_blank';
+                    pdfLink.click();
+                } else {
+                    console.warn('No policy PDF available');
+                }
+            })
+            .catch(err => {
+                console.error('Error downloading policy PDF:', err);
+            });
+    }
+
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
     const form = document.getElementById('addRequestForm');
@@ -1171,10 +1197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (validateStep(wizardState.currentStep)) {
                     // Download policy PDF when leaving Step 1 (Policy Agreement)
                     if (wizardState.currentStep === 1) {
-                        const pdfLink = document.createElement('a');
-                        pdfLink.href = 'files/policy.pdf';
-                        pdfLink.download = 'سياسة_الكلية.pdf';
-                        pdfLink.click();
+                        downloadPolicyPdf();
                     }
                     wizardState.currentStep++;
                     updateWizardUI();
