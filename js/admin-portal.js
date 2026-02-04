@@ -1032,7 +1032,7 @@ function getStatusBadge(status) {
         'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' }
     };
     const config = STATUS_MAP[status] || STATUS_MAP['pending'];
-    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1 small" style="min-width: 90px; padding: 0.4em 0.8em;">
         <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
     </span>`;
 }
@@ -1063,7 +1063,7 @@ function getEmployeeDecisionBadge(decision) {
     const key = decision || 'pending';
     const config = DECISION_MAP[key] || DECISION_MAP['pending'];
 
-    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1 small" style="min-width: 90px; padding: 0.4em 0.8em;">
         <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
     </span>`;
 }
@@ -1082,7 +1082,7 @@ function getCommitteeDecisionBadge(decision) {
     const key = decision || 'pending';
     const config = DECISION_MAP[key] || DECISION_MAP['pending'];
 
-    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1 small" style="min-width: 90px; padding: 0.4em 0.8em;">
         <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
     </span>`;
 }
@@ -1211,7 +1211,7 @@ function showExcuseDetails(excuse) {
         };
         const cls = statusClass[excuse.status] || 'alert-warning';
         const txt = statusText[excuse.status] || 'قيد المراجعة';
-        detailStatus.className = `alert ${cls} mb-0`;
+        detailStatus.className = `alert ${cls} mb-0 small py-2 px-3`;
         detailStatus.innerHTML = `<strong>التصنيف المبدئي:</strong> ${txt}`;
     }
 
