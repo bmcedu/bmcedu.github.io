@@ -1026,7 +1026,7 @@ window.changePage = function (page) {
 function getStatusBadge(status) {
     const STATUS_MAP = {
         'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-user-check-01' },
-        'rejected': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-user-remove-01' },
+        'rejected': { text: 'مرفوض', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-user-remove-01' },
         'mismatch': { text: 'غير مطابق', class: 'bg-secondary-subtle text-secondary-emphasis', icon: 'hgi-alert-02' },
         'late': { text: 'متأخر', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-alarm-02' },
         'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' }
@@ -1055,7 +1055,7 @@ function getEmployeeDecisionBadge(decision) {
     const DECISION_MAP = {
         'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
         'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
-        'rejected': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
+        'rejected': { text: 'مرفوض', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
         'committee': { text: 'يحتاج قرار لجنة', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
     };
 
@@ -1207,7 +1207,7 @@ function showExcuseDetails(excuse) {
         const statusText = {
             'pending': 'قيد المراجعة',
             'approved': 'تم قبول العذر',
-            'rejected': 'تم رفض العذر'
+            'rejected': 'مرفوض'
         };
         const cls = statusClass[excuse.status] || 'alert-warning';
         const txt = statusText[excuse.status] || 'قيد المراجعة';
