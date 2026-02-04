@@ -1569,8 +1569,6 @@ function loadSettingsData() {
 function renderSettingsLists() {
     renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
     renderItemList('coursesList', settingsData.courses, 'courses');
-    renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
-    renderItemList('coursesList', settingsData.courses, 'courses');
     renderItemList('reasonsList', settingsData.reasons, 'reasons');
     loadSignatures(); // Fetch and render signatures
 
