@@ -105,7 +105,7 @@ function loadAllExcuses() {
                 if (tableBody) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-danger">
+                            <td colspan="100" class="text-center py-5 text-danger">
                                 <i class="hgi-stroke hgi-standard hgi-alert-circle fs-1 mb-2"></i>
                                 <p>حدث خطأ أثناء تحميل الأعذار</p>
                             </td>
