@@ -2407,21 +2407,6 @@ async function downloadExcusePDF(id) {
                 width: sigWidth,
                 height: sigHeight,
             });
-
-            // Add Text (Name & Position) below/above signature?
-            // Usually signatures are on top of name.
-            lastPage.drawText(sig.name, {
-                x: x,
-                y: y - 12,
-                size: 10,
-                color: PDFLib.rgb(0, 0, 0),
-            });
-            lastPage.drawText(sig.position, {
-                x: x,
-                y: y - 22,
-                size: 8,
-                color: PDFLib.rgb(0.5, 0.5, 0.5),
-            });
         }
 
         // 5. Serialize and Download
