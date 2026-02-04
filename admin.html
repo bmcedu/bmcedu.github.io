@@ -313,39 +313,42 @@
                         <div class="tab-pane fade show active" id="decision-pane" role="tabpanel"
                             aria-labelledby="decision-tab">
 
-                            <!-- Employee Review Section -->
-                            <div class="mb-4 pb-3 border-bottom">
-                                <label class="fw-bold mb-2" id="employeeDecisionLabel">مراجعة الموظف:</label>
-                                <!-- Badge for locked state -->
-                                <div id="employeeDecisionBadgeContainer"></div>
-                                <!-- Dropdown for editable state -->
-                                <div class="d-flex gap-2" id="employeeDecisionDropdownContainer">
-                                    <select class="form-select" id="detailEmployeeDecision">
-                                        <option value="" selected>اختر القرار...</option>
-                                        <option value="approved">مقبول</option>
-                                        <option value="rejected">غير مقبول</option>
-                                        <option value="committee">يحتاج قرار لجنة</option>
-                                    </select>
+                            <div class="row g-3 mb-4 pb-3 border-bottom">
+                                <!-- Employee Review Section -->
+                                <div class="col-md-6 ps-md-4 border-start-md">
+                                    <!-- RTL: border-start is right? No border-end is left. border-start is right. -->
+                                    <label class="fw-bold mb-2" id="employeeDecisionLabel">مراجعة الموظف:</label>
+                                    <!-- Badge for locked state -->
+                                    <div id="employeeDecisionBadgeContainer"></div>
+                                    <!-- Dropdown for editable state -->
+                                    <div class="d-flex gap-2" id="employeeDecisionDropdownContainer">
+                                        <select class="form-select" id="detailEmployeeDecision">
+                                            <option value="" selected>اختر القرار...</option>
+                                            <option value="approved">مقبول</option>
+                                            <option value="rejected">غير مقبول</option>
+                                            <option value="committee">يحتاج قرار لجنة</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Committee Decision Section -->
+                                <div class="col-md-6">
+                                    <label class="fw-bold mb-2" id="committeeDecisionLabel">قرار اللجنة:</label>
+                                    <!-- Badge for locked state -->
+                                    <div id="committeeDecisionBadgeContainer"></div>
+                                    <!-- Dropdown for editable state -->
+                                    <div class="d-flex gap-2" id="committeeDecisionDropdownContainer">
+                                        <select class="form-select" id="detailCommitteeDecision">
+                                            <option value="" selected>اختر القرار...</option>
+                                            <option value="approved">مقبول</option>
+                                            <option value="rejected">مرفوض</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="mb-4" id="detailStatusContainer">
                                 <div id="detailStatus"></div>
-                            </div>
-
-                            <!-- Committee Decision Section -->
-                            <div class="mb-4 pb-3 border-bottom">
-                                <label class="fw-bold mb-2" id="committeeDecisionLabel">قرار اللجنة:</label>
-                                <!-- Badge for locked state -->
-                                <div id="committeeDecisionBadgeContainer"></div>
-                                <!-- Dropdown for editable state -->
-                                <div class="d-flex gap-2" id="committeeDecisionDropdownContainer">
-                                    <select class="form-select" id="detailCommitteeDecision">
-                                        <option value="" selected>اختر القرار...</option>
-                                        <option value="approved">مقبول</option>
-                                        <option value="rejected">مرفوض</option>
-                                    </select>
-                                </div>
                             </div>
 
                             <div class="mb-3" id="committeeCommentContainer">
