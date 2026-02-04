@@ -2409,7 +2409,7 @@ async function downloadExcusePDF(id) {
         // Position: Bottom area. 4 slots horizontally.
         const sigWidth = 90;
         const sigHeight = 45;
-        const margin = 30;
+        const margin = 60; // Increased to move signatures to the right
         const startY = 40; // Distance from bottom
 
         for (let i = 0; i < sigs.length; i++) {
