@@ -1197,19 +1197,37 @@ function showExcuseDetails(excuse) {
     // Employee Decision (New)
     const detailEmployeeDecision = document.getElementById('detailEmployeeDecision');
     const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
+    const employeeDecisionBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
+    const employeeDecisionDropdownContainer = document.getElementById('employeeDecisionDropdownContainer');
 
     // Check if decision is already made (not empty and not pending)
     const currentDecision = excuse.employee_decision || '';
     const isLocked = currentDecision && currentDecision !== 'pending';
 
-    if (detailEmployeeDecision) {
-        detailEmployeeDecision.value = currentDecision;
-        detailEmployeeDecision.disabled = isLocked;
+    // Reset visibility first (fix for stale state from previous modal)
+    if (employeeDecisionBadgeContainer) employeeDecisionBadgeContainer.style.display = 'none';
+    if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = '';
+
+    if (isLocked) {
+        // Show badge, hide dropdown
+        if (employeeDecisionBadgeContainer) {
+            employeeDecisionBadgeContainer.innerHTML = getEmployeeDecisionBadge(currentDecision);
+            employeeDecisionBadgeContainer.style.display = '';
+        }
+        if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = 'none';
+    } else {
+        // Show dropdown, hide badge
+        if (employeeDecisionBadgeContainer) employeeDecisionBadgeContainer.style.display = 'none';
+        if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = '';
+        if (detailEmployeeDecision) detailEmployeeDecision.value = currentDecision;
     }
 
     // Committee Decision (3rd Status)
     const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
     const detailCommitteeComment = document.getElementById('detailCommitteeComment');
+    const committeeDecisionBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
+    const committeeDecisionDropdownContainer = document.getElementById('committeeDecisionDropdownContainer');
+    const committeeCommentDisplay = document.getElementById('committeeCommentDisplay');
 
     // Committee can only decide if employee decision is set
     const empDecision = excuse.employee_decision || '';
@@ -1217,14 +1235,42 @@ function showExcuseDetails(excuse) {
     const committeeDecision = excuse.committee_decision || '';
     const committeeIsLocked = committeeDecision && committeeDecision !== 'pending';
 
-    if (detailCommitteeDecision) {
-        detailCommitteeDecision.value = committeeDecision;
-        detailCommitteeDecision.disabled = !canCommitteeDecide || committeeIsLocked;
-    }
+    // Reset visibility first (fix for stale state from previous modal)
+    if (committeeDecisionBadgeContainer) committeeDecisionBadgeContainer.style.display = 'none';
+    if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = '';
+    if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
+    if (detailCommitteeComment) detailCommitteeComment.style.display = '';
 
-    if (detailCommitteeComment) {
-        detailCommitteeComment.value = excuse.committee_comment || '';
-        detailCommitteeComment.disabled = !canCommitteeDecide || committeeIsLocked;
+    if (committeeIsLocked) {
+        // Show badge, hide dropdown
+        if (committeeDecisionBadgeContainer) {
+            committeeDecisionBadgeContainer.innerHTML = getCommitteeDecisionBadge(committeeDecision);
+            committeeDecisionBadgeContainer.style.display = '';
+        }
+        if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = 'none';
+
+        // Show comment as text
+        if (committeeCommentDisplay) {
+            committeeCommentDisplay.innerHTML = excuse.committee_comment || '<span class="text-muted small">لا يوجد تعليق</span>';
+            committeeCommentDisplay.style.display = '';
+        }
+        if (detailCommitteeComment) detailCommitteeComment.style.display = 'none';
+    } else {
+        // Hide badge, show dropdown (but disable if employee hasn't decided)
+        if (committeeDecisionBadgeContainer) committeeDecisionBadgeContainer.style.display = 'none';
+        if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = '';
+        if (detailCommitteeDecision) {
+            detailCommitteeDecision.value = committeeDecision;
+            detailCommitteeDecision.disabled = !canCommitteeDecide;
+        }
+
+        // Show textarea (but disable if employee hasn't decided)
+        if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
+        if (detailCommitteeComment) {
+            detailCommitteeComment.style.display = '';
+            detailCommitteeComment.value = excuse.committee_comment || '';
+            detailCommitteeComment.disabled = !canCommitteeDecide;
+        }
     }
 
     // Save Button Logic - decides which save function to call

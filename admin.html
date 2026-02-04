@@ -314,7 +314,10 @@
                             <!-- Employee Review Section -->
                             <div class="mb-4 pb-3 border-bottom">
                                 <label class="fw-bold mb-2">مراجعة الموظف:</label>
-                                <div class="d-flex gap-2">
+                                <!-- Badge for locked state -->
+                                <div id="employeeDecisionBadgeContainer"></div>
+                                <!-- Dropdown for editable state -->
+                                <div class="d-flex gap-2" id="employeeDecisionDropdownContainer">
                                     <select class="form-select" id="detailEmployeeDecision">
                                         <option value="" selected>اختر القرار...</option>
                                         <option value="approved">مقبول</option>
@@ -331,7 +334,10 @@
                             <!-- Committee Decision Section -->
                             <div class="mb-4 pb-3 border-bottom">
                                 <label class="fw-bold mb-2">قرار اللجنة:</label>
-                                <div class="d-flex gap-2">
+                                <!-- Badge for locked state -->
+                                <div id="committeeDecisionBadgeContainer"></div>
+                                <!-- Dropdown for editable state -->
+                                <div class="d-flex gap-2" id="committeeDecisionDropdownContainer">
                                     <select class="form-select" id="detailCommitteeDecision">
                                         <option value="" selected>اختر القرار...</option>
                                         <option value="approved">مقبول</option>
@@ -340,8 +346,12 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3" id="committeeCommentContainer">
                                 <label class="fw-bold mb-2">تعليق اللجنة:</label>
+                                <!-- Show as text when locked -->
+                                <div id="committeeCommentDisplay" class="p-3 bg-light border rounded"
+                                    style="min-height: 60px; display: none;"></div>
+                                <!-- Textarea for editing -->
                                 <textarea class="form-control" id="detailCommitteeComment" rows="3"
                                     placeholder="أضف تعليق اللجنة هنا..."></textarea>
                             </div>
