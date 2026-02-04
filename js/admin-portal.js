@@ -1209,10 +1209,18 @@ function showExcuseDetails(excuse) {
             'approved': 'تم قبول العذر',
             'rejected': 'مرفوض'
         };
+        const statusIcon = {
+            'pending': 'hgi-clock-01',
+            'approved': 'hgi-user-check-01',
+            'rejected': 'hgi-user-remove-01',
+            'mismatch': 'hgi-alert-02',
+            'late': 'hgi-alarm-02'
+        };
         const cls = statusClass[excuse.status] || 'alert-warning';
         const txt = statusText[excuse.status] || 'قيد المراجعة';
-        detailStatus.className = `alert ${cls} mb-0 small py-2 px-3`;
-        detailStatus.innerHTML = `<strong>التصنيف المبدئي:</strong> ${txt}`;
+        const icon = statusIcon[excuse.status] || 'hgi-clock-01';
+        detailStatus.className = `alert ${cls} mb-0 small py-2 px-3 d-flex align-items-center justify-content-start gap-2`;
+        detailStatus.innerHTML = `<i class="hgi hgi-stroke hgi-standard ${icon}"></i> <div><strong>التصنيف المبدئي:</strong> ${txt}</div>`;
     }
 
     // --- New Layout Elements ---
@@ -1262,12 +1270,12 @@ function showExcuseDetails(excuse) {
         if (empBadgeCol) empBadgeCol.style.display = 'block';
         if (empBadgeContainer) {
             const alertConfig = {
-                'approved': { cls: 'alert-success', text: 'مقبول' },
-                'rejected': { cls: 'alert-danger', text: 'مرفوض' },
-                'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
+                'approved': { cls: 'alert-success', text: 'مقبول', icon: 'hgi-user-check-01' },
+                'rejected': { cls: 'alert-danger', text: 'مرفوض', icon: 'hgi-user-remove-01' },
+                'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة', icon: 'hgi-user-group' }
             };
-            const c = alertConfig[empDecision] || { cls: 'alert-secondary', text: empDecision };
-            empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3"><strong>مراجعة الموظف:</strong> ${c.text}</div>`;
+            const c = alertConfig[empDecision] || { cls: 'alert-secondary', text: empDecision, icon: 'hgi-info-circle' };
+            empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3 d-flex align-items-center justify-content-start gap-2"><i class="hgi hgi-stroke hgi-standard ${c.icon}"></i> <div><strong>مراجعة الموظف:</strong> ${c.text}</div></div>`;
         }
 
         if (!commLocked) {
@@ -1292,11 +1300,11 @@ function showExcuseDetails(excuse) {
             if (commBadgeCol) commBadgeCol.style.display = 'block';
             if (commBadgeContainer) {
                 const alertConfig = {
-                    'approved': { cls: 'alert-success', text: 'مقبول' },
-                    'rejected': { cls: 'alert-danger', text: 'مرفوض' }
+                    'approved': { cls: 'alert-success', text: 'مقبول', icon: 'hgi-user-check-01' },
+                    'rejected': { cls: 'alert-danger', text: 'مرفوض', icon: 'hgi-user-remove-01' }
                 };
-                const c = alertConfig[commDecision] || { cls: 'alert-secondary', text: commDecision };
-                commBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3"><strong>قرار اللجنة:</strong> ${c.text}</div>`;
+                const c = alertConfig[commDecision] || { cls: 'alert-secondary', text: commDecision, icon: 'hgi-info-circle' };
+                commBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3 d-flex align-items-center justify-content-start gap-2"><i class="hgi hgi-stroke hgi-standard ${c.icon}"></i> <div><strong>قرار اللجنة:</strong> ${c.text}</div></div>`;
             }
 
             if (sigContainer) sigContainer.style.display = 'block';
