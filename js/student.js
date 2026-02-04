@@ -285,6 +285,21 @@ document.addEventListener('DOMContentLoaded', function () {
         </span>`;
     }
 
+    function getCommitteeDecisionBadge(decision) {
+        const DECISION_MAP = {
+            'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
+            'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
+            'rejected': { text: 'مرفوض', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' }
+        };
+
+        const key = decision || 'pending';
+        const config = DECISION_MAP[key] || DECISION_MAP['pending'];
+
+        return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+            <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
+        </span>`;
+    }
+
     // 4. Fetch Requests
     fetchRequests();
 
@@ -390,12 +405,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             const statusKey = (request.status || 'pending').toLowerCase();
                             const badgeHtml = getStatusBadge(statusKey);
 
+                            const committeeDecisionBadge = getCommitteeDecisionBadge(request.committee_decision);
+
                             row.innerHTML = `
                                 <th scope="row" class="ps-4 text-primary">${request.id}</th>
                                 <td class="ps-4">${formatDate(request.date)}</td>
                                 <td class="ps-4">${request.excuse_date}</td>
                                 <td class="ps-4">${excuseTypeLabels[request.excuse_type] || request.excuse_type || '-'}</td>
-
+                                <td class="ps-4">${committeeDecisionBadge}</td>
                                 <td class="ps-4">
                                     <button type="button" class="btn btn-link text-primary text-decoration-underline p-0 border-0 btn-view-details">
                                         عرض التفاصيل

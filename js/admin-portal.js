@@ -628,6 +628,7 @@ function renderExcusesTable() {
         const submissionDate = formatSubmissionDate(excuse.date);
 
         const employeeDecisionBadge = getEmployeeDecisionBadge(excuse.employee_decision);
+        const committeeDecisionBadge = getCommitteeDecisionBadge(excuse.committee_decision);
 
         // ... [existing html generation] ...
         html += `
@@ -644,6 +645,7 @@ function renderExcusesTable() {
                 <td class="ps-4">${excuse.excuse_date || '-'}</td>
                 <td class="ps-4">${statusBadge}</td>
                 <td class="ps-4">${employeeDecisionBadge}</td>
+                <td class="ps-4">${committeeDecisionBadge}</td>
                 <td class="ps-4">
                     <div class="d-flex gap-3 justify-content-center">
                         <i class="hgi-stroke hgi-standard hgi-pencil-edit-02 text-success edit-btn" data-index="${realIndex}" title="تعديل" style="cursor: pointer; font-size: 1.25rem;"></i>
@@ -875,6 +877,60 @@ function saveEmployeeDecision(id) {
 }
 
 /**
+ * Save Committee Decision
+ */
+function saveCommitteeDecision(id) {
+    const decision = document.getElementById('detailCommitteeDecision').value;
+    const comment = document.getElementById('detailCommitteeComment').value;
+    const btn = document.getElementById('btnSaveEmployeeDecision'); // Shared save button
+
+    if (!decision) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'تنبيه',
+            text: 'يرجى اختيار قرار اللجنة أولاً'
+        });
+        return;
+    }
+
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'جاري الحفظ...';
+
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'update_committee_decision',
+            id: id,
+            decision: decision,
+            comment: comment
+        })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم الحفظ',
+                    text: 'تم حفظ قرار اللجنة بنجاح',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                loadAllExcuses();
+            } else {
+                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+            }
+        })
+        .catch(err => Swal.fire('خطأ', 'خطأ في الاتصال', 'error'))
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+}
+
+/**
  * Render Pagination Controls
  */
 function renderPagination(totalItems) {
@@ -968,6 +1024,25 @@ function getEmployeeDecisionBadge(decision) {
         'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
         'rejected': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
         'committee': { text: 'يحتاج قرار لجنة', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
+    };
+
+    // Default to pending if empty
+    const key = decision || 'pending';
+    const config = DECISION_MAP[key] || DECISION_MAP['pending'];
+
+    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+        <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
+    </span>`;
+}
+
+/**
+ * Get Committee Decision badge HTML
+ */
+function getCommitteeDecisionBadge(decision) {
+    const DECISION_MAP = {
+        'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
+        'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
+        'rejected': { text: 'مرفوض', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' }
     };
 
     // Default to pending if empty
@@ -1124,24 +1199,44 @@ function showExcuseDetails(excuse) {
         detailEmployeeDecision.disabled = isLocked;
     }
 
+    // Committee Decision (3rd Status)
+    const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
+    const detailCommitteeComment = document.getElementById('detailCommitteeComment');
+
+    // Committee can only decide if employee decision is set
+    const empDecision = excuse.employee_decision || '';
+    const canCommitteeDecide = empDecision && empDecision !== 'pending';
+    const committeeDecision = excuse.committee_decision || '';
+    const committeeIsLocked = committeeDecision && committeeDecision !== 'pending';
+
+    if (detailCommitteeDecision) {
+        detailCommitteeDecision.value = committeeDecision;
+        detailCommitteeDecision.disabled = !canCommitteeDecide || committeeIsLocked;
+    }
+
+    if (detailCommitteeComment) {
+        detailCommitteeComment.value = excuse.committee_comment || '';
+        detailCommitteeComment.disabled = !canCommitteeDecide || committeeIsLocked;
+    }
+
+    // Save Button Logic - decides which save function to call
     if (btnSaveEmployeeDecision) {
-        if (isLocked) {
-            btnSaveEmployeeDecision.style.display = 'none';
-        } else {
+        if (!isLocked) {
+            // Employee decision is pending - save employee decision
             btnSaveEmployeeDecision.style.display = '';
             btnSaveEmployeeDecision.onclick = function () {
                 saveEmployeeDecision(excuse.id);
             };
+        } else if (canCommitteeDecide && !committeeIsLocked) {
+            // Employee is locked, but committee is pending - save committee decision
+            btnSaveEmployeeDecision.style.display = '';
+            btnSaveEmployeeDecision.onclick = function () {
+                saveCommitteeDecision(excuse.id);
+            };
+        } else {
+            // Both locked - hide save button
+            btnSaveEmployeeDecision.style.display = 'none';
         }
-    }
-
-    if (detailComment) {
-        detailComment.innerHTML = excuse.committee_comment
-            ? excuse.committee_comment
-            : '<span class="text-muted small">لا يوجد تعليق</span>';
-    }
-    if (detailSignature) {
-        detailSignature.textContent = excuse.supervisor_signature || '-';
     }
 
     // Files
