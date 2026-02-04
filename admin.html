@@ -358,61 +358,75 @@
                         <!-- Tab 2: Committee Decision (Was 1) -->
                         <div class="tab-pane fade" id="decision-pane" role="tabpanel" aria-labelledby="decision-tab">
 
+                            <!-- Status Summary Row (Badges Only) -->
                             <div class="row g-2 mb-4 pb-3 border-bottom">
                                 <!-- Initial Classification (Status) -->
-                                <div class="col-md-4">
-                                    <div id="detailStatusContainer">
-                                        <div id="detailStatus"></div>
-                                    </div>
+                                <div class="col-md-4" id="detailStatusColumn">
+                                    <div id="detailStatus" class="alert mb-0"></div>
                                 </div>
 
-                                <!-- Employee Review Section -->
-                                <div class="col-md-4">
-                                    <label class="fw-bold mb-2" id="employeeDecisionLabel">مراجعة الموظف:</label>
-                                    <!-- Badge for locked state -->
+                                <!-- Employee Review Badge -->
+                                <div class="col-md-4" id="employeeDecisionBadgeColumn" style="display: none;">
                                     <div id="employeeDecisionBadgeContainer"></div>
-                                    <!-- Dropdown for editable state -->
-                                    <div class="d-flex gap-2" id="employeeDecisionDropdownContainer">
-                                        <select class="form-select" id="detailEmployeeDecision">
-                                            <option value="" selected>اختر القرار...</option>
-                                            <option value="approved">مقبول</option>
-                                            <option value="rejected">غير مقبول</option>
-                                            <option value="committee">يحتاج قرار لجنة</option>
-                                        </select>
-                                    </div>
                                 </div>
 
-                                <!-- Committee Decision Section -->
-                                <div class="col-md-4">
-                                    <label class="fw-bold mb-2" id="committeeDecisionLabel">قرار اللجنة:</label>
-                                    <!-- Badge for locked state -->
+                                <!-- Committee Decision Badge -->
+                                <div class="col-md-4" id="committeeDecisionBadgeColumn" style="display: none;">
                                     <div id="committeeDecisionBadgeContainer"></div>
-                                    <!-- Dropdown for editable state -->
-                                    <div class="d-flex gap-2" id="committeeDecisionDropdownContainer">
-                                        <select class="form-select" id="detailCommitteeDecision">
-                                            <option value="" selected>اختر القرار...</option>
-                                            <option value="approved">مقبول</option>
-                                            <option value="rejected">مرفوض</option>
-                                        </select>
-                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="committeeCommentContainer">
-                                <label class="fw-bold mb-2">تعليق اللجنة:</label>
-                                <!-- Show as text when locked -->
-                                <div id="committeeCommentDisplay" class="p-3 bg-light border rounded"
-                                    style="min-height: 60px; display: none;"></div>
-                                <!-- Textarea for editing -->
-                                <textarea class="form-control" id="detailCommitteeComment" rows="3"
-                                    placeholder="أضف تعليق اللجنة هنا..."></textarea>
-                            </div>
+                            <!-- Editable Action Area -->
+                            <div id="decisionEditableArea">
+                                <!-- 1. Employee Decision Form -->
+                                <div id="employeeDecisionInputSection" class="mb-4" style="display: none;">
+                                    <label class="fw-bold mb-2">مراجعة الموظف:</label>
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <select class="form-select" id="detailEmployeeDecision">
+                                                <option value="" selected>اختر القرار...</option>
+                                                <option value="approved">مقبول</option>
+                                                <option value="rejected">غير مقبول</option>
+                                                <option value="committee">يحتاج قرار لجنة</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Committee Signatures (Checkboxes) -->
-                            <div class="mb-3" id="committeeSignaturesContainer" style="display: none;">
-                                <label class="fw-bold mb-2">توقيعات الأعضاء:</label>
-                                <div id="committeeSignaturesList" class="d-flex flex-wrap gap-3">
-                                    <!-- Dynamic Checkboxes -->
+                                <!-- 2. Committee Decision Form -->
+                                <div id="committeeDecisionInputSection" style="display: none;">
+                                    <div class="mb-4">
+                                        <label class="fw-bold mb-2">قرار اللجنة:</label>
+                                        <div class="card bg-light border-0">
+                                            <div class="card-body p-3">
+                                                <select class="form-select" id="detailCommitteeDecision">
+                                                    <option value="" selected>اختر القرار...</option>
+                                                    <option value="approved">مقبول</option>
+                                                    <option value="rejected">مرفوض</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="fw-bold mb-2">تعليق اللجنة:</label>
+                                        <textarea class="form-control" id="detailCommitteeComment" rows="3"
+                                            placeholder="أضف تعليق اللجنة هنا..."></textarea>
+                                    </div>
+
+                                    <div class="mb-3" id="committeeSignaturesContainer">
+                                        <label class="fw-bold mb-2">توقيعات الأعضاء:</label>
+                                        <div id="committeeSignaturesList" class="d-flex flex-wrap gap-3">
+                                            <!-- Dynamic Checkboxes -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Final Comment Display (Read Only) -->
+                                <div id="finalCommentSection" class="mb-3" style="display: none;">
+                                    <label class="fw-bold mb-2">تعليق اللجنة:</label>
+                                    <div id="committeeCommentDisplay" class="p-3 bg-light border rounded"
+                                        style="min-height: 60px;"></div>
                                 </div>
                             </div>
                         </div>

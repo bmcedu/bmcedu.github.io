@@ -1215,151 +1215,102 @@ function showExcuseDetails(excuse) {
         detailStatus.innerHTML = `<strong>التصنيف المبدئي:</strong> ${txt}`;
     }
 
-    // Comment & Signature
-    const detailComment = document.getElementById('detailComment');
-    const detailSignature = document.getElementById('detailSignature');
+    // --- New Layout Elements ---
+    const empSection = document.getElementById('employeeDecisionInputSection');
+    const commSection = document.getElementById('committeeDecisionInputSection');
+    const finalCommentSec = document.getElementById('finalCommentSection');
 
-    // --- Employee Decision Logic ---
+    const empBadgeCol = document.getElementById('employeeDecisionBadgeColumn');
+    const commBadgeCol = document.getElementById('committeeDecisionBadgeColumn');
+
+    const empBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
+    const commBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
+    const commCommentDisplay = document.getElementById('committeeCommentDisplay');
+
     const detailEmployeeDecision = document.getElementById('detailEmployeeDecision');
-    const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
-    const employeeBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
-    const employeeDropdownContainer = document.getElementById('employeeDecisionDropdownContainer');
-    const employeeDecisionLabel = document.getElementById('employeeDecisionLabel');
+    const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
+    const detailCommitteeComment = document.getElementById('detailCommitteeComment');
+    const btnSaveAction = document.getElementById('btnSaveEmployeeDecision'); // Shared Save Button
 
-    const empDecision = excuse.employee_decision || '';
-    const empLocked = empDecision && empDecision !== 'pending';
+    // Decision States
+    const empDecision = excuse.employee_decision || 'pending';
+    const empLocked = empDecision !== 'pending';
+    const commDecision = excuse.committee_decision || 'pending';
+    const commLocked = commDecision !== 'pending';
 
-    // RESET: Ensure everything is clean
-    if (employeeBadgeContainer) {
-        employeeBadgeContainer.style.display = 'none';
-        employeeBadgeContainer.innerHTML = '';
-    }
-    // Show dropdown & Label by default
-    if (employeeDecisionLabel) employeeDecisionLabel.style.display = '';
-    if (employeeDropdownContainer) employeeDropdownContainer.style.display = '';
-    if (detailEmployeeDecision) {
-        detailEmployeeDecision.style.display = '';
-        detailEmployeeDecision.value = empDecision;
-        detailEmployeeDecision.disabled = false;
-    }
-
+    // 1. Employee Logic
     if (empLocked) {
-        // LOCKED: Hide Dropdown + Container + Label
-        if (employeeDecisionLabel) employeeDecisionLabel.style.display = 'none';
-        if (employeeDropdownContainer) employeeDropdownContainer.style.display = 'none';
-        if (detailEmployeeDecision) detailEmployeeDecision.style.display = 'none'; // Extra safety
+        // Show Badge
+        if (empBadgeCol) empBadgeCol.style.display = 'block';
+        if (empSection) empSection.style.display = 'none';
 
-        if (employeeBadgeContainer) {
-            employeeBadgeContainer.style.display = 'block';
-
-            const empConfig = {
+        if (empBadgeContainer) {
+            const config = {
                 'approved': { cls: 'alert-success', text: 'مقبول' },
                 'rejected': { cls: 'alert-danger', text: 'غير مقبول' },
                 'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
             };
-            const conf = empConfig[empDecision] || { cls: 'alert-secondary', text: empDecision };
-
-            employeeBadgeContainer.innerHTML = `
-                <div class="alert ${conf.cls} mb-0" role="alert">
-                    <strong>مراجعة الموظف:</strong> ${conf.text}
-                </div>
-            `;
+            const c = config[empDecision] || { cls: 'alert-secondary', text: empDecision };
+            empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0"><strong>مراجعة الموظف:</strong> ${c.text}</div>`;
         }
+    } else {
+        // Show Inputs
+        if (empBadgeCol) empBadgeCol.style.display = 'none';
+        if (empSection) empSection.style.display = 'block';
+        if (detailEmployeeDecision) detailEmployeeDecision.value = '';
     }
 
-    // --- Committee Decision Logic ---
-    const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
-    const detailCommitteeComment = document.getElementById('detailCommitteeComment');
-    const committeeBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
-    const committeeDropdownContainer = document.getElementById('committeeDecisionDropdownContainer');
-    const committeeCommentDisplay = document.getElementById('committeeCommentDisplay');
-    const committeeDecisionLabel = document.getElementById('committeeDecisionLabel');
+    // 2. Committee Logic
+    // Hide by default
+    if (commBadgeCol) commBadgeCol.style.display = 'none';
+    if (commSection) commSection.style.display = 'none';
+    if (finalCommentSec) finalCommentSec.style.display = 'none';
 
-    const canCommitteeDecide = empDecision && empDecision !== 'pending';
-    const committeeDecision = excuse.committee_decision || '';
-    const committeeLocked = committeeDecision && committeeDecision !== 'pending';
-
-    // RESET
-    if (committeeBadgeContainer) {
-        committeeBadgeContainer.style.display = 'none';
-        committeeBadgeContainer.innerHTML = '';
-    }
-    // Show inputs & Label by default
-    if (committeeDecisionLabel) committeeDecisionLabel.style.display = '';
-    if (committeeDropdownContainer) committeeDropdownContainer.style.display = '';
-    if (detailCommitteeDecision) {
-        detailCommitteeDecision.style.display = '';
-        detailCommitteeDecision.disabled = !canCommitteeDecide;
-        detailCommitteeDecision.value = committeeDecision;
-    }
-    if (detailCommitteeComment) {
-        detailCommitteeComment.style.display = '';
-        detailCommitteeComment.disabled = !canCommitteeDecide;
-        detailCommitteeComment.value = excuse.committee_comment || '';
-    }
-    if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
-
-
-    if (committeeLocked) {
-        // LOCKED: Hide Inputs + Label
-        if (committeeDecisionLabel) committeeDecisionLabel.style.display = 'none';
-        if (committeeDropdownContainer) committeeDropdownContainer.style.display = 'none';
-        if (detailCommitteeDecision) detailCommitteeDecision.style.display = 'none'; // Extra safety
-        if (detailCommitteeComment) detailCommitteeComment.style.display = 'none'; // Extra safety
-
-        if (committeeBadgeContainer) {
-            committeeBadgeContainer.style.display = 'block';
-
-            const comConfig = {
-                'approved': { cls: 'alert-success', text: 'مقبول' },
-                'rejected': { cls: 'alert-danger', text: 'مرفوض' }
-            };
-            const conf = comConfig[committeeDecision] || { cls: 'alert-secondary', text: committeeDecision };
-
-            committeeBadgeContainer.innerHTML = `
-                <div class="alert ${conf.cls} mb-0" role="alert">
-                    <strong>قرار اللجنة:</strong> ${conf.text}
-                </div>
-            `;
-        }
-
-        // Show Comment Text
-        if (committeeCommentDisplay) {
-            committeeCommentDisplay.style.display = 'block';
-            committeeCommentDisplay.innerHTML = excuse.committee_comment
-                ? `<strong>تعليق اللجنة:</strong> ${excuse.committee_comment}`
-                : '<span class="text-muted small">لا يوجد تعليق</span>';
-        }
-    }
-
-    // --- Signatures Checkboxes ---
-    const sigContainer = document.getElementById('committeeSignaturesContainer');
-    if (sigContainer) {
-        if (canCommitteeDecide || committeeLocked) {
-            sigContainer.style.display = 'block';
-            loadCommitteeCheckboxes(excuse, committeeLocked); // locked = readOnly
+    if (empDecision === 'committee') {
+        if (commLocked) {
+            // Show Badge
+            if (commBadgeCol) commBadgeCol.style.display = 'block';
+            if (commBadgeContainer) {
+                const config = {
+                    'approved': { cls: 'alert-success', text: 'مقبول' },
+                    'rejected': { cls: 'alert-danger', text: 'مرفوض' }
+                };
+                const c = config[commDecision] || { cls: 'alert-secondary', text: commDecision };
+                commBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0"><strong>قرار اللجنة:</strong> ${c.text}</div>`;
+            }
+            // Show Final Comment
+            if (finalCommentSec) finalCommentSec.style.display = 'block';
+            if (commCommentDisplay) {
+                commCommentDisplay.innerHTML = excuse.committee_comment
+                    ? `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`
+                    : '<span class="text-muted small">لا يوجد تعليق</span>';
+            }
         } else {
-            sigContainer.style.display = 'none';
+            // Show Inputs
+            if (commSection) commSection.style.display = 'block';
+            if (detailCommitteeDecision) detailCommitteeDecision.value = '';
+            if (detailCommitteeComment) detailCommitteeComment.value = '';
+            loadCommitteeCheckboxes(excuse, false); // Load signatures for editing
+        }
+    } else if (commLocked) {
+        // Edge case: maybe decision was made but empDecision was changed back?
+        // Usually, we just show final comment if it exists
+        if (finalCommentSec && excuse.committee_comment) {
+            finalCommentSec.style.display = 'block';
+            commCommentDisplay.innerHTML = `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`;
         }
     }
 
-    // Save Button Logic - decides which save function to call
-    if (btnSaveEmployeeDecision) {
+    // 3. Save Button Logic
+    if (btnSaveAction) {
         if (!empLocked) {
-            // Employee decision is pending - save employee decision
-            btnSaveEmployeeDecision.style.display = '';
-            btnSaveEmployeeDecision.onclick = function () {
-                saveEmployeeDecision(excuse.id);
-            };
-        } else if (canCommitteeDecide && !committeeLocked) {
-            // Employee is locked, but committee is pending - save committee decision
-            btnSaveEmployeeDecision.style.display = '';
-            btnSaveEmployeeDecision.onclick = function () {
-                saveCommitteeDecision(excuse.id);
-            };
+            btnSaveAction.style.display = '';
+            btnSaveAction.onclick = () => saveEmployeeDecision(excuse.id);
+        } else if (empDecision === 'committee' && !commLocked) {
+            btnSaveAction.style.display = '';
+            btnSaveAction.onclick = () => saveCommitteeDecision(excuse.id);
         } else {
-            // Both locked - hide save button
-            btnSaveEmployeeDecision.style.display = 'none';
+            btnSaveAction.style.display = 'none';
         }
     }
 
