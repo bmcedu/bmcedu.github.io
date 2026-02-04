@@ -2121,6 +2121,7 @@ function removeSignatureImage() {
 }
 
 async function saveSignature() {
+    const id = document.getElementById('sigId').value;
     const name = document.getElementById('sigName').value.trim();
     const position = document.getElementById('sigPosition').value.trim();
     const fileInput = document.getElementById('sigImage');
@@ -2132,6 +2133,8 @@ async function saveSignature() {
 
     // Check file if new
     let imageBase64 = null;
+    let mimeType = null;
+    let fileName = null;
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
         if (file.size > 2 * 1024 * 1024) { // 2MB
@@ -2140,6 +2143,8 @@ async function saveSignature() {
         }
         try {
             imageBase64 = await fileToBase64(file);
+            mimeType = file.type;
+            fileName = file.name;
         } catch (e) { console.error(e); }
     }
 
@@ -2154,9 +2159,12 @@ async function saveSignature() {
         method: 'POST',
         body: JSON.stringify({
             action: 'save_signature',
+            id: id,
             name: name,
             position: position,
-            image: imageBase64 // backend handles upload
+            image: imageBase64,
+            mimeType: mimeType,
+            fileName: fileName
         })
     })
         .then(r => r.json())
