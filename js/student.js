@@ -235,12 +235,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Start session verification (non-blocking)
     verifyAndRefreshSession();
 
-    // Set Min Date to Today (Disable Past Dates)
+    // Allow any date (Past dates are handled by backend classification)
     const excuseDateInput = document.getElementById('excuseDate');
-    if (excuseDateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        excuseDateInput.setAttribute('min', today);
-    }
 
     // 2. Display User Info
     if (studentName) {
