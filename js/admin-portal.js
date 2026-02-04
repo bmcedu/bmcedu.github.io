@@ -2449,11 +2449,20 @@ async function downloadExcusePDF(id) {
                 return await pdfDoc.embedJpg(sig.bytes);
             });
 
+            // Calculate proportional dimensions to maintain aspect ratio
+            const scale = Math.min(sigWidth / img.width, sigHeight / img.height);
+            const drawWidth = img.width * scale;
+            const drawHeight = img.height * scale;
+
+            // Center in the designated slot area
+            const offsetX = (sigWidth - drawWidth) / 2;
+            const offsetY = (sigHeight - drawHeight) / 2;
+
             lastPage.drawImage(img, {
-                x: x,
-                y: y,
-                width: sigWidth,
-                height: sigHeight,
+                x: x + offsetX,
+                y: y + offsetY,
+                width: drawWidth,
+                height: drawHeight,
             });
         }
 
