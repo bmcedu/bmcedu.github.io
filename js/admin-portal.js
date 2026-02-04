@@ -590,7 +590,7 @@ function renderPdfAction(excuse) {
     if (isDecided) {
         return `<i class="hgi hgi-stroke hgi-standard hgi-eye text-primary pdf-btn" data-id="${excuse.id}" title="عرض PDF" style="cursor: pointer; font-size: 1.25rem;"></i>`;
     } else {
-        return `<i class="hgi hgi-stroke hgi-standard hgi-eye text-muted" title="القرار قيد الانتظار" style="cursor: not-allowed; font-size: 1.25rem; opacity: 0.5;"></i>`;
+        return '';
     }
 }
 
