@@ -1205,23 +1205,26 @@ function showExcuseDetails(excuse) {
     const empDecision = excuse.employee_decision || '';
     const empLocked = empDecision && empDecision !== 'pending';
 
-    // Reset Visibility
+    // RESET: Ensure everything is clean
     if (employeeBadgeContainer) {
         employeeBadgeContainer.style.display = 'none';
         employeeBadgeContainer.innerHTML = '';
     }
-    if (employeeDropdownContainer) employeeDropdownContainer.style.display = ''; // Default show
+    // Show dropdown by default
+    if (employeeDropdownContainer) employeeDropdownContainer.style.display = '';
     if (detailEmployeeDecision) {
+        detailEmployeeDecision.style.display = '';
         detailEmployeeDecision.value = empDecision;
         detailEmployeeDecision.disabled = false;
     }
 
     if (empLocked) {
-        // LOCKED: Hide Dropdown, Show Alert
+        // LOCKED: Hide Dropdown + Container
         if (employeeDropdownContainer) employeeDropdownContainer.style.display = 'none';
+        if (detailEmployeeDecision) detailEmployeeDecision.style.display = 'none'; // Extra safety
 
         if (employeeBadgeContainer) {
-            employeeBadgeContainer.style.display = '';
+            employeeBadgeContainer.style.display = 'block';
 
             const empConfig = {
                 'approved': { cls: 'alert-success', text: 'مقبول' },
@@ -1249,29 +1252,34 @@ function showExcuseDetails(excuse) {
     const committeeDecision = excuse.committee_decision || '';
     const committeeLocked = committeeDecision && committeeDecision !== 'pending';
 
-    // Reset Visibility
+    // RESET
     if (committeeBadgeContainer) {
         committeeBadgeContainer.style.display = 'none';
         committeeBadgeContainer.innerHTML = '';
     }
-    if (committeeDropdownContainer) committeeDropdownContainer.style.display = ''; // Default show
-    if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
+    // Show inputs by default
+    if (committeeDropdownContainer) committeeDropdownContainer.style.display = '';
+    if (detailCommitteeDecision) {
+        detailCommitteeDecision.style.display = '';
+        detailCommitteeDecision.disabled = !canCommitteeDecide;
+        detailCommitteeDecision.value = committeeDecision;
+    }
     if (detailCommitteeComment) {
         detailCommitteeComment.style.display = '';
+        detailCommitteeComment.disabled = !canCommitteeDecide;
         detailCommitteeComment.value = excuse.committee_comment || '';
-        detailCommitteeComment.disabled = !canCommitteeDecide; // Disabled if not ready
     }
-    if (detailCommitteeDecision) {
-        detailCommitteeDecision.value = committeeDecision;
-        detailCommitteeDecision.disabled = !canCommitteeDecide;
-    }
+    if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
+
 
     if (committeeLocked) {
-        // LOCKED: Hide Dropdown, Show Alert
+        // LOCKED: Hide Inputs
         if (committeeDropdownContainer) committeeDropdownContainer.style.display = 'none';
+        if (detailCommitteeDecision) detailCommitteeDecision.style.display = 'none'; // Extra safety
+        if (detailCommitteeComment) detailCommitteeComment.style.display = 'none'; // Extra safety
 
         if (committeeBadgeContainer) {
-            committeeBadgeContainer.style.display = '';
+            committeeBadgeContainer.style.display = 'block';
 
             const comConfig = {
                 'approved': { cls: 'alert-success', text: 'مقبول' },
@@ -1286,10 +1294,9 @@ function showExcuseDetails(excuse) {
             `;
         }
 
-        // Handle Comment (Text vs Textarea)
-        if (detailCommitteeComment) detailCommitteeComment.style.display = 'none';
+        // Show Comment Text
         if (committeeCommentDisplay) {
-            committeeCommentDisplay.style.display = '';
+            committeeCommentDisplay.style.display = 'block';
             committeeCommentDisplay.innerHTML = excuse.committee_comment
                 ? `<strong>تعليق اللجنة:</strong> ${excuse.committee_comment}`
                 : '<span class="text-muted small">لا يوجد تعليق</span>';
