@@ -1298,7 +1298,7 @@ function showExcuseDetails(excuse) {
 
     // Save Button Logic - decides which save function to call
     if (btnSaveEmployeeDecision) {
-        if (!isLocked) {
+        if (!empLocked) {
             // Employee decision is pending - save employee decision
             btnSaveEmployeeDecision.style.display = '';
             btnSaveEmployeeDecision.onclick = function () {
