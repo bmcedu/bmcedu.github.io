@@ -96,7 +96,7 @@
                         <!-- Filter Section (Collapsible) -->
                         <div class="collapse show border-bottom bg-light bg-opacity-50" id="filterSection">
                             <div class="p-3">
-                                <div class="row g-3">
+                                <div class="row g-2">
                                     <!-- ROW 1 -->
                                     <!-- 1. Student Number (Custom Searchable Select) -->
                                     <div class="col-md-4">
@@ -358,10 +358,16 @@
                         <!-- Tab 2: Committee Decision (Was 1) -->
                         <div class="tab-pane fade" id="decision-pane" role="tabpanel" aria-labelledby="decision-tab">
 
-                            <div class="row g-3 mb-4 pb-3 border-bottom">
+                            <div class="row g-2 mb-4 pb-3 border-bottom">
+                                <!-- Initial Classification (Status) -->
+                                <div class="col-md-4">
+                                    <div id="detailStatusContainer">
+                                        <div id="detailStatus"></div>
+                                    </div>
+                                </div>
+
                                 <!-- Employee Review Section -->
                                 <div class="col-md-4">
-                                    <!-- RTL: border-start is right? No border-end is left. border-start is right. -->
                                     <label class="fw-bold mb-2" id="employeeDecisionLabel">مراجعة الموظف:</label>
                                     <!-- Badge for locked state -->
                                     <div id="employeeDecisionBadgeContainer"></div>
@@ -388,13 +394,6 @@
                                             <option value="approved">مقبول</option>
                                             <option value="rejected">مرفوض</option>
                                         </select>
-                                    </div>
-                                </div>
-
-                                <!-- Initial Classification (Status) -->
-                                <div class="col-md-4">
-                                    <div id="detailStatusContainer">
-                                        <div id="detailStatus"></div>
                                     </div>
                                 </div>
                             </div>
