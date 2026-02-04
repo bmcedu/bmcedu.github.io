@@ -1036,19 +1036,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (labelBox) labelBox.style.borderColor = 'var(--bs-border-color)';
 
-                // Check 1: Existence
-                // Check standard input AND our internal state (in case input was cleared but file preserved in memory - though unlikely with current logic, safe to check)
-                const hasFile = (input.files && input.files.length > 0) || (window.wizardFiles && window.wizardFiles[type.toLowerCase()]);
-
+                // Check 1: Existence (Files are now Optional)
+                // If missing, we don't block. Backend will mark as 'mismatch'.
                 if (!hasFile) {
-                    stepValid = false;
-                    if (msgEl) {
-                        msgEl.textContent = 'يرجى رفع الملف.';
-                        msgEl.classList.remove('d-none');
-                        msgEl.classList.add('d-block');
-                    }
-                    if (labelBox) labelBox.style.borderColor = 'var(--bs-danger)'; // Red border
-                    return; // Stop checking this file
+                    // Just reset styles
+                    if (msgEl) msgEl.classList.add('d-none');
+                    if (labelBox) labelBox.style.borderColor = 'var(--bs-border-color)';
+                    return; // Skip other checks for this file
                 }
 
                 const file = input.files[0];
