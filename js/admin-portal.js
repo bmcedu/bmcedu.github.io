@@ -2351,9 +2351,29 @@ async function downloadExcusePDF(id) {
 
         const pdfBytes = Uint8Array.from(atob(pdfResponse.base64), c => c.charCodeAt(0));
 
-        // 2. Load PDF
-        const { PDFDocument } = PDFLib;
-        const pdfDoc = await PDFDocument.load(pdfBytes);
+        // 2. Load or Create PDF
+        const { PDFDocument, rgb } = PDFLib;
+        let pdfDoc;
+        const isPdf = pdfBytes[0] === 0x25 && pdfBytes[1] === 0x50 && pdfBytes[2] === 0x44 && pdfBytes[3] === 0x46; // %PDF
+
+        try {
+            if (isPdf) {
+                pdfDoc = await PDFDocument.load(pdfBytes);
+            } else {
+                // If not PDF, try to treat as Image and create a new PDF
+                pdfDoc = await PDFDocument.create();
+                const img = await pdfDoc.embedPng(pdfBytes).catch(async () => {
+                    return await pdfDoc.embedJpg(pdfBytes);
+                });
+                const { width, height } = img.scale(0.5); // Initial scale
+                const page = pdfDoc.addPage([width, height]);
+                page.drawImage(img, { x: 0, y: 0, width, height });
+            }
+        } catch (e) {
+            console.error("Critical error loading document:", e);
+            throw new Error("لم يتم التعرف على تنسيق الملف (يجب أن يكون PDF أو صورة). " + e.message);
+        }
+
         const pages = pdfDoc.getPages();
         const lastPage = pages[pages.length - 1];
         const { width, height } = lastPage.getSize();
