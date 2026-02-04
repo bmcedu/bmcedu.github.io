@@ -588,9 +588,9 @@ function renderPdfAction(excuse) {
     const isDecided = ['approved', 'rejected', 'accepted'].includes(decision);
 
     if (isDecided) {
-        return `<i class="hgi-stroke hgi-standard hgi-view-01 text-primary pdf-btn" data-id="${excuse.id}" title="عرض PDF" style="cursor: pointer; font-size: 1.25rem;"></i>`;
+        return `<i class="hgi hgi-stroke hgi-standard hgi-eye text-primary pdf-btn" data-id="${excuse.id}" title="عرض PDF" style="cursor: pointer; font-size: 1.25rem;"></i>`;
     } else {
-        return `<i class="hgi-stroke hgi-standard hgi-view-01 text-muted" title="القرار قيد الانتظار" style="cursor: not-allowed; font-size: 1.25rem; opacity: 0.5;"></i>`;
+        return `<i class="hgi hgi-stroke hgi-standard hgi-eye text-muted" title="القرار قيد الانتظار" style="cursor: not-allowed; font-size: 1.25rem; opacity: 0.5;"></i>`;
     }
 }
 
