@@ -363,6 +363,14 @@
                                 <textarea class="form-control" id="detailCommitteeComment" rows="3"
                                     placeholder="أضف تعليق اللجنة هنا..."></textarea>
                             </div>
+
+                            <!-- Committee Signatures (Checkboxes) -->
+                            <div class="mb-3" id="committeeSignaturesContainer" style="display: none;">
+                                <label class="fw-bold mb-2">توقيعات الأعضاء:</label>
+                                <div id="committeeSignaturesList" class="d-flex flex-wrap gap-3">
+                                    <!-- Dynamic Checkboxes -->
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Tab 2: Excuse Details -->
@@ -513,9 +521,12 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-pane"
-                        type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-file-validation me-1"></i> الشروط
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-medium" id="signatures-tab" data-bs-toggle="tab"
+                        data-bs-target="#signatures-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-02 me-1"></i> التواقيع
                     </button>
                 </li>
             </ul>
@@ -574,52 +585,65 @@
 
                 <!-- Policy Pane -->
                 <div class="tab-pane fade" id="terms-pane">
-                    <div class="mb-3">
-                        <span class="text-muted small d-block mb-2">نص السياسة الذي يظهر للطلاب</span>
-                        <textarea id="termsTextarea" class="form-control" rows="8" dir="rtl"></textarea>
+                    <span class="text-muted small d-block mb-2">نص السياسة الذي يظهر للطلاب</span>
+                    <textarea id="termsTextarea" class="form-control" rows="8" dir="rtl"></textarea>
+                </div>
+
+                <!-- PDF Upload Section -->
+                <div class="mb-3">
+                    <label class="form-label fw-medium">
+                        <i class="hgi hgi-stroke hgi-standard hgi-file-02 me-1"></i>
+                        ملف السياسة (PDF)
+                    </label>
+                    <div id="currentPolicyFile" class="small text-muted mb-2" style="display: none;">
+                        <i class="hgi hgi-stroke hgi-standard hgi-checkmark-circle-02 text-success me-1"></i>
+                        <span id="policyFileStatus">يوجد ملف سياسة محفوظ</span>
                     </div>
 
-                    <!-- PDF Upload Section -->
-                    <div class="mb-3">
-                        <label class="form-label fw-medium">
-                            <i class="hgi hgi-stroke hgi-standard hgi-file-02 me-1"></i>
-                            ملف السياسة (PDF)
-                        </label>
-                        <div id="currentPolicyFile" class="small text-muted mb-2" style="display: none;">
-                            <i class="hgi hgi-stroke hgi-standard hgi-checkmark-circle-02 text-success me-1"></i>
-                            <span id="policyFileStatus">يوجد ملف سياسة محفوظ</span>
+                    <label for="policyFileInput"
+                        class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-light-subtle w-100 position-relative"
+                        style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
+                        <div class="default-content text-center">
+                            <i class="hgi hgi-stroke hgi-standard hgi-upload-02 fs-3 text-secondary mb-2"></i>
+                            <div class="text-muted small">اضغط هنا لرفع ملف PDF</div>
+                            <div class="text-muted small mt-1" style="font-size: 0.75rem;">(الحد الأقصى 10MB)</div>
                         </div>
-
-                        <label for="policyFileInput"
-                            class="upload-box d-flex flex-column align-items-center justify-content-center p-4 rounded bg-light-subtle w-100 position-relative"
-                            style="border: 2px dashed #dee2e6; cursor: pointer; height: 120px; transition: all 0.2s;">
-                            <div class="default-content text-center">
-                                <i class="hgi hgi-stroke hgi-standard hgi-upload-02 fs-3 text-secondary mb-2"></i>
-                                <div class="text-muted small">اضغط هنا لرفع ملف PDF</div>
-                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">(الحد الأقصى 10MB)</div>
+                        <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
+                            style="z-index: 5;">
+                            <i class="hgi hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2"></i>
+                            <div class="filename small text-dark fw-bold text-truncate w-75 text-center"
+                                id="policyFileName">
                             </div>
-                            <div class="file-info d-none w-100 h-100 position-absolute top-0 start-0 bg-light rounded flex-column align-items-center justify-content-center"
-                                style="z-index: 5;">
-                                <i class="hgi hgi-stroke hgi-standard hgi-file-01 text-danger fs-1 mb-2"></i>
-                                <div class="filename small text-dark fw-bold text-truncate w-75 text-center"
-                                    id="policyFileName">
-                                </div>
-                                <button type="button"
-                                    class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
-                                    style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;"
-                                    id="removePolicyFileBtn">&times;</button>
-                            </div>
-                        </label>
-                        <input type="file" class="d-none" id="policyFileInput" accept="application/pdf">
-                        <div class="form-text">سيتم استبدال الملف الحالي (إن وجد) عند الحفظ</div>
-                    </div>
+                            <button type="button"
+                                class="btn btn-danger btn-sm p-0 position-absolute top-0 end-0 m-2 rounded-circle remove-file-btn shadow-sm"
+                                style="width: 24px; height: 24px; line-height: 22px; font-size: 16px;"
+                                id="removePolicyFileBtn">&times;</button>
+                        </div>
+                    </label>
+                    <input type="file" class="d-none" id="policyFileInput" accept="application/pdf">
+                    <div class="form-text">سيتم استبدال الملف الحالي (إن وجد) عند الحفظ</div>
+                </div>
 
-                    <button class="btn btn-primary" onclick="savePolicy()" id="savePolicyBtn">
-                        <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ التغييرات
+                <button class="btn btn-primary" onclick="savePolicy()" id="savePolicyBtn">
+                    <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ التغييرات
+                </button>
+            </div>
+
+            <!-- Signatures Pane -->
+            <div class="tab-pane fade" id="signatures-pane">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted small">قائمة تواقيع أعضاء اللجنة (بحد أقصى 4)</span>
+                    <button class="btn btn-primary btn-sm" onclick="openAddSignatureModal()">
+                        <i class="hgi hgi-stroke hgi-standard hgi-add-01 me-1"></i> إضافة توقيع
                     </button>
+                </div>
+                <div id="signaturesList" class="row g-3">
+                    <!-- Dynamic Cards -->
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <!-- Add/Edit Item Modal -->
@@ -642,6 +666,50 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                     <button type="button" class="btn btn-primary" onclick="saveItem()">
                         <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Add Signature Modal -->
+    <div class="modal fade" id="addSignatureModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة توقيع عضو لجنة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSignatureForm">
+                        <input type="hidden" id="sigId">
+                        <div class="mb-3">
+                            <label for="sigName" class="form-label">الاسم</label>
+                            <input type="text" class="form-control" id="sigName" required placeholder="اسم عضو اللجنة">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sigPosition" class="form-label">المنصب</label>
+                            <input type="text" class="form-control" id="sigPosition" required
+                                placeholder="مثال: عميد الكلية">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sigImage" class="form-label">صورة التوقيع (PNG بخلفية شفافة)</label>
+                            <input type="file" class="form-control" id="sigImage" accept="image/png, image/jpeg">
+                        </div>
+                        <div id="sigPreviewContainer" class="text-center mt-3 d-none">
+                            <img id="sigPreview" src="" alt="Preview"
+                                style="max-height: 80px; padding: 5px; border: 1px dashed #ccc; border-radius: 4px;">
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-block mx-auto"
+                                onclick="removeSignatureImage()">إزالة الصورة</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                        <span id="saveSigSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        حفظ
                     </button>
                 </div>
             </div>

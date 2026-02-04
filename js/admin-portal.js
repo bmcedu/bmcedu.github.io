@@ -909,7 +909,8 @@ function saveCommitteeDecision(id) {
             action: 'update_committee_decision',
             id: id,
             decision: decision,
-            comment: comment
+            comment: comment,
+            signatures: Array.from(document.querySelectorAll('input[name="committeeSig"]:checked')).map(cb => cb.value)
         })
     })
         .then(r => r.json())
@@ -1309,6 +1310,17 @@ function showExcuseDetails(excuse) {
         }
     }
 
+    // --- Signatures Checkboxes ---
+    const sigContainer = document.getElementById('committeeSignaturesContainer');
+    if (sigContainer) {
+        if (canCommitteeDecide || committeeLocked) {
+            sigContainer.style.display = 'block';
+            loadCommitteeCheckboxes(excuse, committeeLocked); // locked = readOnly
+        } else {
+            sigContainer.style.display = 'none';
+        }
+    }
+
     // Save Button Logic - decides which save function to call
     if (btnSaveEmployeeDecision) {
         if (!empLocked) {
@@ -1557,7 +1569,10 @@ function loadSettingsData() {
 function renderSettingsLists() {
     renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
     renderItemList('coursesList', settingsData.courses, 'courses');
+    renderItemList('hospitalsList', settingsData.hospitals, 'hospitals');
+    renderItemList('coursesList', settingsData.courses, 'courses');
     renderItemList('reasonsList', settingsData.reasons, 'reasons');
+    loadSignatures(); // Fetch and render signatures
 
     // Render Policy/Terms
     const termsData = settingsData.terms;
@@ -2006,4 +2021,231 @@ function initAccountPreferences() {
                 this.disabled = false;
             });
     });
+}
+
+// ==================== SIGNATURES MANAGEMENT ====================
+
+let signaturesList = [];
+let addSignatureModal = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const el = document.getElementById('addSignatureModal');
+    if (el) addSignatureModal = new bootstrap.Modal(el);
+
+    // Preview Logic
+    const fileInput = document.getElementById('sigImage');
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('sigPreview');
+                    const cont = document.getElementById('sigPreviewContainer');
+                    if (img && cont) {
+                        img.src = e.target.result;
+                        cont.classList.remove('d-none');
+                    }
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+});
+
+function loadSignatures() {
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'get_signatures' })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                signaturesList = data.signatures || [];
+                renderSignaturesList();
+            }
+        })
+        .catch(console.error);
+}
+
+function renderSignaturesList() {
+    const container = document.getElementById('signaturesList');
+    if (!container) return;
+
+    if (signaturesList.length === 0) {
+        container.innerHTML = '<div class="col-12 text-center text-muted py-4">لا توجد تواقيع محفوظة</div>';
+        return;
+    }
+
+    container.innerHTML = signaturesList.map(sig => `
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="border rounded p-1 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: #f8f9fa;">
+                        ${sig.imageUrl ? `<img src="${sig.imageUrl}" style="max-width: 100%; max-height: 100%;">` : '<i class="hgi-stroke hgi-standard hgi-signature text-muted"></i>'}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 fw-bold">${sig.name}</h6>
+                        <p class="text-muted small mb-0">${sig.position}</p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown">
+                            <i class="hgi-stroke hgi-standard hgi-more-vertical-circle-01"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteSignature(${sig.id})">
+                                <i class="hgi-stroke hgi-standard hgi-delete-02 me-2"></i>حذف
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openAddSignatureModal() {
+    if (signaturesList.length >= 4) {
+        Swal.fire('تنبيه', 'لقد وصلت للحد الأقصى (4 تواقيع). يرجى حذف توقيع لإضافة جديد.', 'warning');
+        return;
+    }
+    document.getElementById('sigId').value = '';
+    document.getElementById('sigName').value = '';
+    document.getElementById('sigPosition').value = '';
+    document.getElementById('sigImage').value = '';
+    document.getElementById('sigPreviewContainer').classList.add('d-none');
+    addSignatureModal.show();
+}
+
+function removeSignatureImage() {
+    document.getElementById('sigImage').value = '';
+    document.getElementById('sigPreviewContainer').classList.add('d-none');
+}
+
+async function saveSignature() {
+    const name = document.getElementById('sigName').value.trim();
+    const position = document.getElementById('sigPosition').value.trim();
+    const fileInput = document.getElementById('sigImage');
+
+    if (!name || !position) {
+        Swal.fire('خطأ', 'الاسم والمنصب مطلوبان', 'error');
+        return;
+    }
+
+    // Check file if new
+    let imageBase64 = null;
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024) { // 2MB
+            Swal.fire('خطأ', 'حجم الصورة كبير جداً (اكبر من 2 ميجابايت)', 'error');
+            return;
+        }
+        try {
+            imageBase64 = await fileToBase64(file);
+        } catch (e) { console.error(e); }
+    }
+
+    // Show loading
+    const btn = document.querySelector('#addSignatureModal .btn-primary');
+    const spinner = document.getElementById('saveSigSpinner');
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'save_signature',
+            name: name,
+            position: position,
+            image: imageBase64 // backend handles upload
+        })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                addSignatureModal.hide();
+                loadSignatures();
+                Swal.fire('تم', 'تم حفظ التوقيع بنجاح', 'success');
+            } else {
+                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+            }
+        })
+        .catch(err => Swal.fire('خطأ', 'فشل الاتصال', 'error'))
+        .finally(() => {
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+        });
+}
+
+function deleteSignature(id) {
+    Swal.fire({
+        title: 'حذف التوقيع؟',
+        text: "لا يمكن التراجع عن هذا الإجراء",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، حذف',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+            fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete_signature', id: id })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        loadSignatures();
+                        Swal.fire('تم', 'تم الحذف بنجاح', 'success');
+                    } else {
+                        Swal.fire('خطأ', 'فشل الحذف', 'error');
+                    }
+                });
+        }
+    });
+}
+
+// Ensure signatures are loaded when needed for modal
+// But simpler to just rely on loadSignatures updates.
+
+function loadCommitteeCheckboxes(excuse, readOnly) {
+    const list = document.getElementById('committeeSignaturesList');
+    if (!list) return;
+
+    if (signaturesList.length === 0) {
+        list.innerHTML = '<span class="text-muted small">لا توجد تواقيع متاحة (قم بإضافتها من الإعدادات)</span>';
+        // Trigger fetch just in case not loaded
+        loadSignatures();
+        return;
+    }
+
+    // Parse existing selections
+    let selectedIds = [];
+    try {
+        if (excuse.committee_signatures) {
+            selectedIds = JSON.parse(excuse.committee_signatures);
+        }
+    } catch (e) {
+        // Fallback if raw string or single value
+        if (excuse.committee_signatures) selectedIds = [String(excuse.committee_signatures)];
+    }
+    // Ensure string comparison
+    selectedIds = selectedIds.map(String);
+
+    list.innerHTML = signaturesList.map(sig => `
+        <div class="form-check form-check-inline border rounded p-2 m-0 bg-white d-flex align-items-center gap-2" style="min-width: 200px;">
+            <input class="form-check-input mt-0" type="checkbox" name="committeeSig" 
+                value="${sig.id}" id="sig_cb_${sig.id}" 
+                ${selectedIds.includes(String(sig.id)) ? 'checked' : ''}
+                ${readOnly ? 'disabled' : ''}>
+            <label class="form-check-label d-flex align-items-center gap-2 w-100" for="sig_cb_${sig.id}" style="cursor: pointer;">
+                ${sig.imageUrl ? `<img src="${sig.imageUrl}" style="height: 30px; width: auto; max-width: 60px;">` : ''}
+                <div class="d-flex flex-column lh-1">
+                    <span class="fw-bold small">${sig.name}</span>
+                    <span class="text-muted" style="font-size: 10px;">${sig.position}</span>
+                </div>
+            </label>
+        </div>
+    `).join('');
 }
