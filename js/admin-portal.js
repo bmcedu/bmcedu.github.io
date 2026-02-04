@@ -1137,6 +1137,12 @@ function showExcuseDetails(excuse) {
     const detailType = document.getElementById('detailType');
     if (detailType) detailType.value = getExcuseTypeArabic(excuse.excuse_type);
 
+    // Print Button
+    const btnPrintPDF = document.getElementById('btnPrintPDF');
+    if (btnPrintPDF) {
+        btnPrintPDF.onclick = () => downloadExcusePDF(excuse.id);
+    }
+
     // Extra Fields
     const detailExtraFields = document.getElementById('detailExtraFields');
     if (detailExtraFields) {
@@ -2268,4 +2274,62 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
             </label>
         `).join('');
     }
+}
+
+/**
+ * Trigger PDF Generation and Download
+ */
+function downloadExcusePDF(id) {
+    const btn = document.getElementById('btnPrintPDF');
+    if (!btn) return;
+
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جار التحضير...';
+    btn.disabled = true;
+
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'generate_pdf',
+            excuse_id: id
+        })
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (r.status === 'success') {
+                // Convert Base64 to Blob and Download
+                fetch(r.pdf_base64)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = r.filename || `Excuse_${id}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    });
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: 'error', title: 'خطأ', text: r.message || 'فشل إنشاء الملف' });
+                } else {
+                    alert('خطأ: ' + (r.message || 'فشل إنشاء الملف'));
+                }
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ في الاتصال' });
+            } else {
+                alert('حدث خطأ في الاتصال');
+            }
+        })
+        .finally(() => {
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+        });
 }
