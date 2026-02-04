@@ -297,21 +297,20 @@
                     <!-- Nav Tabs -->
                     <ul class="nav nav-pills nav-fill mb-3 gap-1 border-0" id="detailsTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active fw-medium" id="decision-tab" data-bs-toggle="tab"
-                                data-bs-target="#decision-pane" type="button" role="tab" aria-controls="decision-pane"
-                                aria-selected="true">قرار اللجنة</button>
+                            <button class="nav-link active fw-medium" id="details-tab" data-bs-toggle="tab"
+                                data-bs-target="#details-pane" type="button" role="tab" aria-controls="details-pane"
+                                aria-selected="true">تفاصيل العذر</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link fw-medium" id="details-tab" data-bs-toggle="tab"
-                                data-bs-target="#details-pane" type="button" role="tab" aria-controls="details-pane"
-                                aria-selected="false">تفاصيل العذر</button>
+                            <button class="nav-link fw-medium" id="decision-tab" data-bs-toggle="tab"
+                                data-bs-target="#decision-pane" type="button" role="tab" aria-controls="decision-pane"
+                                aria-selected="false">قرار اللجنة</button>
                         </li>
                     </ul>
 
                     <div class="tab-content" id="detailsTabsContent">
-                        <!-- Tab 1: Committee Decision -->
-                        <div class="tab-pane fade show active" id="decision-pane" role="tabpanel"
-                            aria-labelledby="decision-tab">
+                        <!-- Tab 2: Committee Decision (Was 1) -->
+                        <div class="tab-pane fade" id="decision-pane" role="tabpanel" aria-labelledby="decision-tab">
 
                             <div class="row g-3 mb-4 pb-3 border-bottom">
                                 <!-- Employee Review Section -->
@@ -374,7 +373,8 @@
                         </div>
 
                         <!-- Tab 2: Excuse Details -->
-                        <div class="tab-pane fade" id="details-pane" role="tabpanel" aria-labelledby="details-tab">
+                        <div class="tab-pane fade show active" id="details-pane" role="tabpanel"
+                            aria-labelledby="details-tab">
 
                             <!-- Section 1: Personal Info -->
                             <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
