@@ -2436,8 +2436,8 @@ async function downloadExcusePDF(id) {
         // Position: Bottom area. 5 slots horizontally.
         const sigWidth = 80;  // Reduced by 5%
         const sigHeight = 40;
-        const spacing = 15;   // Slightly tighter spacing
-        const margin = 50;    // Adjusted margin
+        const spacing = 20;   // Increased spacing
+        const margin = 80;    // Increased margin from right (starting offset)
         const startY = 40;    // Distance from bottom
 
         for (let i = 0; i < sigs.length; i++) {
