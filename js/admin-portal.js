@@ -1189,7 +1189,7 @@ function showExcuseDetails(excuse) {
         const cls = statusClass[excuse.status] || 'alert-warning';
         const txt = statusText[excuse.status] || 'قيد المراجعة';
         detailStatus.className = `alert ${cls} mb-0`;
-        detailStatus.innerHTML = `${txt}`;
+        detailStatus.innerHTML = `<strong>التصنيف المبدئي:</strong> ${txt}`;
     }
 
     // Comment & Signature
