@@ -1194,82 +1194,103 @@ function showExcuseDetails(excuse) {
     const detailComment = document.getElementById('detailComment');
     const detailSignature = document.getElementById('detailSignature');
 
-    // Employee Decision (New)
+    // --- Employee Decision Logic ---
     const detailEmployeeDecision = document.getElementById('detailEmployeeDecision');
     const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
-    const employeeDecisionBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
-    const employeeDecisionDropdownContainer = document.getElementById('employeeDecisionDropdownContainer');
+    const employeeBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
+    const employeeDropdownContainer = document.getElementById('employeeDecisionDropdownContainer');
 
-    // Check if decision is already made (not empty and not pending)
-    const currentDecision = excuse.employee_decision || '';
-    const isLocked = currentDecision && currentDecision !== 'pending';
+    const empDecision = excuse.employee_decision || '';
+    const empLocked = empDecision && empDecision !== 'pending';
 
-    // Reset visibility first (fix for stale state from previous modal)
-    if (employeeDecisionBadgeContainer) employeeDecisionBadgeContainer.style.display = 'none';
-    if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = '';
-
-    if (isLocked) {
-        // Show badge, hide dropdown
-        if (employeeDecisionBadgeContainer) {
-            employeeDecisionBadgeContainer.innerHTML = getEmployeeDecisionBadge(currentDecision);
-            employeeDecisionBadgeContainer.style.display = '';
-        }
-        if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = 'none';
-    } else {
-        // Show dropdown, hide badge
-        if (employeeDecisionBadgeContainer) employeeDecisionBadgeContainer.style.display = 'none';
-        if (employeeDecisionDropdownContainer) employeeDecisionDropdownContainer.style.display = '';
-        if (detailEmployeeDecision) detailEmployeeDecision.value = currentDecision;
+    // Reset Visibility
+    if (employeeBadgeContainer) {
+        employeeBadgeContainer.style.display = 'none';
+        employeeBadgeContainer.innerHTML = '';
+    }
+    if (employeeDropdownContainer) employeeDropdownContainer.style.display = ''; // Default show
+    if (detailEmployeeDecision) {
+        detailEmployeeDecision.value = empDecision;
+        detailEmployeeDecision.disabled = false;
     }
 
-    // Committee Decision (3rd Status)
+    if (empLocked) {
+        // LOCKED: Hide Dropdown, Show Alert
+        if (employeeDropdownContainer) employeeDropdownContainer.style.display = 'none';
+
+        if (employeeBadgeContainer) {
+            employeeBadgeContainer.style.display = '';
+
+            const empConfig = {
+                'approved': { cls: 'alert-success', text: 'مقبول' },
+                'rejected': { cls: 'alert-danger', text: 'غير مقبول' },
+                'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
+            };
+            const conf = empConfig[empDecision] || { cls: 'alert-secondary', text: empDecision };
+
+            employeeBadgeContainer.innerHTML = `
+                <div class="alert ${conf.cls} mb-0" role="alert">
+                    <strong>القرار:</strong> ${conf.text}
+                </div>
+            `;
+        }
+    }
+
+    // --- Committee Decision Logic ---
     const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
     const detailCommitteeComment = document.getElementById('detailCommitteeComment');
-    const committeeDecisionBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
-    const committeeDecisionDropdownContainer = document.getElementById('committeeDecisionDropdownContainer');
+    const committeeBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
+    const committeeDropdownContainer = document.getElementById('committeeDecisionDropdownContainer');
     const committeeCommentDisplay = document.getElementById('committeeCommentDisplay');
 
-    // Committee can only decide if employee decision is set
-    const empDecision = excuse.employee_decision || '';
     const canCommitteeDecide = empDecision && empDecision !== 'pending';
     const committeeDecision = excuse.committee_decision || '';
-    const committeeIsLocked = committeeDecision && committeeDecision !== 'pending';
+    const committeeLocked = committeeDecision && committeeDecision !== 'pending';
 
-    // Reset visibility first (fix for stale state from previous modal)
-    if (committeeDecisionBadgeContainer) committeeDecisionBadgeContainer.style.display = 'none';
-    if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = '';
+    // Reset Visibility
+    if (committeeBadgeContainer) {
+        committeeBadgeContainer.style.display = 'none';
+        committeeBadgeContainer.innerHTML = '';
+    }
+    if (committeeDropdownContainer) committeeDropdownContainer.style.display = ''; // Default show
     if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
-    if (detailCommitteeComment) detailCommitteeComment.style.display = '';
+    if (detailCommitteeComment) {
+        detailCommitteeComment.style.display = '';
+        detailCommitteeComment.value = excuse.committee_comment || '';
+        detailCommitteeComment.disabled = !canCommitteeDecide; // Disabled if not ready
+    }
+    if (detailCommitteeDecision) {
+        detailCommitteeDecision.value = committeeDecision;
+        detailCommitteeDecision.disabled = !canCommitteeDecide;
+    }
 
-    if (committeeIsLocked) {
-        // Show badge, hide dropdown
-        if (committeeDecisionBadgeContainer) {
-            committeeDecisionBadgeContainer.innerHTML = getCommitteeDecisionBadge(committeeDecision);
-            committeeDecisionBadgeContainer.style.display = '';
-        }
-        if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = 'none';
+    if (committeeLocked) {
+        // LOCKED: Hide Dropdown, Show Alert
+        if (committeeDropdownContainer) committeeDropdownContainer.style.display = 'none';
 
-        // Show comment as text
-        if (committeeCommentDisplay) {
-            committeeCommentDisplay.innerHTML = excuse.committee_comment || '<span class="text-muted small">لا يوجد تعليق</span>';
-            committeeCommentDisplay.style.display = '';
+        if (committeeBadgeContainer) {
+            committeeBadgeContainer.style.display = '';
+
+            const comConfig = {
+                'approved': { cls: 'alert-success', text: 'مقبول' },
+                'rejected': { cls: 'alert-danger', text: 'مرفوض' }
+            };
+            const conf = comConfig[committeeDecision] || { cls: 'alert-secondary', text: committeeDecision };
+
+            committeeBadgeContainer.innerHTML = `
+                <div class="alert ${conf.cls} mb-0" role="alert">
+                    <strong>القرار:</strong> ${conf.text}
+                </div>
+            `;
         }
+
+        // Handle Comment (Text vs Textarea)
         if (detailCommitteeComment) detailCommitteeComment.style.display = 'none';
-    } else {
-        // Hide badge, show dropdown (but disable if employee hasn't decided)
-        if (committeeDecisionBadgeContainer) committeeDecisionBadgeContainer.style.display = 'none';
-        if (committeeDecisionDropdownContainer) committeeDecisionDropdownContainer.style.display = '';
-        if (detailCommitteeDecision) {
-            detailCommitteeDecision.value = committeeDecision;
-            detailCommitteeDecision.disabled = !canCommitteeDecide;
-        }
-
-        // Show textarea (but disable if employee hasn't decided)
-        if (committeeCommentDisplay) committeeCommentDisplay.style.display = 'none';
-        if (detailCommitteeComment) {
-            detailCommitteeComment.style.display = '';
-            detailCommitteeComment.value = excuse.committee_comment || '';
-            detailCommitteeComment.disabled = !canCommitteeDecide;
+        if (committeeCommentDisplay) {
+            committeeCommentDisplay.style.display = '';
+            committeeCommentDisplay.innerHTML = excuse.committee_comment
+                ? `<strong>تعليق اللجنة:</strong> ${excuse.committee_comment}`
+                : '<span class="text-muted small">لا يوجد تعليق</span>';
         }
     }
 
