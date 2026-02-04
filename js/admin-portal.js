@@ -1261,10 +1261,13 @@ function showExcuseDetails(excuse) {
         if (empSection) empSection.style.display = 'none';
         if (empBadgeCol) empBadgeCol.style.display = 'block';
         if (empBadgeContainer) {
-            empBadgeContainer.innerHTML = `
-                <div class="small text-muted mb-1">مراجعة الموظف:</div>
-                ${getEmployeeDecisionBadge(empDecision)}
-            `;
+            const alertConfig = {
+                'approved': { cls: 'alert-success', text: 'مقبول' },
+                'rejected': { cls: 'alert-danger', text: 'مرفوض' },
+                'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
+            };
+            const c = alertConfig[empDecision] || { cls: 'alert-secondary', text: empDecision };
+            empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3"><strong>مراجعة الموظف:</strong> ${c.text}</div>`;
         }
 
         if (!commLocked) {
@@ -1288,10 +1291,12 @@ function showExcuseDetails(excuse) {
             if (commSection) commSection.style.display = 'none';
             if (commBadgeCol) commBadgeCol.style.display = 'block';
             if (commBadgeContainer) {
-                commBadgeContainer.innerHTML = `
-                    <div class="small text-muted mb-1">قرار اللجنة:</div>
-                    ${getCommitteeDecisionBadge(commDecision)}
-                `;
+                const alertConfig = {
+                    'approved': { cls: 'alert-success', text: 'مقبول' },
+                    'rejected': { cls: 'alert-danger', text: 'مرفوض' }
+                };
+                const c = alertConfig[commDecision] || { cls: 'alert-secondary', text: commDecision };
+                commBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0 small py-2 px-3"><strong>قرار اللجنة:</strong> ${c.text}</div>`;
             }
 
             if (sigContainer) sigContainer.style.display = 'block';
