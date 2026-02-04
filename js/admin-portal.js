@@ -580,6 +580,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 /**
+ * Helper to render PDF action button
+ */
+function renderPdfAction(excuse) {
+    const decision = (excuse.committee_decision || '').toLowerCase();
+    // Enable if approved or rejected (decision made)
+    const isDecided = ['approved', 'rejected', 'accepted'].includes(decision);
+
+    if (isDecided) {
+        return `<i class="hgi-stroke hgi-standard hgi-view-01 text-primary pdf-btn" data-id="${excuse.id}" title="عرض PDF" style="cursor: pointer; font-size: 1.25rem;"></i>`;
+    } else {
+        return `<i class="hgi-stroke hgi-standard hgi-view-01 text-muted" title="القرار قيد الانتظار" style="cursor: not-allowed; font-size: 1.25rem; opacity: 0.5;"></i>`;
+    }
+}
+
+/**
  * Render the excuses table
  */
 function renderExcusesTable() {
@@ -650,6 +665,7 @@ function renderExcusesTable() {
                 <td class="ps-4">${committeeDecisionBadge}</td>
                 <td class="ps-4">
                     <div class="d-flex gap-3 justify-content-center">
+                        ${renderPdfAction(excuse)}
                         <i class="hgi-stroke hgi-standard hgi-pencil-edit-02 text-success edit-btn" data-index="${realIndex}" title="تعديل" style="cursor: pointer; font-size: 1.25rem;"></i>
                         <i class="hgi-stroke hgi-standard hgi-delete-02 text-danger delete-btn" data-id="${excuse.id}" title="حذف" style="cursor: pointer; font-size: 1.25rem;"></i>
                     </div>
@@ -676,6 +692,14 @@ function renderExcusesTable() {
         btn.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
             confirmDelete(id);
+        });
+    });
+
+    // Attach PDF listeners
+    document.querySelectorAll('.pdf-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            downloadExcusePDF(id);
         });
     });
 }
