@@ -1239,109 +1239,77 @@ function showExcuseDetails(excuse) {
     const commLocked = commDecision !== 'pending';
 
     // 1. Employee Logic
-    if (empLocked) {
-        // Show Badge
-        if (empBadgeCol) empBadgeCol.style.display = 'block';
-        if (empSection) empSection.style.display = 'none';
+    // --- Refactored 3-Phase Sequential Workflow ---
+    if (!empLocked) {
+        // Phase 1: Only Employee Decision Input
+        if (empSection) empSection.style.display = 'block';
+        if (empBadgeCol) empBadgeCol.style.display = 'none';
+        if (commSection) commSection.style.display = 'none';
+        if (commBadgeCol) commBadgeCol.style.display = 'none';
+        if (sigContainer) sigContainer.style.display = 'none';
+        if (finalCommentSec) finalCommentSec.style.display = 'none';
 
-        if (empBadgeContainer) {
-            const config = {
-                'approved': { cls: 'alert-success', text: 'مقبول' },
-                'rejected': { cls: 'alert-danger', text: 'مرفوض' },
-                'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
-            };
-            const c = config[empDecision] || { cls: 'alert-secondary', text: empDecision };
-            empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0"><strong>مراجعة الموظف:</strong> ${c.text}</div>`;
-        }
-
-        // Auto-switch to decision tab if employee has finished
-        const decisionTab = document.getElementById('decision-tab');
-        if (decisionTab) {
-            bootstrap.Tab.getInstance(decisionTab)?.show() || new bootstrap.Tab(decisionTab).show();
+        if (detailEmployeeDecision) detailEmployeeDecision.value = '';
+        if (btnSaveAction) {
+            btnSaveAction.style.display = 'block';
+            btnSaveAction.innerHTML = 'حفظ قرار الموظف <i class="hgi-stroke hgi-standard hgi-save-01 ms-1"></i>';
+            btnSaveAction.onclick = () => saveEmployeeDecision(excuse.id);
         }
     } else {
-        // Show Inputs
-        if (empBadgeCol) empBadgeCol.style.display = 'none';
-        if (empSection) empSection.style.display = 'block';
-        if (detailEmployeeDecision) detailEmployeeDecision.value = '';
-    }
+        // Phase 2 or 3: Employee Decision is done, show badge
+        if (empSection) empSection.style.display = 'none';
+        if (empBadgeCol) empBadgeCol.style.display = 'block';
+        if (empBadgeContainer) {
+            empBadgeContainer.innerHTML = `
+                <div class="small text-muted mb-1">مراجعة الموظف:</div>
+                ${getEmployeeDecisionBadge(empDecision)}
+            `;
+        }
 
-    // Reactive Listener for Employee Decision Change
-    if (detailEmployeeDecision && !detailEmployeeDecision.hasListener) {
-        detailEmployeeDecision.addEventListener('change', function () {
-            const val = this.value;
-            const commSecLocal = document.getElementById('committeeDecisionInputSection');
-            const sigContLocal = document.getElementById('committeeSignaturesContainer');
-            if (val === 'committee') {
-                if (commSecLocal) commSecLocal.style.display = 'block';
-                if (sigContLocal) sigContLocal.style.display = 'block';
-                loadCommitteeCheckboxes(excuse, false);
-            } else {
-                if (commSecLocal) commSecLocal.style.display = 'none';
-                if (sigContLocal) sigContLocal.style.display = 'none';
-            }
-        });
-        detailEmployeeDecision.hasListener = true;
-    }
-
-    // 2. Committee Logic
-    // Hide by default
-    if (commBadgeCol) commBadgeCol.style.display = 'none';
-    if (commSection) commSection.style.display = 'none';
-    if (finalCommentSec) finalCommentSec.style.display = 'none';
-
-    const sigContainer = document.getElementById('committeeSignaturesContainer');
-    if (empDecision === 'committee') {
-        if (sigContainer) sigContainer.style.display = 'block';
-        if (commLocked) {
-            // Show Badge
-            if (commBadgeCol) commBadgeCol.style.display = 'block';
-            if (commBadgeContainer) {
-                const config = {
-                    'approved': { cls: 'alert-success', text: 'مقبول' },
-                    'rejected': { cls: 'alert-danger', text: 'مرفوض' }
-                };
-                const c = config[commDecision] || { cls: 'alert-secondary', text: commDecision };
-                commBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0"><strong>قرار اللجنة:</strong> ${c.text}</div>`;
-            }
-            // Show Final Comment
-            if (finalCommentSec) finalCommentSec.style.display = 'block';
-            if (commCommentDisplay) {
-                commCommentDisplay.innerHTML = excuse.committee_comment
-                    ? `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`
-                    : '<span class="text-muted small">لا يوجد تعليق</span>';
-            }
-            // Show Signatures (Read-only)
-            loadCommitteeCheckboxes(excuse, true);
-        } else {
-            // Show Inputs
+        if (!commLocked) {
+            // Phase 2: Show Committee Inputs
             if (commSection) commSection.style.display = 'block';
+            if (commBadgeCol) commBadgeCol.style.display = 'none';
+            if (sigContainer) sigContainer.style.display = 'block';
+            if (finalCommentSec) finalCommentSec.style.display = 'none';
+
             if (detailCommitteeDecision) detailCommitteeDecision.value = '';
             if (detailCommitteeComment) detailCommitteeComment.value = '';
             loadCommitteeCheckboxes(excuse, false); // Editable
-        }
-    } else {
-        if (sigContainer) sigContainer.style.display = 'none';
-        if (commLocked) {
-            // Edge case: maybe decision was made but empDecision was changed back?
-            if (finalCommentSec && excuse.committee_comment) {
-                finalCommentSec.style.display = 'block';
-                commCommentDisplay.innerHTML = `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`;
+
+            if (btnSaveAction) {
+                btnSaveAction.style.display = 'block';
+                btnSaveAction.innerHTML = 'حفظ قرار اللجنة <i class="hgi-stroke hgi-standard hgi-save-01 ms-1"></i>';
+                btnSaveAction.onclick = () => saveCommitteeDecision(excuse.id);
             }
+        } else {
+            // Phase 3: Both Done, Read-Only View
+            if (commSection) commSection.style.display = 'none';
+            if (commBadgeCol) commBadgeCol.style.display = 'block';
+            if (commBadgeContainer) {
+                commBadgeContainer.innerHTML = `
+                    <div class="small text-muted mb-1">قرار اللجنة:</div>
+                    ${getCommitteeDecisionBadge(commDecision)}
+                `;
+            }
+
+            if (sigContainer) sigContainer.style.display = 'block';
+            if (finalCommentSec) finalCommentSec.style.display = 'block';
+            if (commCommentDisplay) {
+                commCommentDisplay.innerHTML = excuse.committee_comment
+                    ? `<div class="p-3 bg-light border rounded-3">${excuse.committee_comment}</div>`
+                    : '<div class="p-3 bg-light border rounded-3 text-muted small">لا يوجد تعليق من اللجنة</div>';
+            }
+            loadCommitteeCheckboxes(excuse, true); // Read-only
+            if (btnSaveAction) btnSaveAction.style.display = 'none';
         }
     }
 
-    // 3. Save Button Logic
-    if (btnSaveAction) {
-        if (!empLocked) {
-            btnSaveAction.style.display = '';
-            btnSaveAction.onclick = () => saveEmployeeDecision(excuse.id);
-        } else if (empDecision === 'committee' && !commLocked) {
-            btnSaveAction.style.display = '';
-            btnSaveAction.onclick = () => saveCommitteeDecision(excuse.id);
-        } else {
-            btnSaveAction.style.display = 'none';
-        }
+    // Reactive Listener Removal (Optional: can be commented out or removed)
+    // The previous reactive listener is no longer needed because Phase 1 only shows Emp Select.
+    // Transition to Phase 2 happens only after saving Emp decision.
+    if (detailEmployeeDecision && !detailEmployeeDecision.hasListener) {
+        detailEmployeeDecision.hasListener = true; // Mark as handled
     }
 
     // Files
