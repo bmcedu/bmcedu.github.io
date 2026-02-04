@@ -855,6 +855,11 @@ function saveEmployeeDecision(id) {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'success') {
+                // Close modal first
+                const modal = bootstrap.Modal.getInstance(document.getElementById('detailsModal'));
+                if (modal) modal.hide();
+
+                // Then show success message
                 Swal.fire({
                     icon: 'success',
                     title: 'تم الحفظ',
@@ -862,8 +867,6 @@ function saveEmployeeDecision(id) {
                     timer: 1500,
                     showConfirmButton: false
                 });
-                // Update local data? Maybe reload.
-                // For now, reload all to reflect changes if needed
                 loadAllExcuses();
             } else {
                 Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
@@ -911,6 +914,11 @@ function saveCommitteeDecision(id) {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'success') {
+                // Close modal first
+                const modal = bootstrap.Modal.getInstance(document.getElementById('detailsModal'));
+                if (modal) modal.hide();
+
+                // Then show success message
                 Swal.fire({
                     icon: 'success',
                     title: 'تم الحفظ',
