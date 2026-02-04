@@ -82,205 +82,207 @@
         <div class="row g-3">
             <!-- Column 2 (Data Table) -->
             <div class="col-12">
-                <div class="bg-white rounded border">
-                    <!-- Row 1: Title (No Add Button for Admin) -->
-                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                        <h5 class="mb-0">جميع أعذار الطلاب</h5>
-                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#filterSection">
-                            <i class="hgi hgi-stroke hgi-standard hgi-filter"></i> تصفية
-                        </button>
-                    </div>
+                <div class="card shadow-sm border-0 sticky-wrapper table-container">
+                    <div class="card-body p-0">
+                        <!-- Row 1: Title (No Add Button for Admin) -->
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <h5 class="mb-0">جميع أعذار الطلاب</h5>
+                            <button class="btn btn-outline-secondary d-flex align-items-center gap-2" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#filterSection">
+                                <i class="hgi hgi-stroke hgi-standard hgi-filter"></i> تصفية
+                            </button>
+                        </div>
 
-                    <!-- Filter Section (Collapsible) -->
-                    <div class="collapse show border-bottom bg-light bg-opacity-50" id="filterSection">
-                        <div class="p-3">
-                            <div class="row g-3">
-                                <!-- ROW 1 -->
-                                <!-- 1. Student Number (Custom Searchable Select) -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">الرقم الجامعي</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control ps-5 pe-5" id="filterStudentIdInput"
-                                            placeholder="بحث برقم الطالب..." autocomplete="off">
-                                        <!-- Icons -->
-                                        <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
-                                            style="pointer-events: none;"></i>
-                                        <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
+                        <!-- Filter Section (Collapsible) -->
+                        <div class="collapse show border-bottom bg-light bg-opacity-50" id="filterSection">
+                            <div class="p-3">
+                                <div class="row g-3">
+                                    <!-- ROW 1 -->
+                                    <!-- 1. Student Number (Custom Searchable Select) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">الرقم الجامعي</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control ps-5 pe-5" id="filterStudentIdInput"
+                                                placeholder="بحث برقم الطالب..." autocomplete="off">
+                                            <!-- Icons -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                                                style="pointer-events: none;"></i>
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
 
-                                        <input type="hidden" id="filterStudentId">
-                                        <div id="studentIdDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
-                                            style="max-height: 200px; overflow-y: auto;">
-                                            <!-- Options populated dynamically -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- 2. Student Name (Custom Searchable Select) -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">اسم الطالب</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control ps-5 pe-5" id="filterStudentNameInput"
-                                            placeholder="بحث أو اختر اسم الطالب..." autocomplete="off">
-                                        <!-- Icons -->
-                                        <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
-                                            style="pointer-events: none;"></i>
-                                        <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
-
-                                        <input type="hidden" id="filterStudentName">
-                                        <div id="studentNameDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
-                                            style="max-height: 200px; overflow-y: auto;">
-                                            <!-- Options populated dynamically -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- 3. Date Range -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">تاريخ تقديم العذر</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control" id="filterDateRange"
-                                            placeholder="اختر الفترة..." style="background-color: #fff;"
-                                            autocomplete="off">
-                                        <!-- Icon -->
-                                        <i class="hgi hgi-stroke hgi-calendar-03 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
-                                    </div>
-                                </div>
-
-                                <!-- ROW 2 -->
-                                <!-- 4. Status (Custom Static Select) -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">الحالة</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control pe-5" id="filterStatusInput"
-                                            placeholder="الكل" autocomplete="off"
-                                            style="cursor: pointer; background-color: #fff;">
-                                        <!-- Icon -->
-                                        <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
-
-                                        <input type="hidden" id="filterStatus">
-                                        <div id="statusDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="pending">قيد
-                                                المراجعة</div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="approved">
-                                                مقبول
-                                            </div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="rejected">
-                                                مرفوض
-                                            </div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="mismatch">غير
-                                                مطابق</div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="late">متأخر
+                                            <input type="hidden" id="filterStudentId">
+                                            <div id="studentIdDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
+                                                style="max-height: 200px; overflow-y: auto;">
+                                                <!-- Options populated dynamically -->
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- 5. Type (Custom Static Select) -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">نوع العذر</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control pe-5" id="filterTypeInput"
-                                            placeholder="الكل" autocomplete="off"
-                                            style="cursor: pointer; background-color: #fff;">
-                                        <!-- Icon -->
-                                        <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
+                                    <!-- 2. Student Name (Custom Searchable Select) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">اسم الطالب</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control ps-5 pe-5"
+                                                id="filterStudentNameInput" placeholder="بحث أو اختر اسم الطالب..."
+                                                autocomplete="off">
+                                            <!-- Icons -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                                                style="pointer-events: none;"></i>
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
 
-                                        <input type="hidden" id="filterType">
-                                        <div id="typeDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="health">عذر
-                                                صحي
-                                            </div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="death">حالة
-                                                وفاة
-                                            </div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="scientific">
-                                                مهمة
-                                                علمية</div>
-                                            <div class="dropdown-item p-2 cursor-pointer" data-value="other">أخرى
+                                            <input type="hidden" id="filterStudentName">
+                                            <div id="studentNameDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
+                                                style="max-height: 200px; overflow-y: auto;">
+                                                <!-- Options populated dynamically -->
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- 6. Course (Custom Searchable Select) -->
-                                <div class="col-md-4">
-                                    <label class="form-label small text-muted">المادة</label>
-                                    <div class="searchable-select position-relative">
-                                        <input type="text" class="form-control ps-5 pe-5" id="filterCourseInput"
-                                            placeholder="بحث أو اختر المادة..." autocomplete="off">
-                                        <!-- Icons -->
-                                        <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
-                                            style="pointer-events: none;"></i>
-                                        <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                            style="pointer-events: none;"></i>
-
-                                        <input type="hidden" id="filterCourse">
-                                        <div id="courseDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
-                                            style="max-height: 200px; overflow-y: auto;">
-                                            <!-- Options populated dynamically -->
+                                    <!-- 3. Date Range -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">تاريخ تقديم العذر</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control" id="filterDateRange"
+                                                placeholder="اختر الفترة..." style="background-color: #fff;"
+                                                autocomplete="off">
+                                            <!-- Icon -->
+                                            <i class="hgi hgi-stroke hgi-calendar-03 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Actions -->
-                                <div class="col-12 d-flex justify-content-end">
-                                    <button class="btn btn-primary px-4 d-inline-flex align-items-center gap-2"
-                                        id="btnResetFilters">
-                                        <i class="hgi hgi-stroke hgi-standard hgi-refresh"></i> إعادة تعيين
-                                    </button>
+
+                                    <!-- ROW 2 -->
+                                    <!-- 4. Status (Custom Static Select) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">الحالة</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control pe-5" id="filterStatusInput"
+                                                placeholder="الكل" autocomplete="off"
+                                                style="cursor: pointer; background-color: #fff;">
+                                            <!-- Icon -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+
+                                            <input type="hidden" id="filterStatus">
+                                            <div id="statusDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="pending">قيد
+                                                    المراجعة</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="approved">
+                                                    مقبول
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="rejected">
+                                                    مرفوض
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="mismatch">غير
+                                                    مطابق</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="late">متأخر
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 5. Type (Custom Static Select) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">نوع العذر</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control pe-5" id="filterTypeInput"
+                                                placeholder="الكل" autocomplete="off"
+                                                style="cursor: pointer; background-color: #fff;">
+                                            <!-- Icon -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+
+                                            <input type="hidden" id="filterType">
+                                            <div id="typeDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="health">عذر
+                                                    صحي
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="death">حالة
+                                                    وفاة
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="scientific">
+                                                    مهمة
+                                                    علمية</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="other">أخرى
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 6. Course (Custom Searchable Select) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">المادة</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control ps-5 pe-5" id="filterCourseInput"
+                                                placeholder="بحث أو اختر المادة..." autocomplete="off">
+                                            <!-- Icons -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-search-01 position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                                                style="pointer-events: none;"></i>
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+
+                                            <input type="hidden" id="filterCourse">
+                                            <div id="courseDropdownList" class="dropdown-menu w-100 p-0 shadow-sm"
+                                                style="max-height: 200px; overflow-y: auto;">
+                                                <!-- Options populated dynamically -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Actions -->
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button class="btn btn-primary px-4 d-inline-flex align-items-center gap-2"
+                                            id="btnResetFilters">
+                                            <i class="hgi hgi-stroke hgi-standard hgi-refresh"></i> إعادة تعيين
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Row 2: Table -->
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle m-0">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="ps-4 fw-medium">رقم العذر</th>
-                                <th scope="col" class="ps-4 fw-medium">الطالب</th>
-                                <th scope="col" class="ps-4 fw-medium">نوع العذر</th>
-                                <th scope="col" class="ps-4 fw-medium">تاريخ تقديم العذر</th>
-                                <th scope="col" class="ps-4 fw-medium">تاريخ العذر</th>
-                                <th scope="col" class="ps-4 fw-medium">التصنيف المبدئي</th>
-                                <th scope="col" class="ps-4 fw-medium">مراجعة الموظف</th>
-                                <th scope="col" class="ps-4 fw-medium">قرار اللجنة</th>
-                                <th scope="col" class="ps-4 fw-medium">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="requestsTableBody">
-                            <!-- Requests will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
+                    <!-- Row 2: Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="ps-4 fw-medium">رقم العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">الطالب</th>
+                                    <th scope="col" class="ps-4 fw-medium">نوع العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">تاريخ تقديم العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">تاريخ العذر</th>
+                                    <th scope="col" class="ps-4 fw-medium">التصنيف المبدئي</th>
+                                    <th scope="col" class="ps-4 fw-medium">مراجعة الموظف</th>
+                                    <th scope="col" class="ps-4 fw-medium">قرار اللجنة</th>
+                                    <th scope="col" class="ps-4 fw-medium">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <!-- Requests will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
 
-                <!-- Row 3: Pagination -->
-                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
-                    <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
-                    <nav aria-label="Page navigation">
-                        <ul id="pagination" class="pagination justify-content-end mb-0 gap-2">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+                    <!-- Row 3: Pagination -->
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                        <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
+                        <nav aria-label="Page navigation">
+                            <ul id="pagination" class="pagination justify-content-end mb-0 gap-2">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div> <!-- Close card-body -->
+            </div> <!-- Close card -->
         </div>
-    </div>
     </div>
 
     <!-- Request Details Modal -->
