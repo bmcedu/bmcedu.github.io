@@ -2311,7 +2311,7 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
     } else {
         // Editable mode: Show all signatures with checkboxes (no images)
         list.innerHTML = signaturesList.map(sig => `
-            <label class="border rounded p-2 m-0 bg-white d-flex align-items-start gap-2" style="min-width: 180px; cursor: pointer;">
+            <label class="border rounded p-2 m-0 bg-white d-flex align-items-start gap-2" style="cursor: pointer;">
                 <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" name="committeeSig" 
                     value="${sig.id}" id="sig_cb_${sig.id}" 
                     ${selectedIds.includes(String(sig.id)) ? 'checked' : ''}>
