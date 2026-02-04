@@ -965,10 +965,9 @@ function getExcuseTypeArabic(type) {
 function getEmployeeDecisionBadge(decision) {
     const DECISION_MAP = {
         'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
-        'قيد المراجعة': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
-        'مقبول': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
-        'غير مقبول': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
-        'يحتاج قرار لجنة': { text: 'يحتاج قرار لجنة', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
+        'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
+        'rejected': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
+        'committee': { text: 'يحتاج قرار لجنة', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
     };
 
     // Default to pending if empty
@@ -1118,7 +1117,7 @@ function showExcuseDetails(excuse) {
 
     // Check if decision is already made (not empty and not pending)
     const currentDecision = excuse.employee_decision || '';
-    const isLocked = currentDecision && currentDecision !== 'pending' && currentDecision !== 'قيد المراجعة';
+    const isLocked = currentDecision && currentDecision !== 'pending';
 
     if (detailEmployeeDecision) {
         detailEmployeeDecision.value = currentDecision;
