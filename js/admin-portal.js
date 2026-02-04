@@ -856,7 +856,7 @@ function saveEmployeeDecision(id) {
         .then(data => {
             if (data.status === 'success') {
                 // Robustly close modal
-                const modalEl = document.getElementById('detailsModal');
+                const modalEl = document.getElementById('requestDetailsModal');
                 const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
                 modal.hide();
 
@@ -916,7 +916,7 @@ function saveCommitteeDecision(id) {
         .then(data => {
             if (data.status === 'success') {
                 // Robustly close modal
-                const modalEl = document.getElementById('detailsModal');
+                const modalEl = document.getElementById('requestDetailsModal');
                 const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
                 modal.hide();
 
