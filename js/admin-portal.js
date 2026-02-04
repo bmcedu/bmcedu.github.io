@@ -1266,7 +1266,9 @@ function showExcuseDetails(excuse) {
     if (commSection) commSection.style.display = 'none';
     if (finalCommentSec) finalCommentSec.style.display = 'none';
 
+    const sigContainer = document.getElementById('committeeSignaturesContainer');
     if (empDecision === 'committee') {
+        if (sigContainer) sigContainer.style.display = 'block';
         if (commLocked) {
             // Show Badge
             if (commBadgeCol) commBadgeCol.style.display = 'block';
@@ -1285,19 +1287,23 @@ function showExcuseDetails(excuse) {
                     ? `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`
                     : '<span class="text-muted small">لا يوجد تعليق</span>';
             }
+            // Show Signatures (Read-only)
+            loadCommitteeCheckboxes(excuse, true);
         } else {
             // Show Inputs
             if (commSection) commSection.style.display = 'block';
             if (detailCommitteeDecision) detailCommitteeDecision.value = '';
             if (detailCommitteeComment) detailCommitteeComment.value = '';
-            loadCommitteeCheckboxes(excuse, false); // Load signatures for editing
+            loadCommitteeCheckboxes(excuse, false); // Editable
         }
-    } else if (commLocked) {
-        // Edge case: maybe decision was made but empDecision was changed back?
-        // Usually, we just show final comment if it exists
-        if (finalCommentSec && excuse.committee_comment) {
-            finalCommentSec.style.display = 'block';
-            commCommentDisplay.innerHTML = `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`;
+    } else {
+        if (sigContainer) sigContainer.style.display = 'none';
+        if (commLocked) {
+            // Edge case: maybe decision was made but empDecision was changed back?
+            if (finalCommentSec && excuse.committee_comment) {
+                finalCommentSec.style.display = 'block';
+                commCommentDisplay.innerHTML = `<strong>ملاحظة اللجنة:</strong> ${excuse.committee_comment}`;
+            }
         }
     }
 
