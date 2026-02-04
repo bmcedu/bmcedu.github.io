@@ -2125,8 +2125,8 @@ function renderSignaturesList() {
 }
 
 function openAddSignatureModal() {
-    if (signaturesList.length >= 4) {
-        Swal.fire('تنبيه', 'لقد وصلت للحد الأقصى (4 تواقيع). يرجى حذف توقيع لإضافة جديد.', 'warning');
+    if (signaturesList.length >= 5) {
+        Swal.fire('تنبيه', 'لقد وصلت للحد الأقصى (5 تواقيع). يرجى حذف توقيع لإضافة جديد.', 'warning');
         return;
     }
     document.getElementById('sigId').value = '';
@@ -2433,15 +2433,16 @@ async function downloadExcusePDF(id) {
         const sigs = (await Promise.all(sigPromises)).filter(Boolean);
 
         // 4. Draw Signatures on Last Page
-        // Position: Bottom area. 4 slots horizontally.
-        const sigWidth = 90;
-        const sigHeight = 45;
-        const margin = 60; // Increased to move signatures to the right
-        const startY = 40; // Distance from bottom
+        // Position: Bottom area. 5 slots horizontally.
+        const sigWidth = 85;  // Slightly smaller to fit 5
+        const sigHeight = 42;
+        const spacing = 15;   // Slightly tighter spacing
+        const margin = 50;    // Adjusted margin
+        const startY = 40;    // Distance from bottom
 
         for (let i = 0; i < sigs.length; i++) {
             const sig = sigs[i];
-            const x = margin + (i * (sigWidth + 20));
+            const x = margin + (i * (sigWidth + spacing));
             const y = startY;
 
             const img = await pdfDoc.embedPng(sig.bytes).catch(async () => {
