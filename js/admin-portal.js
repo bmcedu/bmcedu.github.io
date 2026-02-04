@@ -1116,14 +1116,24 @@ function showExcuseDetails(excuse) {
     const detailEmployeeDecision = document.getElementById('detailEmployeeDecision');
     const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
 
+    // Check if decision is already made (not empty and not pending)
+    const currentDecision = excuse.employee_decision || '';
+    const isLocked = currentDecision && currentDecision !== 'pending' && currentDecision !== 'قيد المراجعة';
+
     if (detailEmployeeDecision) {
-        detailEmployeeDecision.value = excuse.employee_decision || '';
+        detailEmployeeDecision.value = currentDecision;
+        detailEmployeeDecision.disabled = isLocked;
     }
 
     if (btnSaveEmployeeDecision) {
-        btnSaveEmployeeDecision.onclick = function () {
-            saveEmployeeDecision(excuse.id);
-        };
+        if (isLocked) {
+            btnSaveEmployeeDecision.style.display = 'none';
+        } else {
+            btnSaveEmployeeDecision.style.display = '';
+            btnSaveEmployeeDecision.onclick = function () {
+                saveEmployeeDecision(excuse.id);
+            };
+        }
     }
 
     if (detailComment) {
