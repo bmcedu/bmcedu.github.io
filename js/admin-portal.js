@@ -194,7 +194,6 @@ function extractFilterOptions() {
         });
 
         const sortedNames = [...uniqueNames.values()].sort();
-        console.log('[Debug] Found', sortedNames.length, 'unique student names');
 
         // Populate Dropdown List
         let listHtml = `<div class="dropdown-item p-2 cursor-pointer text-muted small" data-value="">الكل</div>`;
