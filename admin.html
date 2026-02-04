@@ -82,7 +82,7 @@
         <div class="row g-3">
             <!-- Column 2 (Data Table) -->
             <div class="col-12">
-                <div class="card shadow-sm border-0 sticky-wrapper table-container">
+                <div class="card shadow-sm border sticky-wrapper table-container">
                     <div class="card-body p-0">
                         <!-- Row 1: Title (No Add Button for Admin) -->
                         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
@@ -94,12 +94,12 @@
                         </div>
 
                         <!-- Filter Section (Collapsible) -->
-                        <div class="collapse show border-bottom bg-light bg-opacity-50" id="filterSection">
+                        <div class="collapse border-bottom bg-light bg-opacity-50" id="filterSection">
                             <div class="p-3">
-                                <div class="row g-2">
+                                <div class="row g-3">
                                     <!-- ROW 1 -->
                                     <!-- 1. Student Number (Custom Searchable Select) -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">الرقم الجامعي</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control ps-5 pe-5" id="filterStudentIdInput"
@@ -118,7 +118,7 @@
                                         </div>
                                     </div>
                                     <!-- 2. Student Name (Custom Searchable Select) -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">اسم الطالب</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control ps-5 pe-5"
@@ -138,21 +138,49 @@
                                         </div>
                                     </div>
                                     <!-- 3. Date Range -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">تاريخ تقديم العذر</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control" id="filterDateRange"
                                                 placeholder="اختر الفترة..." style="background-color: #fff;"
                                                 autocomplete="off">
                                             <!-- Icon -->
-                                            <i class="hgi hgi-stroke hgi-calendar-03 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                            <i class="hgi hgi-stroke hgi-standard hgi-calendar-03 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
                                                 style="pointer-events: none;"></i>
+                                        </div>
+                                    </div>
+                                    <!-- 4. Type (Custom Static Select) -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">نوع العذر</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control pe-5" id="filterTypeInput"
+                                                placeholder="الكل" autocomplete="off"
+                                                style="cursor: pointer; background-color: #fff;">
+                                            <!-- Icon -->
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+
+                                            <input type="hidden" id="filterType">
+                                            <div id="typeDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="health">عذر
+                                                    صحي
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="death">حالة
+                                                    وفاة
+                                                </div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="scientific">
+                                                    مهمة
+                                                    علمية</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="other">أخرى
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!-- ROW 2 -->
                                     <!-- 4. Initial Classification Filter -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">التصنيف المبدئي</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control pe-5" id="filterStatusInput"
@@ -182,7 +210,7 @@
                                     </div>
 
                                     <!-- 5. Employee Decision Filter -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">مراجعة الموظف</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control pe-5"
@@ -205,7 +233,7 @@
                                     </div>
 
                                     <!-- 6. Committee Decision Filter -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">قرار اللجنة</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control pe-5"
@@ -226,36 +254,8 @@
                                     </div>
 
                                     <!-- ROW 3 -->
-                                    <!-- 7. Type (Custom Static Select) -->
-                                    <div class="col-md-4">
-                                        <label class="form-label small text-muted">نوع العذر</label>
-                                        <div class="searchable-select position-relative">
-                                            <input type="text" class="form-control pe-5" id="filterTypeInput"
-                                                placeholder="الكل" autocomplete="off"
-                                                style="cursor: pointer; background-color: #fff;">
-                                            <!-- Icon -->
-                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                                style="pointer-events: none;"></i>
-
-                                            <input type="hidden" id="filterType">
-                                            <div id="typeDropdownList" class="dropdown-menu w-100 p-0 shadow-sm">
-                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
-                                                <div class="dropdown-item p-2 cursor-pointer" data-value="health">عذر
-                                                    صحي
-                                                </div>
-                                                <div class="dropdown-item p-2 cursor-pointer" data-value="death">حالة
-                                                    وفاة
-                                                </div>
-                                                <div class="dropdown-item p-2 cursor-pointer" data-value="scientific">
-                                                    مهمة
-                                                    علمية</div>
-                                                <div class="dropdown-item p-2 cursor-pointer" data-value="other">أخرى
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 8. Course (Custom Searchable Select) -->
-                                    <div class="col-md-4">
+                                    <!-- 7. Course (Custom Searchable Select) -->
+                                    <div class="col-md-3">
                                         <label class="form-label small text-muted">المادة</label>
                                         <div class="searchable-select position-relative">
                                             <input type="text" class="form-control ps-5 pe-5" id="filterCourseInput"
@@ -308,7 +308,7 @@
                     </div>
 
                     <!-- Row 3: Pagination -->
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2">
                         <span class="text-muted" id="requestsCountLabel">عرض 0 أعذار</span>
                         <nav aria-label="Page navigation">
                             <ul id="pagination" class="pagination justify-content-end mb-0 gap-2">
@@ -361,17 +361,17 @@
                             <!-- Status Summary Row (Badges Only) -->
                             <div class="row g-2 mb-4 pb-3 border-bottom">
                                 <!-- Initial Classification (Status) -->
-                                <div class="col-md-4" id="detailStatusColumn">
+                                <div class="col-md-3" id="detailStatusColumn">
                                     <div id="detailStatus" class="alert mb-0"></div>
                                 </div>
 
                                 <!-- Employee Review Badge -->
-                                <div class="col-md-4" id="employeeDecisionBadgeColumn" style="display: none;">
+                                <div class="col-md-3" id="employeeDecisionBadgeColumn" style="display: none;">
                                     <div id="employeeDecisionBadgeContainer"></div>
                                 </div>
 
                                 <!-- Committee Decision Badge -->
-                                <div class="col-md-4" id="committeeDecisionBadgeColumn" style="display: none;">
+                                <div class="col-md-3" id="committeeDecisionBadgeColumn" style="display: none;">
                                     <div id="committeeDecisionBadgeContainer"></div>
                                 </div>
                             </div>
@@ -407,18 +407,19 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3" id="committeeSignaturesContainer" style="display: none;">
-                                    <label class="fw-bold mb-2">توقيعات الأعضاء:</label>
-                                    <div id="committeeSignaturesList" class="d-flex flex-wrap gap-3">
-                                        <!-- Dynamic Checkboxes -->
-                                    </div>
-                                </div>
-
                                 <!-- 3. Final Comment Display (Read Only) -->
                                 <div id="finalCommentSection" class="mb-3" style="display: none;">
                                     <label class="fw-bold mb-2">تعليق اللجنة:</label>
-                                    <div id="committeeCommentDisplay" class="p-3 bg-light border rounded"
-                                        style="min-height: 60px;"></div>
+                                    <textarea class="form-control" id="committeeCommentDisplay" rows="3"
+                                        disabled></textarea>
+                                </div>
+
+                                <div class="mb-3" id="committeeSignaturesContainer" style="display: none;">
+                                    <label class="fw-bold mb-2">توقيعات الأعضاء:</label>
+                                    <div id="committeeSignaturesList" class="d-grid"
+                                        style="grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                                        <!-- Dynamic Checkboxes -->
+                                    </div>
                                 </div>
                             </div>
                         </div>

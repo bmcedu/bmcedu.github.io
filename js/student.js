@@ -502,7 +502,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Tab 1: Committee Decision
                     setText('detailComment', req.committee_comment || 'لا يوجد تعليق من اللجنة');
-                    setText('detailSignature', req.supervisor_signature || '-');
+
+                    // Display committee signatures
+                    const sigContainer = document.getElementById('detailSignatures');
+                    if (sigContainer) {
+                        let selectedIds = [];
+                        try {
+                            if (req.committee_signatures) {
+                                selectedIds = JSON.parse(req.committee_signatures);
+                            }
+                        } catch (e) {
+                            if (req.committee_signatures) selectedIds = [String(req.committee_signatures)];
+                        }
+
+                        if (selectedIds.length === 0) {
+                            sigContainer.innerHTML = '<span class="text-muted small">لم يتم تحديد أي توقيعات</span>';
+                        } else {
+                            // Fetch signature details if needed, or just display IDs for now
+                            // For simplicity, show the saved names/data from the request if available
+                            sigContainer.innerHTML = '<span class="text-muted small">توقيعات اللجنة محفوظة</span>';
+                        }
+                    }
 
                     // Tab 2: Personal Info
                     setVal('detailStudentId', req.student_id || sessionStorage.getItem('studentId'));
@@ -1154,8 +1174,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 1. Add Row
     addCourseBtn?.addEventListener('click', function () {
-        // Validate last row before adding new one
         const rows = coursesTableBody.querySelectorAll('tr');
+
+        // Check if already at maximum (8 courses)
+        if (rows.length >= 8) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'الحد الأقصى',
+                text: 'لا يمكن إضافة أكثر من 8 مواد لكل طلب',
+                confirmButtonText: 'حسناً'
+            });
+            return;
+        }
+
+        // Validate last row before adding new one
         if (rows.length > 0) {
             const lastRow = rows[rows.length - 1];
             const inputs = lastRow.querySelectorAll('select');

@@ -60,7 +60,7 @@ function loadAllExcuses() {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5 text-muted">
+                <td colspan="100" class="text-center py-5 text-muted">
                     <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i>جاري تحميل الأعذار...
                 </td>
             </tr>
@@ -1302,9 +1302,7 @@ function showExcuseDetails(excuse) {
             if (sigContainer) sigContainer.style.display = 'block';
             if (finalCommentSec) finalCommentSec.style.display = 'block';
             if (commCommentDisplay) {
-                commCommentDisplay.innerHTML = excuse.committee_comment
-                    ? `<div class="p-3 bg-light border rounded-3">${excuse.committee_comment}</div>`
-                    : '<div class="p-3 bg-light border rounded-3 text-muted small">لا يوجد تعليق من اللجنة</div>';
+                commCommentDisplay.value = excuse.committee_comment || 'لا يوجد تعليق من اللجنة';
             }
             loadCommitteeCheckboxes(excuse, true); // Read-only
             if (btnSaveAction) btnSaveAction.style.display = 'none';
@@ -2007,6 +2005,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const el = document.getElementById('addSignatureModal');
     if (el) addSignatureModal = new bootstrap.Modal(el);
 
+    // Load signatures immediately so they're available for request modals
+    loadSignatures();
+
     // Preview Logic
     const fileInput = document.getElementById('sigImage');
     if (fileInput) {
@@ -2197,6 +2198,11 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
     if (!list) return;
 
     if (signaturesList.length === 0) {
+        if (readOnly) {
+            // In read-only, show message that no signatures were selected
+            list.innerHTML = '<span class="text-muted small">لم يتم تحديد أي توقيعات</span>';
+            return;
+        }
         list.innerHTML = '<span class="text-muted small">لا توجد تواقيع متاحة (قم بإضافتها من الإعدادات)</span>';
         // Trigger fetch just in case not loaded
         loadSignatures();
@@ -2216,19 +2222,36 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
     // Ensure string comparison
     selectedIds = selectedIds.map(String);
 
-    list.innerHTML = signaturesList.map(sig => `
-        <div class="form-check form-check-inline border rounded p-2 m-0 bg-white d-flex align-items-center gap-2" style="min-width: 200px;">
-            <input class="form-check-input mt-0" type="checkbox" name="committeeSig" 
-                value="${sig.id}" id="sig_cb_${sig.id}" 
-                ${selectedIds.includes(String(sig.id)) ? 'checked' : ''}
-                ${readOnly ? 'disabled' : ''}>
-            <label class="form-check-label d-flex align-items-center gap-2 w-100" for="sig_cb_${sig.id}" style="cursor: pointer;">
-                ${sig.imageUrl ? `<img src="${sig.imageUrl}" style="height: 30px; width: auto; max-width: 60px;">` : ''}
-                <div class="d-flex flex-column lh-1">
-                    <span class="fw-bold small">${sig.name}</span>
+    if (readOnly) {
+        // Read-only mode: Show only selected signatures with images (no checkboxes)
+        const selectedSigs = signaturesList.filter(sig => selectedIds.includes(String(sig.id)));
+        if (selectedSigs.length === 0) {
+            list.innerHTML = '<span class="text-muted small">لم يتم تحديد أي توقيعات</span>';
+            return;
+        }
+        list.innerHTML = selectedSigs.map(sig => `
+            <div class="border rounded p-2 m-0 bg-white d-flex align-items-center gap-2">
+                ${sig.imageUrl
+                ? `<img src="${sig.imageUrl}" style="width: 40px; height: 30px; object-fit: cover;">`
+                : `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 40px; height: 30px;"><i class="hgi-stroke hgi-signature text-muted"></i></div>`}
+                <div>
+                    <span class="fw-bold small d-block">${sig.name}</span>
+                    <span class="text-muted" style="font-size: 10px;">${sig.position}</span>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        // Editable mode: Show all signatures with checkboxes (no images)
+        list.innerHTML = signaturesList.map(sig => `
+            <label class="border rounded p-2 m-0 bg-white d-flex align-items-start gap-2" style="min-width: 180px; cursor: pointer;">
+                <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" name="committeeSig" 
+                    value="${sig.id}" id="sig_cb_${sig.id}" 
+                    ${selectedIds.includes(String(sig.id)) ? 'checked' : ''}>
+                <div>
+                    <span class="fw-bold small d-block">${sig.name}</span>
                     <span class="text-muted" style="font-size: 10px;">${sig.position}</span>
                 </div>
             </label>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
