@@ -1231,6 +1231,7 @@ function showExcuseDetails(excuse) {
     const detailCommitteeDecision = document.getElementById('detailCommitteeDecision');
     const detailCommitteeComment = document.getElementById('detailCommitteeComment');
     const btnSaveAction = document.getElementById('btnSaveEmployeeDecision'); // Shared Save Button
+    const sigContainer = document.getElementById('committeeSignaturesContainer');
 
     // Decision States
     const empDecision = excuse.employee_decision || 'pending';
