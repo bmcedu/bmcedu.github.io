@@ -664,7 +664,7 @@ function renderExcusesTable() {
                 <td class="ps-4">${employeeDecisionBadge}</td>
                 <td class="ps-4">${committeeDecisionBadge}</td>
                 <td class="ps-4">
-                    <div class="d-flex gap-3 justify-content-center">
+                    <div class="d-flex gap-3 justify-content-start">
                         ${renderPdfAction(excuse)}
                         <i class="hgi-stroke hgi-standard hgi-pencil-edit-02 text-success edit-btn" data-index="${realIndex}" title="تعديل" style="cursor: pointer; font-size: 1.25rem;"></i>
                         <i class="hgi-stroke hgi-standard hgi-delete-02 text-danger delete-btn" data-id="${excuse.id}" title="حذف" style="cursor: pointer; font-size: 1.25rem;"></i>
