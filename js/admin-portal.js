@@ -2110,6 +2110,9 @@ function renderSignaturesList() {
                             <i class="hgi-stroke hgi-standard hgi-more-vertical-circle-01"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="openEditSignatureModal(${sig.id})">
+                                <i class="hgi-stroke hgi-standard hgi-pencil-edit-02 me-2 text-primary"></i>تعديل
+                            </a></li>
                             <li><a class="dropdown-item text-danger" href="#" onclick="deleteSignature(${sig.id})">
                                 <i class="hgi-stroke hgi-standard hgi-delete-02 me-2"></i>حذف
                             </a></li>
@@ -2127,10 +2130,34 @@ function openAddSignatureModal() {
         return;
     }
     document.getElementById('sigId').value = '';
+    document.querySelector('#addSignatureModal .modal-title').textContent = 'إضافة توقيع عضو لجنة';
     document.getElementById('sigName').value = '';
     document.getElementById('sigPosition').value = '';
     document.getElementById('sigImage').value = '';
     document.getElementById('sigPreviewContainer').classList.add('d-none');
+    addSignatureModal.show();
+}
+
+function openEditSignatureModal(id) {
+    const sig = signaturesList.find(s => String(s.id) === String(id));
+    if (!sig) return;
+
+    document.getElementById('sigId').value = sig.id;
+    document.querySelector('#addSignatureModal .modal-title').textContent = 'تعديل توقيع عضو لجنة';
+    document.getElementById('sigName').value = sig.name;
+    document.getElementById('sigPosition').value = sig.position;
+    document.getElementById('sigImage').value = ''; // Reset file input
+
+    // Show preview of current image
+    const img = document.getElementById('sigPreview');
+    const cont = document.getElementById('sigPreviewContainer');
+    if (img && cont && sig.imageUrl) {
+        img.src = sig.imageUrl;
+        cont.classList.remove('d-none');
+    } else if (cont) {
+        cont.classList.add('d-none');
+    }
+
     addSignatureModal.show();
 }
 
