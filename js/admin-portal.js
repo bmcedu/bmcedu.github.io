@@ -813,10 +813,16 @@ function applyFilters() {
         if (status && (excuse.status || 'pending') !== status) return false;
 
         // 3b. Employee Decision
-        if (empDecision && (excuse.employee_decision || '') !== empDecision) return false;
+        if (empDecision) {
+            const val = excuse.employee_decision || 'pending';
+            if (val !== empDecision) return false;
+        }
 
         // 3c. Committee Decision
-        if (commDecision && (excuse.committee_decision || '') !== commDecision) return false;
+        if (commDecision) {
+            const val = excuse.committee_decision || 'pending';
+            if (val !== commDecision) return false;
+        }
 
         // 4. Type
         if (type && excuse.excuse_type !== type) return false;
