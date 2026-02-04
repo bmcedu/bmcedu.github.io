@@ -627,6 +627,8 @@ function renderExcusesTable() {
         const excuseTypeAr = getExcuseTypeArabic(excuse.excuse_type);
         const submissionDate = formatSubmissionDate(excuse.date);
 
+        const employeeDecisionBadge = getEmployeeDecisionBadge(excuse.employee_decision);
+
         // ... [existing html generation] ...
         html += `
             <tr>
@@ -641,6 +643,7 @@ function renderExcusesTable() {
                 <td class="ps-4">${submissionDate}</td>
                 <td class="ps-4">${excuse.excuse_date || '-'}</td>
                 <td class="ps-4">${statusBadge}</td>
+                <td class="ps-4">${employeeDecisionBadge}</td>
                 <td class="ps-4">
                     <div class="d-flex gap-3 justify-content-center">
                         <i class="hgi-stroke hgi-standard hgi-pencil-edit-02 text-success edit-btn" data-index="${realIndex}" title="تعديل" style="cursor: pointer; font-size: 1.25rem;"></i>
@@ -818,6 +821,60 @@ function applyFilters() {
 }
 
 /**
+ * Save Employee Decision
+ */
+function saveEmployeeDecision(id) {
+    const decision = document.getElementById('detailEmployeeDecision').value;
+    const btn = document.getElementById('btnSaveEmployeeDecision');
+
+    if (!decision) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'تنبيه',
+            text: 'يرجى اختيار القرار أولاً'
+        });
+        return;
+    }
+
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'جاري الحفظ...';
+
+    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'update_decision',
+            id: id,
+            decision: decision
+        })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم الحفظ',
+                    text: 'تم حفظ قرار الموظف بنجاح',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                // Update local data? Maybe reload.
+                // For now, reload all to reflect changes if needed
+                loadAllExcuses();
+            } else {
+                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+            }
+        })
+        .catch(err => Swal.fire('خطأ', 'خطأ في الاتصال', 'error'))
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+}
+
+/**
  * Render Pagination Controls
  */
 function renderPagination(totalItems) {
@@ -900,6 +957,27 @@ function getExcuseTypeArabic(type) {
         'death': 'حالة وفاة'
     };
     return typeMap[type] || type || '-';
+}
+
+/**
+ * Get Employee Decision badge HTML
+ */
+function getEmployeeDecisionBadge(decision) {
+    if (!decision) {
+        return '<span class="text-muted small">-</span>';
+    }
+
+    const DECISION_MAP = {
+        'مقبول': { class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
+        'غير مقبول': { class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
+        'يحتاج قرار لجنة': { class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
+    };
+
+    const config = DECISION_MAP[decision] || { class: 'bg-secondary-subtle text-secondary-emphasis', icon: 'hgi-help-circle' };
+
+    return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
+        <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${decision}
+    </span>`;
 }
 
 /**
@@ -1033,6 +1111,21 @@ function showExcuseDetails(excuse) {
     // Comment & Signature
     const detailComment = document.getElementById('detailComment');
     const detailSignature = document.getElementById('detailSignature');
+
+    // Employee Decision (New)
+    const detailEmployeeDecision = document.getElementById('detailEmployeeDecision');
+    const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
+
+    if (detailEmployeeDecision) {
+        detailEmployeeDecision.value = excuse.employee_decision || '';
+    }
+
+    if (btnSaveEmployeeDecision) {
+        btnSaveEmployeeDecision.onclick = function () {
+            saveEmployeeDecision(excuse.id);
+        };
+    }
+
     if (detailComment) {
         detailComment.innerHTML = excuse.committee_comment
             ? excuse.committee_comment

@@ -248,6 +248,7 @@
                                 <th scope="col" class="ps-4 fw-medium">تاريخ تقديم العذر</th>
                                 <th scope="col" class="ps-4 fw-medium">تاريخ العذر</th>
                                 <th scope="col" class="ps-4 fw-medium">التصنيف المبدئي</th>
+                                <th scope="col" class="ps-4 fw-medium">مراجعة الموظف</th>
                                 <th scope="col" class="ps-4 fw-medium">إجراءات</th>
                             </tr>
                         </thead>
@@ -308,6 +309,21 @@
                         <!-- Tab 1: Committee Decision -->
                         <div class="tab-pane fade show active" id="decision-pane" role="tabpanel"
                             aria-labelledby="decision-tab">
+
+                            <!-- Employee Review Section -->
+                            <div class="mb-4 pb-3 border-bottom">
+                                <label class="fw-bold mb-2">مراجعة الموظف:</label>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select" id="detailEmployeeDecision">
+                                        <option value="" selected>اختر القرار...</option>
+                                        <option value="مقبول">مقبول</option>
+                                        <option value="غير مقبول">غير مقبول</option>
+                                        <option value="يحتاج قرار لجنة">يحتاج قرار لجنة</option>
+                                    </select>
+                                    <button class="btn btn-primary px-4" id="btnSaveEmployeeDecision">حفظ</button>
+                                </div>
+                            </div>
+
                             <div class="mb-4" id="detailStatusContainer">
                                 <div id="detailStatus"></div>
                             </div>
