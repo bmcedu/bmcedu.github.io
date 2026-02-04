@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td class="ps-4">${formatDate(request.date)}</td>
                                 <td class="ps-4">${request.excuse_date}</td>
                                 <td class="ps-4">${excuseTypeLabels[request.excuse_type] || request.excuse_type || '-'}</td>
-                                <td class="ps-4">${badgeHtml}</td>
+
                                 <td class="ps-4">
                                     <button type="button" class="btn btn-link text-primary text-decoration-underline p-0 border-0 btn-view-details">
                                         عرض التفاصيل
