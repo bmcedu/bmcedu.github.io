@@ -1247,17 +1247,41 @@ function showExcuseDetails(excuse) {
         if (empBadgeContainer) {
             const config = {
                 'approved': { cls: 'alert-success', text: 'مقبول' },
-                'rejected': { cls: 'alert-danger', text: 'غير مقبول' },
+                'rejected': { cls: 'alert-danger', text: 'مرفوض' },
                 'committee': { cls: 'alert-warning', text: 'يحتاج قرار لجنة' }
             };
             const c = config[empDecision] || { cls: 'alert-secondary', text: empDecision };
             empBadgeContainer.innerHTML = `<div class="alert ${c.cls} mb-0"><strong>مراجعة الموظف:</strong> ${c.text}</div>`;
+        }
+
+        // Auto-switch to decision tab if employee has finished
+        const decisionTab = document.getElementById('decision-tab');
+        if (decisionTab) {
+            bootstrap.Tab.getInstance(decisionTab)?.show() || new bootstrap.Tab(decisionTab).show();
         }
     } else {
         // Show Inputs
         if (empBadgeCol) empBadgeCol.style.display = 'none';
         if (empSection) empSection.style.display = 'block';
         if (detailEmployeeDecision) detailEmployeeDecision.value = '';
+    }
+
+    // Reactive Listener for Employee Decision Change
+    if (detailEmployeeDecision && !detailEmployeeDecision.hasListener) {
+        detailEmployeeDecision.addEventListener('change', function () {
+            const val = this.value;
+            const commSecLocal = document.getElementById('committeeDecisionInputSection');
+            const sigContLocal = document.getElementById('committeeSignaturesContainer');
+            if (val === 'committee') {
+                if (commSecLocal) commSecLocal.style.display = 'block';
+                if (sigContLocal) sigContLocal.style.display = 'block';
+                loadCommitteeCheckboxes(excuse, false);
+            } else {
+                if (commSecLocal) commSecLocal.style.display = 'none';
+                if (sigContLocal) sigContLocal.style.display = 'none';
+            }
+        });
+        detailEmployeeDecision.hasListener = true;
     }
 
     // 2. Committee Logic
