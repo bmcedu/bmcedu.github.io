@@ -2437,7 +2437,7 @@ async function downloadExcusePDF(id) {
         const sigWidth = 82;  // Increased by another 5%
         const sigHeight = 46;
         const spacing = 20;
-        const margin = 62;
+        const margin = 60;
         const startY = 50;
         for (let i = 0; i < sigs.length; i++) {
             const sig = sigs[i];
