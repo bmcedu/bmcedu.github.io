@@ -1201,6 +1201,7 @@ function showExcuseDetails(excuse) {
     const btnSaveEmployeeDecision = document.getElementById('btnSaveEmployeeDecision');
     const employeeBadgeContainer = document.getElementById('employeeDecisionBadgeContainer');
     const employeeDropdownContainer = document.getElementById('employeeDecisionDropdownContainer');
+    const employeeDecisionLabel = document.getElementById('employeeDecisionLabel');
 
     const empDecision = excuse.employee_decision || '';
     const empLocked = empDecision && empDecision !== 'pending';
@@ -1210,7 +1211,8 @@ function showExcuseDetails(excuse) {
         employeeBadgeContainer.style.display = 'none';
         employeeBadgeContainer.innerHTML = '';
     }
-    // Show dropdown by default
+    // Show dropdown & Label by default
+    if (employeeDecisionLabel) employeeDecisionLabel.style.display = '';
     if (employeeDropdownContainer) employeeDropdownContainer.style.display = '';
     if (detailEmployeeDecision) {
         detailEmployeeDecision.style.display = '';
@@ -1219,7 +1221,8 @@ function showExcuseDetails(excuse) {
     }
 
     if (empLocked) {
-        // LOCKED: Hide Dropdown + Container
+        // LOCKED: Hide Dropdown + Container + Label
+        if (employeeDecisionLabel) employeeDecisionLabel.style.display = 'none';
         if (employeeDropdownContainer) employeeDropdownContainer.style.display = 'none';
         if (detailEmployeeDecision) detailEmployeeDecision.style.display = 'none'; // Extra safety
 
@@ -1235,7 +1238,7 @@ function showExcuseDetails(excuse) {
 
             employeeBadgeContainer.innerHTML = `
                 <div class="alert ${conf.cls} mb-0" role="alert">
-                    <strong>القرار:</strong> ${conf.text}
+                    <strong>مراجعة الموظف:</strong> ${conf.text}
                 </div>
             `;
         }
@@ -1247,6 +1250,7 @@ function showExcuseDetails(excuse) {
     const committeeBadgeContainer = document.getElementById('committeeDecisionBadgeContainer');
     const committeeDropdownContainer = document.getElementById('committeeDecisionDropdownContainer');
     const committeeCommentDisplay = document.getElementById('committeeCommentDisplay');
+    const committeeDecisionLabel = document.getElementById('committeeDecisionLabel');
 
     const canCommitteeDecide = empDecision && empDecision !== 'pending';
     const committeeDecision = excuse.committee_decision || '';
@@ -1257,7 +1261,8 @@ function showExcuseDetails(excuse) {
         committeeBadgeContainer.style.display = 'none';
         committeeBadgeContainer.innerHTML = '';
     }
-    // Show inputs by default
+    // Show inputs & Label by default
+    if (committeeDecisionLabel) committeeDecisionLabel.style.display = '';
     if (committeeDropdownContainer) committeeDropdownContainer.style.display = '';
     if (detailCommitteeDecision) {
         detailCommitteeDecision.style.display = '';
@@ -1273,7 +1278,8 @@ function showExcuseDetails(excuse) {
 
 
     if (committeeLocked) {
-        // LOCKED: Hide Inputs
+        // LOCKED: Hide Inputs + Label
+        if (committeeDecisionLabel) committeeDecisionLabel.style.display = 'none';
         if (committeeDropdownContainer) committeeDropdownContainer.style.display = 'none';
         if (detailCommitteeDecision) detailCommitteeDecision.style.display = 'none'; // Extra safety
         if (detailCommitteeComment) detailCommitteeComment.style.display = 'none'; // Extra safety
@@ -1289,7 +1295,7 @@ function showExcuseDetails(excuse) {
 
             committeeBadgeContainer.innerHTML = `
                 <div class="alert ${conf.cls} mb-0" role="alert">
-                    <strong>القرار:</strong> ${conf.text}
+                    <strong>قرار اللجنة:</strong> ${conf.text}
                 </div>
             `;
         }
