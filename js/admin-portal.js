@@ -2298,53 +2298,148 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
 }
 
 /**
- * Trigger PDF Generation and Download
+ * Helper to extract File ID from Drive URL
  */
-function downloadExcusePDF(id) {
-    const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+function extractFileId(url) {
+    if (!url) return null;
+    let match = url.match(/id=([a-zA-Z0-9_-]+)/);
+    if (!match) match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return match ? match[1] : null;
+}
 
-    // Show loading state (generic Swal or similar)
+/**
+ * Trigger PDF Generation and Download (Overlaying signatures on student form)
+ */
+async function downloadExcusePDF(id) {
+    const excuse = allExcuses.find(e => String(e.id) === String(id));
+    if (!excuse) {
+        Swal.fire({ icon: 'error', title: 'خطأ', text: 'لم يتم العثور على بيانات العذر' });
+        return;
+    }
+
+    if (!excuse.college_link) {
+        Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'لم يقم الطالب برفع "فورم الكلية"' });
+        return;
+    }
+
+    const fileId = extractFileId(excuse.college_link);
+    if (!fileId) {
+        Swal.fire({ icon: 'error', title: 'خطأ', text: 'رابط ملف الكلية غير صالح' });
+        return;
+    }
+
+    // Show loading state
     Swal.fire({
-        title: 'جاري إنشاء ملف PDF...',
-        html: 'يرجى الانتظار قليلاً',
+        title: 'جاري تحضير الملف...',
+        html: 'يتم الآن دمج التوقيعات على فورم الكلية',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
         }
     });
 
-    fetch(scriptUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-            action: 'generate_pdf',
-            excuse_id: id
-        })
-    })
-        .then(r => r.json())
-        .then(r => {
-            if (r.status === 'success') {
-                // Convert Base64 to Blob and Download
-                fetch(r.pdf_base64)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        a.download = r.filename || `Excuse_${id}.pdf`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
+    try {
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
 
-                        // Close loading state
-                        Swal.close();
-                    });
-            } else {
-                Swal.fire({ icon: 'error', title: 'خطأ', text: r.message || 'فشل إنشاء الملف' });
+        // 1. Fetch PDF Bytes (via proxy)
+        const pdfResponse = await fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'get_file_base64', file_id: fileId })
+        }).then(r => r.json());
+
+        if (pdfResponse.status !== 'success') throw new Error(pdfResponse.message);
+
+        const pdfBytes = Uint8Array.from(atob(pdfResponse.base64), c => c.charCodeAt(0));
+
+        // 2. Load PDF
+        const { PDFDocument } = PDFLib;
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const pages = pdfDoc.getPages();
+        const lastPage = pages[pages.length - 1];
+        const { width, height } = lastPage.getSize();
+
+        // 3. Prepare Signatures
+        let sigIds = [];
+        try { if (excuse.committee_signatures) sigIds = JSON.parse(excuse.committee_signatures); } catch (e) { }
+        if (!Array.isArray(sigIds)) sigIds = [sigIds].filter(Boolean);
+
+        // Fetch each signature image (via proxy for CORS)
+        const sigPromises = sigIds.map(async (sid) => {
+            const sigInfo = signaturesList.find(s => String(s.id) === String(sid));
+            if (!sigInfo || !sigInfo.imageUrl) return null;
+
+            const sigFileId = extractFileId(sigInfo.imageUrl);
+            if (!sigFileId) return null;
+
+            const res = await fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'get_file_base64', file_id: sigFileId })
+            }).then(r => r.json());
+
+            if (res.status === 'success') {
+                const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
+                return { bytes, name: sigInfo.name, position: sigInfo.position };
             }
-        })
-        .catch(err => {
-            console.error(err);
-            Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ في الاتصال' });
+            return null;
         });
+
+        const sigs = (await Promise.all(sigPromises)).filter(Boolean);
+
+        // 4. Draw Signatures on Last Page
+        // Position: Bottom area. 4 slots horizontally.
+        const sigWidth = 120;
+        const sigHeight = 60;
+        const margin = 30;
+        const startY = 80; // Distance from bottom
+
+        for (let i = 0; i < sigs.length; i++) {
+            const sig = sigs[i];
+            const x = margin + (i * (sigWidth + 20));
+            const y = startY;
+
+            const img = await pdfDoc.embedPng(sig.bytes).catch(async () => {
+                return await pdfDoc.embedJpg(sig.bytes);
+            });
+
+            lastPage.drawImage(img, {
+                x: x,
+                y: y,
+                width: sigWidth,
+                height: sigHeight,
+            });
+
+            // Add Text (Name & Position) below/above signature?
+            // Usually signatures are on top of name.
+            lastPage.drawText(sig.name, {
+                x: x,
+                y: y - 12,
+                size: 10,
+                color: PDFLib.rgb(0, 0, 0),
+            });
+            lastPage.drawText(sig.position, {
+                x: x,
+                y: y - 22,
+                size: 8,
+                color: PDFLib.rgb(0.5, 0.5, 0.5),
+            });
+        }
+
+        // 5. Serialize and Download
+        const modifiedPdfBytes = await pdfDoc.save();
+        const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Excuse_${id}_Signed.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(url);
+
+        Swal.close();
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ أثناء معالجة الملف: ' + err.message });
+    }
 }
