@@ -963,20 +963,20 @@ function getExcuseTypeArabic(type) {
  * Get Employee Decision badge HTML
  */
 function getEmployeeDecisionBadge(decision) {
-    if (!decision) {
-        return '<span class="text-muted small">-</span>';
-    }
-
     const DECISION_MAP = {
-        'مقبول': { class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
-        'غير مقبول': { class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
-        'يحتاج قرار لجنة': { class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
+        'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
+        'قيد المراجعة': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' },
+        'مقبول': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-checkmark-circle-02' },
+        'غير مقبول': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-cancel-circle' },
+        'يحتاج قرار لجنة': { text: 'يحتاج قرار لجنة', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-user-group' }
     };
 
-    const config = DECISION_MAP[decision] || { class: 'bg-secondary-subtle text-secondary-emphasis', icon: 'hgi-help-circle' };
+    // Default to pending if empty
+    const key = decision || 'pending';
+    const config = DECISION_MAP[key] || DECISION_MAP['pending'];
 
     return `<span class="badge ${config.class} d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 100px;">
-        <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${decision}
+        <i class="hgi-stroke hgi-standard ${config.icon}"></i> ${config.text}
     </span>`;
 }
 
