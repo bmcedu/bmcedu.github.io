@@ -450,7 +450,13 @@
             <!-- Inner Tabs -->
             <ul class="nav nav-pills nav-fill gap-1 px-3 pt-3 border-0" id="settingsTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-medium" id="hospitals-tab" data-bs-toggle="tab"
+                    <button class="nav-link active fw-medium" id="account-tab" data-bs-toggle="tab"
+                        data-bs-target="#account-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-user-circle-02 me-1"></i> الحساب
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-medium" id="hospitals-tab" data-bs-toggle="tab"
                         data-bs-target="#hospitals-pane" type="button">
                         <i class="hgi hgi-stroke hgi-standard hgi-hospital-02 me-1"></i> المستشفيات
                     </button>
@@ -477,8 +483,25 @@
 
             <!-- Tab Panes -->
             <div class="tab-content p-3">
+                <!-- Account Pane -->
+                <div class="tab-pane fade show active" id="account-pane">
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">تفضيلات الإشعارات</h6>
+                        <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-light">
+                            <div>
+                                <div class="fw-medium mb-1">إشعارات بالبريد الإلكتروني</div>
+                                <div class="text-muted small">استلام رسالة بريد إلكتروني عند تقديم طلب عذر جديد</div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="notifyToggle" role="switch" checked
+                                    style="cursor: pointer; width: 3em; height: 1.5em;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Hospitals Pane -->
-                <div class="tab-pane fade show active" id="hospitals-pane">
+                <div class="tab-pane fade" id="hospitals-pane">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-muted small">قائمة المستشفيات المتاحة للطلاب</span>
                         <button class="btn btn-primary btn-sm" onclick="openAddModal('hospitals', 'مستشفى')">

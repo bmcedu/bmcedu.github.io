@@ -1648,3 +1648,74 @@ function resetPolicyUploadUI() {
         fileInfo.classList.remove('d-flex');
     }
 }
+
+// ==================== ACCOUNT PREFERENCES ====================
+document.addEventListener('DOMContentLoaded', function () {
+    initAccountPreferences();
+});
+
+function initAccountPreferences() {
+    const notifyToggle = document.getElementById('notifyToggle');
+    if (!notifyToggle) return;
+
+    // 1. Set Initial State
+    // Default is true unless explicitly 'false'
+    const storedPref = sessionStorage.getItem('adminNotifyPref');
+    const isEnabled = storedPref !== 'false';
+    notifyToggle.checked = isEnabled;
+
+    // 2. Add Change Listener
+    notifyToggle.addEventListener('change', function () {
+        const newState = this.checked;
+        const email = sessionStorage.getItem('adminEmail');
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+
+        if (!email || !scriptUrl) {
+            console.error('Missing email or script URL');
+            return;
+        }
+
+        // Disable during update
+        this.disabled = true;
+
+        fetch(scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'update_admin_prefs',
+                email: email,
+                receive_notifications: newState
+            })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update Session
+                    sessionStorage.setItem('adminNotifyPref', newState);
+
+                    // Optional: Toast or subtle feedback
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'تم تحديث التفضيلات'
+                    });
+                } else {
+                    // Revert
+                    notifyToggle.checked = !newState;
+                    Swal.fire('خطأ', 'فشل تحديث التفضيلات: ' + (data.message || ''), 'error');
+                }
+            })
+            .catch(err => {
+                notifyToggle.checked = !newState;
+                Swal.fire('خطأ', 'حدث خطأ في الاتصال', 'error');
+            })
+            .finally(() => {
+                this.disabled = false;
+            });
+    });
+}

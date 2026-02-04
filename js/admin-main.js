@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     sessionStorage.setItem('adminId', admin.id || '');
                     sessionStorage.setItem('adminName', admin.name || '');
                     sessionStorage.setItem('adminEmail', admin.email || adminEmail);
+                    sessionStorage.setItem('adminNotifyPref', admin.receive_notifications); // Added
 
                     // Notify other tabs (original login tab) about successful login
                     localStorage.setItem('admin_login_success', Date.now().toString());
