@@ -1064,9 +1064,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Determine allowed types for this specific field
                 const ALLOWED_TYPES = (type === 'College')
-                    ? ['image/png', 'image/jpeg', 'application/pdf']
-                    : ['application/pdf'];
-                const typeHelpText = (type === 'College') ? '(PNG, JPG, PDF فقط)' : '(PDF فقط)';
+                    ? ['application/pdf']
+                    : ['image/png', 'image/jpeg', 'application/pdf'];
+                const typeHelpText = (type === 'College') ? '(PDF فقط)' : '(PNG, JPG, PDF فقط)';
 
                 // Reset State
                 if (msgEl) {
@@ -1321,9 +1321,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Determine allowed types for this specific field
             const ALLOWED_TYPES = (type === 'College')
-                ? ['image/png', 'image/jpeg', 'application/pdf']
-                : ['application/pdf'];
-            const typeHelpText = (type === 'College') ? '(PNG, JPG, PDF فقط)' : '(PDF فقط)';
+                ? ['application/pdf']
+                : ['image/png', 'image/jpeg', 'application/pdf'];
+            const typeHelpText = (type === 'College') ? '(PDF فقط)' : '(PNG, JPG, PDF فقط)';
 
             // Reset Error State
             if (msgEl) {
