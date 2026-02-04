@@ -1062,6 +1062,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const msgEl = document.getElementById('msg' + type);
                 const labelBox = document.querySelector(`label[for="${fileId}"]`);
 
+                // Determine allowed types for this specific field
+                const ALLOWED_TYPES = (type === 'College')
+                    ? ['image/png', 'image/jpeg', 'application/pdf']
+                    : ['application/pdf'];
+                const typeHelpText = (type === 'College') ? '(PNG, JPG, PDF فقط)' : '(PDF فقط)';
+
                 // Reset State
                 if (msgEl) {
                     msgEl.classList.add('d-none');
@@ -1069,13 +1075,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (labelBox) labelBox.style.borderColor = 'var(--bs-border-color)';
 
+                const hasFile = input && input.files && input.files.length > 0;
+
                 // Check 1: Existence (Files are now Optional)
-                // If missing, we don't block. Backend will mark as 'mismatch'.
                 if (!hasFile) {
-                    // Just reset styles
-                    if (msgEl) msgEl.classList.add('d-none');
-                    if (labelBox) labelBox.style.borderColor = 'var(--bs-border-color)';
-                    return; // Skip other checks for this file
+                    return;
                 }
 
                 const file = input.files[0];
@@ -1096,16 +1100,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (file && !ALLOWED_TYPES.includes(file.type)) {
                     stepValid = false;
                     if (msgEl) {
-                        msgEl.textContent = 'صيغة الملف غير مدعومة (PNG, JPG, PDF فقط).';
+                        msgEl.textContent = `صيغة الملف غير مدعومة ${typeHelpText}.`;
                         msgEl.classList.remove('d-none');
                         msgEl.classList.add('d-block');
                     }
                     if (labelBox) labelBox.style.borderColor = 'var(--bs-danger)';
-                    return;
                 }
-
-                // If all checks pass, set to success green
-                if (labelBox) labelBox.style.borderColor = 'var(--bs-success)';
             });
             return stepValid;
         }
@@ -1314,11 +1314,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Immediate Validation
             const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-            const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'application/pdf'];
 
             // Setup Error UI Access
             const type = inputId.replace('file', ''); // Medical, Sehaty, College
             const msgEl = document.getElementById('msg' + type);
+
+            // Determine allowed types for this specific field
+            const ALLOWED_TYPES = (type === 'College')
+                ? ['image/png', 'image/jpeg', 'application/pdf']
+                : ['application/pdf'];
+            const typeHelpText = (type === 'College') ? '(PNG, JPG, PDF فقط)' : '(PDF فقط)';
 
             // Reset Error State
             if (msgEl) {
@@ -1345,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // alert('صيغة الملف غير مدعومة (PNG, JPG, PDF فقط).'); // Replaced
                 this.value = ''; // Reset input
                 if (msgEl) {
-                    msgEl.textContent = 'صيغة الملف غير مدعومة (PNG, JPG, PDF فقط).';
+                    msgEl.textContent = `صيغة الملف غير مدعومة ${typeHelpText}.`;
                     msgEl.classList.remove('d-none');
                     msgEl.classList.add('d-block');
                 }
