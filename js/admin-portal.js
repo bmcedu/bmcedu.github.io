@@ -855,9 +855,10 @@ function saveEmployeeDecision(id) {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'success') {
-                // Close modal first
-                const modal = bootstrap.Modal.getInstance(document.getElementById('detailsModal'));
-                if (modal) modal.hide();
+                // Robustly close modal
+                const modalEl = document.getElementById('detailsModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
 
                 // Then show success message
                 Swal.fire({
@@ -914,9 +915,10 @@ function saveCommitteeDecision(id) {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'success') {
-                // Close modal first
-                const modal = bootstrap.Modal.getInstance(document.getElementById('detailsModal'));
-                if (modal) modal.hide();
+                // Robustly close modal
+                const modalEl = document.getElementById('detailsModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
 
                 // Then show success message
                 Swal.fire({
