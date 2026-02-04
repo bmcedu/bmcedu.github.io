@@ -180,7 +180,53 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- 5. Type (Custom Static Select) -->
+
+                                    <!-- 5. Employee Decision Filter -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">مراجعة الموظف</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control pe-5"
+                                                id="filterEmployeeDecisionInput" placeholder="اختيار القرار..."
+                                                autocomplete="off" style="cursor: pointer; background-color: #fff;">
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+                                            <input type="hidden" id="filterEmployeeDecision">
+                                            <div id="employeeDecisionDropdownList"
+                                                class="dropdown-menu w-100 p-0 shadow-sm">
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="approved">
+                                                    مقبول</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="rejected">غير
+                                                    مقبول</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="committee">
+                                                    يحتاج قرار لجنة</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 6. Committee Decision Filter -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted">قرار اللجنة</label>
+                                        <div class="searchable-select position-relative">
+                                            <input type="text" class="form-control pe-5"
+                                                id="filterCommitteeDecisionInput" placeholder="اختيار القرار..."
+                                                autocomplete="off" style="cursor: pointer; background-color: #fff;">
+                                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-down-01 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                                style="pointer-events: none;"></i>
+                                            <input type="hidden" id="filterCommitteeDecision">
+                                            <div id="committeeDecisionDropdownList"
+                                                class="dropdown-menu w-100 p-0 shadow-sm">
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="">الكل</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="approved">
+                                                    مقبول</div>
+                                                <div class="dropdown-item p-2 cursor-pointer" data-value="rejected">
+                                                    مرفوض</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ROW 3 -->
+                                    <!-- 7. Type (Custom Static Select) -->
                                     <div class="col-md-4">
                                         <label class="form-label small text-muted">نوع العذر</label>
                                         <div class="searchable-select position-relative">
@@ -208,7 +254,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- 6. Course (Custom Searchable Select) -->
+                                    <!-- 8. Course (Custom Searchable Select) -->
                                     <div class="col-md-4">
                                         <label class="form-label small text-muted">المادة</label>
                                         <div class="searchable-select position-relative">

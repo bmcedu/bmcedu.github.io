@@ -574,6 +574,8 @@ function setupStaticDropdown(inputId, hiddenId, listId) {
 document.addEventListener('DOMContentLoaded', function () {
     setupStaticDropdown('filterStatusInput', 'filterStatus', 'statusDropdownList');
     setupStaticDropdown('filterTypeInput', 'filterType', 'typeDropdownList');
+    setupStaticDropdown('filterEmployeeDecisionInput', 'filterEmployeeDecision', 'employeeDecisionDropdownList');
+    setupStaticDropdown('filterCommitteeDecisionInput', 'filterCommitteeDecision', 'committeeDecisionDropdownList');
 });
 
 
@@ -744,6 +746,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (inputStatus) inputStatus.value = '';
             if (hiddenStatus) hiddenStatus.value = '';
 
+            // Reset Employee Decision
+            const inputEmp = document.getElementById('filterEmployeeDecisionInput');
+            const hiddenEmp = document.getElementById('filterEmployeeDecision');
+            if (inputEmp) inputEmp.value = '';
+            if (hiddenEmp) hiddenEmp.value = '';
+
+            // Reset Committee Decision
+            const inputComm = document.getElementById('filterCommitteeDecisionInput');
+            const hiddenComm = document.getElementById('filterCommitteeDecision');
+            if (inputComm) inputComm.value = '';
+            if (hiddenComm) hiddenComm.value = '';
+
             // Reset Type
             const inputType = document.getElementById('filterTypeInput');
             const hiddenType = document.getElementById('filterType');
@@ -771,6 +785,8 @@ function applyFilters() {
     // Use hidden input for student name filter
     const studentName = document.getElementById('filterStudentName')?.value.trim().toLowerCase() || '';
     const status = document.getElementById('filterStatus')?.value || '';
+    const empDecision = document.getElementById('filterEmployeeDecision')?.value || '';
+    const commDecision = document.getElementById('filterCommitteeDecision')?.value || '';
     const type = document.getElementById('filterType')?.value || '';
     // Use hidden input for course filter
     const course = document.getElementById('filterCourse')?.value || '';
@@ -795,6 +811,12 @@ function applyFilters() {
 
         // 3. Status
         if (status && (excuse.status || 'pending') !== status) return false;
+
+        // 3b. Employee Decision
+        if (empDecision && (excuse.employee_decision || '') !== empDecision) return false;
+
+        // 3c. Committee Decision
+        if (commDecision && (excuse.committee_decision || '') !== commDecision) return false;
 
         // 4. Type
         if (type && excuse.excuse_type !== type) return false;
