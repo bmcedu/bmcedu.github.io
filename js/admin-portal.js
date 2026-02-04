@@ -1304,7 +1304,7 @@ function showExcuseDetails(excuse) {
             btnSaveEmployeeDecision.onclick = function () {
                 saveEmployeeDecision(excuse.id);
             };
-        } else if (canCommitteeDecide && !committeeIsLocked) {
+        } else if (canCommitteeDecide && !committeeLocked) {
             // Employee is locked, but committee is pending - save committee decision
             btnSaveEmployeeDecision.style.display = '';
             btnSaveEmployeeDecision.onclick = function () {
