@@ -2434,11 +2434,11 @@ async function downloadExcusePDF(id) {
 
         // 4. Draw Signatures on Last Page
         // Position: Bottom area. 5 slots horizontally.
-        const sigWidth = 70;  // Reduced by 5%
-        const sigHeight = 40;
-        const spacing = 24;   // Increased spacing
-        const margin = 62;    // Increased margin from right (starting offset)
-        const startY = 40;    // Distance from bottom
+        const sigWidth = 74;  // Increased by 5%
+        const sigHeight = 42;
+        const spacing = 24;
+        const margin = 62;
+        const startY = 40;
 
         for (let i = 0; i < sigs.length; i++) {
             const sig = sigs[i];
