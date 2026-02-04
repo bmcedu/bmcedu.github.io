@@ -1340,7 +1340,8 @@ function showExcuseDetails(excuse) {
     }
 
     // Show Modal
-    const modal = new bootstrap.Modal(document.getElementById('requestDetailsModal'));
+    const modalEl = document.getElementById('requestDetailsModal');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
     modal.show();
 }
 
