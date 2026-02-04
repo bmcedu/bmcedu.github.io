@@ -1161,11 +1161,8 @@ function showExcuseDetails(excuse) {
     const detailType = document.getElementById('detailType');
     if (detailType) detailType.value = getExcuseTypeArabic(excuse.excuse_type);
 
-    // Print Button
-    const btnPrintPDF = document.getElementById('btnPrintPDF');
-    if (btnPrintPDF) {
-        btnPrintPDF.onclick = () => downloadExcusePDF(excuse.id);
-    }
+    // PDF Printing logic is now in the table actions. 
+    // The details modal no longer has a dedicated print button.
 
     // Extra Fields
     const detailExtraFields = document.getElementById('detailExtraFields');
@@ -2304,14 +2301,17 @@ function loadCommitteeCheckboxes(excuse, readOnly) {
  * Trigger PDF Generation and Download
  */
 function downloadExcusePDF(id) {
-    const btn = document.getElementById('btnPrintPDF');
-    if (!btn) return;
-
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جار التحضير...';
-    btn.disabled = true;
-
     const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+
+    // Show loading state (generic Swal or similar)
+    Swal.fire({
+        title: 'جاري إنشاء ملف PDF...',
+        html: 'يرجى الانتظار قليلاً',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     fetch(scriptUrl, {
         method: 'POST',
@@ -2335,25 +2335,16 @@ function downloadExcusePDF(id) {
                         document.body.appendChild(a);
                         a.click();
                         window.URL.revokeObjectURL(url);
+
+                        // Close loading state
+                        Swal.close();
                     });
             } else {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'error', title: 'خطأ', text: r.message || 'فشل إنشاء الملف' });
-                } else {
-                    alert('خطأ: ' + (r.message || 'فشل إنشاء الملف'));
-                }
+                Swal.fire({ icon: 'error', title: 'خطأ', text: r.message || 'فشل إنشاء الملف' });
             }
         })
         .catch(err => {
             console.error(err);
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ في الاتصال' });
-            } else {
-                alert('حدث خطأ في الاتصال');
-            }
-        })
-        .finally(() => {
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
+            Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ في الاتصال' });
         });
 }
