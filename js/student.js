@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Status Mapping Configuration
     const STATUS_MAP = {
         'approved': { text: 'مقبول', class: 'bg-success-subtle text-success-emphasis', icon: 'hgi-user-check-01' },
-        'rejected': { text: 'غير مقبول', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-user-remove-01' },
+        'rejected': { text: 'مرفوض', class: 'bg-danger-subtle text-danger-emphasis', icon: 'hgi-user-remove-01' },
         'mismatch': { text: 'غير مطابق', class: 'bg-secondary-subtle text-secondary-emphasis', icon: 'hgi-alert-02' },
         'late': { text: 'متأخر', class: 'bg-warning-subtle text-warning-emphasis', icon: 'hgi-alarm-02' },
         'pending': { text: 'قيد المراجعة', class: 'bg-info-subtle text-info-emphasis', icon: 'hgi-clock-01' }
@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 class: 'alert-danger', // danger
                                 iconBg: 'bg-danger',
                                 icon: 'hgi-user-remove-01',
-                                text: 'نأسف فقد تم رفض طلبك من قبل اللجنة.',
+                                text: 'نأسف فقد تم رفض طلبك.',
                                 textColor: 'text-danger-emphasis'
                             };
                         } else if (s === 'mismatch') {
