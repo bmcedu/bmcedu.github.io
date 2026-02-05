@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Check Session
-    console.log('Student Page loaded');
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const studentName = sessionStorage.getItem('studentName');
     const studentId = sessionStorage.getItem('studentId');
@@ -56,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Check cache first
         const cached = getCachedFormData();
         if (cached) {
-            console.log('Form data loaded from cache');
             portalData.courses = cached.courses || [];
             portalData.reasons = cached.reasons || [];
             portalData.hospitals = cached.hospitals || [];
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
         if (!scriptUrl) return Promise.resolve(null);
 
-        console.log('Fetching form data from API...');
+
         return fetch(scriptUrl, {
             method: 'POST',
             body: JSON.stringify({ action: 'get_form_data' })
@@ -88,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     populateHospitalsDropdown();
-                    console.log('Form data fetched and cached');
                 }
                 return data;
             })
