@@ -233,8 +233,7 @@
 
 /* Prevent inputs (not textareas) from capturing scroll and "jittering" */
 input.form-control[readonly] {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    pointer-events: none !important;
 }
 
 /* Terms Modal - Nearly Fullscreen with margins */
