@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault(); // Good practice even if button
-            console.log('Logout clicked');
+
             sessionStorage.clear();
             window.location.href = './';
         });
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Attach Click Event
                             row.querySelector('.btn-view-details').addEventListener('click', (e) => {
                                 e.preventDefault(); // Safety
-                                console.log("Button Clicked for ID:", request.id);
+
                                 showDetailsModal(request);
                             });
 
@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 // Show Details Modal Logic
                 function showDetailsModal(req) {
-                    console.log("showDetailsModal called with:", req);
+
                     const modalEl = document.getElementById('requestDetailsModal');
                     if (!modalEl) {
                         console.error("Critical: #requestDetailsModal not found in DOM.");
