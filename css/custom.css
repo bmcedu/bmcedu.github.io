@@ -62,6 +62,15 @@
     transition: transform 0.2s ease;
 }
 
+/* Fix input group icon spacing */
+.input-group-text {
+    padding-inline: 12px !important;
+}
+
+.input-group-text i {
+    margin: 0 2px;
+}
+
 /* Ensure original state has transition too */
 .hgi-arrow-down-01 {
     transition: transform 0.2s ease;
@@ -340,3 +349,32 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
 /* Ensure danger buttons override the primary default if needed */
 /* Ensure danger buttons override the primary default if needed */
 /* Default styles for deny/cancel are sufficient, but this block is reserved for future overrides */
+
+/* Navbar Scroll Shadow */
+.navbar {
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Remove focus ring from buttons (except for keyboard navigation) */
+.btn:focus:not(:focus-visible),
+.nav-link:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+/* Preserve decorative shadow on primary button focus, remove focus ring */
+.btn-primary:focus:not(:focus-visible) {
+    box-shadow: 0 4px 6px -1px rgba(var(--bs-primary-rgb), 0.5), 0 2px 4px -1px rgba(var(--bs-primary-rgb), 0.3) !important;
+}
+
+/* Remove focus ring shadow from other buttons */
+.btn-outline-primary:focus:not(:focus-visible),
+.btn-outline-secondary:focus:not(:focus-visible),
+.btn-outline-success:focus:not(:focus-visible),
+.btn-outline-danger:focus:not(:focus-visible),
+.btn-secondary:focus:not(:focus-visible) {
+    box-shadow: none !important;
+}

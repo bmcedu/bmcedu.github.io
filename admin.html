@@ -26,7 +26,7 @@
 
 <body class="bg-body-tertiary">
     <!-- Navbar -->
-    <nav class="navbar navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-light bg-white shadow-sm sticky-top border-bottom">
         <div class="container-fluid px-0">
             <!-- Top Row: Brand + Logout -->
             <div class="d-flex justify-content-between align-items-center w-100 py-1 px-4">
@@ -141,9 +141,12 @@
                                         <div class="input-group" id="tempusDominusWrapper"
                                             data-td-target-input="nearest" data-td-target-toggle="nearest">
                                             <input id="filterDateRange" type="text" class="form-control"
-                                                data-td-target="#tempusDominusWrapper" placeholder="اختر الفترة..." />
+                                                data-td-target="#tempusDominusWrapper" data-td-toggle="datetimepicker"
+                                                placeholder="اختر الفترة..." style="cursor: pointer;"
+                                                onkeydown="return false;" onpaste="return false;" inputmode="none"
+                                                autocomplete="off" />
                                             <span class="input-group-text" data-td-target="#tempusDominusWrapper"
-                                                data-td-toggle="datetimepicker">
+                                                data-td-toggle="datetimepicker" style="cursor: pointer;">
                                                 <i class="hgi hgi-stroke hgi-standard hgi-calendar-03"></i>
                                             </span>
                                         </div>
@@ -567,41 +570,42 @@
             </div>
 
             <!-- Inner Tabs -->
-            <ul class="nav nav-pills nav-fill gap-1 px-3 pt-3 border-0" id="settingsTabs" role="tablist">
+            <ul class="nav nav-pills nav-fill gap-2 px-3 pt-3 border-0" id="settingsTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-medium" id="account-tab" data-bs-toggle="tab"
-                        data-bs-target="#account-pane" type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-user-circle-02 me-1"></i> الحساب
+                    <button
+                        class="nav-link active fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="account-tab" data-bs-toggle="tab" data-bs-target="#account-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-user-circle-02"></i> الحساب
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="hospitals-tab" data-bs-toggle="tab"
-                        data-bs-target="#hospitals-pane" type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-hospital-02 me-1"></i> المستشفيات
+                    <button class="nav-link fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="hospitals-tab" data-bs-toggle="tab" data-bs-target="#hospitals-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-hospital-02"></i> المستشفيات
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="courses-tab" data-bs-toggle="tab"
-                        data-bs-target="#courses-pane" type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-book-02 me-1"></i> المواد
+                    <button class="nav-link fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-book-02"></i> المواد
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="reasons-tab" data-bs-toggle="tab"
-                        data-bs-target="#reasons-pane" type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-note-01 me-1"></i> الأسباب
+                    <button class="nav-link fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="reasons-tab" data-bs-toggle="tab" data-bs-target="#reasons-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-note-01"></i> الأسباب
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-pane"
-                        type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-file-validation me-1"></i> الشروط
+                    <button class="nav-link fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-file-validation"></i> الشروط
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-medium" id="signatures-tab" data-bs-toggle="tab"
-                        data-bs-target="#signatures-pane" type="button">
-                        <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-02 me-1"></i> التواقيع
+                    <button class="nav-link fw-medium m-0 d-inline-flex align-items-center justify-content-center gap-2"
+                        id="signatures-tab" data-bs-toggle="tab" data-bs-target="#signatures-pane" type="button">
+                        <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-02"></i> التواقيع
                     </button>
                 </li>
             </ul>

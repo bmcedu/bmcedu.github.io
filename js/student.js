@@ -11,6 +11,18 @@ document.addEventListener('DOMContentLoaded', function () {
         hospitals: []
     };
 
+    // Navbar scroll shadow effect
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 10) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
     // ==================== FORM DATA CACHE SYSTEM ====================
     const CACHE_KEY = 'bmc_form_data';
     const CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds

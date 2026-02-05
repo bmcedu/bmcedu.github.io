@@ -20,6 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
         dashboardTitle.textContent = `أهلاً وسهلاً بك، ${firstName}`;
     }
 
+    // Navbar scroll shadow effect
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 10) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
 
 
     // --- Logout ---
@@ -736,6 +748,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (pickerElement) {
         pickerInstance = new tempusDominus.TempusDominus(pickerElement, {
             dateRange: true,
+            multipleDatesSeparator: ' إلى ',
             display: {
                 theme: 'light',
                 icons: {
@@ -849,8 +862,12 @@ function applyFilters() {
     const dateRangeVal = document.getElementById('filterDateRange')?.value || '';
 
     // Tempus Dominus range is usually "YYYY-MM-DD, YYYY-MM-DD" or similar
-    if (dateRangeVal.includes(',')) {
+    if (dateRangeVal.includes('إلى')) {
+        [dateStart, dateEnd] = dateRangeVal.split('إلى').map(s => s.trim());
+    } else if (dateRangeVal.includes(',')) {
         [dateStart, dateEnd] = dateRangeVal.split(',').map(s => s.trim());
+    } else if (dateRangeVal.includes(';')) {
+        [dateStart, dateEnd] = dateRangeVal.split(';').map(s => s.trim());
     } else if (dateRangeVal) {
         dateStart = dateRangeVal.trim();
         dateEnd = dateRangeVal.trim();
