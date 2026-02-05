@@ -457,41 +457,55 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Render Pagination Controls
                     function renderPagination() {
                         const totalPages = Math.ceil(allRequests.length / rowsPerPage);
-                        const paginationContainer = document.querySelector('.pagination');
-                        if (!paginationContainer) return;
+                        const paginationNav = document.querySelector('nav[aria-label="Page navigation"]');
+                        if (!paginationNav) return;
 
-                        let html = '';
+                        const paginationUl = paginationNav.querySelector('.pagination');
+                        if (!paginationUl) return;
 
-                        // Prev Button
-                        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">&laquo;</a>
-                                 </li>`;
+                        paginationUl.innerHTML = '';
 
-                        // Page Numbers
+                        if (totalPages <= 1) return;
+
+                        // Previous
+                        const prevLi = document.createElement('li');
+                        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+                        prevLi.innerHTML = `
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <i class="hgi hgi-stroke hgi-standard hgi-arrow-right-double"></i>
+                            </a>
+                        `;
+                        prevLi.querySelector('a').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            if (currentPage > 1) renderTable(currentPage - 1);
+                        });
+                        paginationUl.appendChild(prevLi);
+
+                        // Pages
                         for (let i = 1; i <= totalPages; i++) {
-                            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="#" data-page="${i}">${i}</a>
-                                      </li>`;
+                            const li = document.createElement('li');
+                            li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                            li.querySelector('a').addEventListener('click', (e) => {
+                                e.preventDefault();
+                                renderTable(i);
+                            });
+                            paginationUl.appendChild(li);
                         }
 
-                        // Next Button
-                        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                                    <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">&raquo;</a>
-                                 </li>`;
-
-                        paginationContainer.innerHTML = html;
-
-                        // Attach Events
-                        paginationContainer.querySelectorAll('.page-link').forEach(link => {
-                            link.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                const p = parseInt(e.target.dataset.page); // number or NaN
-                                // Avoid clicks on disabled or invalid/boundary
-                                if (!isNaN(p) && p > 0 && p <= totalPages && p !== currentPage) {
-                                    renderTable(p);
-                                }
-                            });
+                        // Next
+                        const nextLi = document.createElement('li');
+                        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+                        nextLi.innerHTML = `
+                            <a class="page-link" href="#" aria-label="Next">
+                                <i class="hgi hgi-stroke hgi-standard hgi-arrow-left-double"></i>
+                            </a>
+                        `;
+                        nextLi.querySelector('a').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            if (currentPage < totalPages) renderTable(currentPage + 1);
                         });
+                        paginationUl.appendChild(nextLi);
                     }
 
                     // Initial Render
