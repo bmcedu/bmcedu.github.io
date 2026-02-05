@@ -1204,20 +1204,19 @@ function showExcuseDetails(excuse) {
     const detailLevel = document.getElementById('detailLevel');
     const detailMajor = document.getElementById('detailMajor');
 
-    // Populate missing student details from lookup if needed
+    // Populate details
     let sId = excuse.student_id;
     let sName = excuse.student_name;
-    let sLevel = excuse.student_level;
-    let sMajor = excuse.student_major;
 
-    // Explicit lookup if data missing
-    if (!sName || !sMajor || !sLevel || sMajor === '-' || sLevel === '-') {
-        const s = allStudentsList.find(st => String(st.id) === String(sId));
-        if (s) {
-            if (!sName) sName = s.name || s.student_name;
-            if (!sMajor || sMajor === '-') sMajor = s.major || s.student_major;
-            if (!sLevel || sLevel === '-') sLevel = s.level || s.student_level;
-        }
+    // Always lookup student for Level and Major (not saved in excuse)
+    const student = allStudentsList.find(st => String(st.id) === String(sId));
+
+    let sLevel = student ? (student.level || student.student_level || '-') : '-';
+    let sMajor = student ? (student.major || student.student_major || '-') : '-';
+
+    // Name fallback
+    if (!sName && student) {
+        sName = student.name || student.student_name;
     }
 
     if (detailStudentId) detailStudentId.value = sId || '-';
