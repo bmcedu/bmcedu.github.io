@@ -16,21 +16,12 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/custom.css">
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Popper.js for Tempus Dominus -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="lib/sweetalert2/sweetalert2.all.min.js"></script>
+
     <!-- Tempus Dominus Styles -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
-    <!-- Import Map for ESM resolution -->
-    <script type="importmap">
-    {
-      "imports": {
-        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/+esm",
-        "@eonasdan/tempus-dominus": "https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.esm.js"
-      }
-    }
-    </script>
+
+    <link rel="stylesheet" href="lib/tempus-dominus/tempus-dominus.min.css">
+
 </head>
 
 <body class="bg-body-tertiary">
@@ -734,12 +725,12 @@
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
-    <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle & Popper -->
+    <script src="lib/popper/popper.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <!-- Tempus Dominus JavaScript (Module Bridge) -->
-    <script type="module">
-        import { TempusDominus } from '@eonasdan/tempus-dominus';
-        window.tempusDominus = { TempusDominus };
-    </script>
+    <!-- Tempus Dominus JavaScript (UMD) -->
+    <script src="lib/tempus-dominus/tempus-dominus.min.js"></script>
     <script src="js/config.js" defer></script>
     <script src="js/student.js" defer></script>
 </body>

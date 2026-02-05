@@ -1184,6 +1184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     // Improve Date Picker Usability (Open on click)
+    const excuseDateInput = document.getElementById('excuseDate'); // Define it locally
     if (excuseDateInput) {
         excuseDateInput.addEventListener('click', function () {
             try {

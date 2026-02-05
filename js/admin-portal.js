@@ -658,7 +658,7 @@ function renderExcusesTable() {
         // ... [existing html generation] ...
         html += `
             <tr>
-                <td class="ps-4 text-primary">${excuse.id || '-'}</td>
+                <td class="ps-4 text-primary fw-bold">${excuse.id || '-'}</td>
                 <td class="ps-4">
                     <div class="lh-sm">
                         <div class="fw-medium">${excuse.student_name || '-'}</div>

@@ -6,8 +6,6 @@
     <title>ساحة الإدارة - نظام إدارة الأعذار | كليات البترجي الطبية</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
-
-
     <!-- Bootstrap 5 RTL CSS -->
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.rtl.min.css">
 
@@ -15,24 +13,14 @@
     <link rel="stylesheet" href="https://sets.hugeicons.com/sy6ko98f5o.css" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/custom.css">
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- SheetJS for Excel Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Popper.js for Tempus Dominus -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="lib/sheetjs/xlsx.full.min.js"></script>
+
     <!-- Tempus Dominus Styles -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
-    <!-- Import Map for ESM resolution -->
-    <script type="importmap">
-    {
-      "imports": {
-        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/+esm",
-        "@eonasdan/tempus-dominus": "https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.esm.js"
-      }
-    }
-    </script>
+
+    <link rel="stylesheet" href="lib/tempus-dominus/tempus-dominus.min.css">
+
 
 </head>
 
@@ -797,16 +785,14 @@
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
-    <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="lib/popper/popper.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/sweetalert2/sweetalert2.all.min.js"></script>
 
     <!-- PDF-Lib for signature overlay -->
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <!-- Tempus Dominus JavaScript (Module Bridge) -->
-    <script type="module">
-        import { TempusDominus } from '@eonasdan/tempus-dominus';
-        window.tempusDominus = { TempusDominus };
-    </script>
+    <script src="lib/pdf-lib/pdf-lib.min.js"></script>
+    <!-- Tempus Dominus JavaScript (UMD) -->
+    <script src="lib/tempus-dominus/tempus-dominus.min.js"></script>
     <script src="js/config.js" defer></script>
     <script src="js/admin-portal.js" defer></script>
 </body>
