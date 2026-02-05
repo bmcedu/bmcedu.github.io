@@ -1260,7 +1260,7 @@ function showExcuseDetails(excuse) {
     // Duration & Date
     const detailDuration = document.getElementById('detailDuration');
     const detailExcuseDate = document.getElementById('detailExcuseDate');
-    if (detailDuration) detailDuration.value = excuse.num_days ? `${excuse.num_days} يوم` : '-';
+    if (detailDuration) detailDuration.value = excuse.num_days || '-';
     if (detailExcuseDate) detailExcuseDate.value = excuse.excuse_date || '-';
 
     // Courses Table
@@ -1281,8 +1281,12 @@ function showExcuseDetails(excuse) {
                 const reasonName = reasonsLookup[String(c.reason)] || c.reason || '-';
                 coursesHtml += `
                     <tr>
-                        <td class="ps-3">${courseName}</td>
-                        <td class="ps-3">${reasonName}</td>
+                        <td>
+                            <input type="text" class="form-control bg-light border-0" value="${courseName}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control bg-light border-0" value="${reasonName}" readonly>
+                        </td>
                     </tr>
                 `;
             });
@@ -1437,8 +1441,8 @@ function showExcuseDetails(excuse) {
         files.forEach(f => {
             if (f.url) {
                 filesHtml += `
-                    <a href="${f.url}" target="_blank" class="btn btn-outline-primary btn-sm">
-                        <i class="hgi-stroke hgi-standard hgi-file-01 me-1"></i> ${f.label}
+                    <a href="${f.url}" target="_blank" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
+                        <i class="hgi-stroke hgi-standard hgi-file-01 text-primary"></i> ${f.label}
                     </a>
                 `;
             }

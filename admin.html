@@ -356,12 +356,12 @@
                     <!-- Nav Tabs -->
                     <ul class="nav nav-pills nav-fill mb-3 gap-1 border-0" id="detailsTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active fw-medium" id="details-tab" data-bs-toggle="tab"
+                            <button class="nav-link active fw-medium m-0" id="details-tab" data-bs-toggle="tab"
                                 data-bs-target="#details-pane" type="button" role="tab" aria-controls="details-pane"
                                 aria-selected="true">تفاصيل العذر</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link fw-medium" id="decision-tab" data-bs-toggle="tab"
+                            <button class="nav-link fw-medium m-0" id="decision-tab" data-bs-toggle="tab"
                                 data-bs-target="#decision-pane" type="button" role="tab" aria-controls="decision-pane"
                                 aria-selected="false">قرار اللجنة</button>
                         </li>
@@ -517,7 +517,7 @@
                             <div class="mb-4">
                                 <div class="table-responsive rounded border">
                                     <table class="table align-middle mb-0 overflow-hidden">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr>
                                                 <th style="width: 50%;" class="fw-medium">اسم المادة</th>
                                                 <th style="width: 50%;" class="fw-medium">سبب الغياب</th>
@@ -537,7 +537,7 @@
                             </div>
 
                             <!-- Attachments -->
-                            <div class="mb-4">
+                            <div>
                                 <div class="d-flex align-items-center justify-content-start gap-2 mb-3">
                                     <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-2"
                                         style="width: 32px; height: 32px;">
@@ -551,7 +551,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
                     <button type="button" class="btn btn-primary" id="btnSaveEmployeeDecision">حفظ</button>
                 </div>
@@ -736,7 +736,7 @@
                         <input type="text" class="form-control" id="itemName" placeholder="أدخل الاسم" dir="rtl">
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                     <button type="button" class="btn btn-primary" onclick="saveItem()">
                         <i class="hgi hgi-stroke hgi-standard hgi-checkmark-01 me-1"></i> حفظ
@@ -779,7 +779,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                     <button type="button" class="btn btn-primary" onclick="saveSignature()">
                         <span id="saveSigSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
