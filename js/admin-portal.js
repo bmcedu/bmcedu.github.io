@@ -1203,10 +1203,26 @@ function showExcuseDetails(excuse) {
     const detailLevel = document.getElementById('detailLevel');
     const detailMajor = document.getElementById('detailMajor');
 
-    if (detailStudentId) detailStudentId.value = excuse.student_id || '-';
-    if (detailStudentName) detailStudentName.value = excuse.student_name || '-';
-    if (detailLevel) detailLevel.value = excuse.student_level || '-';
-    if (detailMajor) detailMajor.value = excuse.student_major || '-';
+    // Populate missing student details from lookup if needed
+    let sId = excuse.student_id;
+    let sName = excuse.student_name;
+    let sLevel = excuse.student_level;
+    let sMajor = excuse.student_major;
+
+    // Explicit lookup if data missing
+    if (!sName || !sMajor || !sLevel || sMajor === '-' || sLevel === '-') {
+        const s = allStudentsList.find(st => String(st.id) === String(sId));
+        if (s) {
+            if (!sName) sName = s.name || s.student_name;
+            if (!sMajor || sMajor === '-') sMajor = s.major || s.student_major;
+            if (!sLevel || sLevel === '-') sLevel = s.level || s.student_level;
+        }
+    }
+
+    if (detailStudentId) detailStudentId.value = sId || '-';
+    if (detailStudentName) detailStudentName.value = sName || '-';
+    if (detailLevel) detailLevel.value = sLevel || '-';
+    if (detailMajor) detailMajor.value = sMajor || '-';
 
     // Excuse Type
     const detailType = document.getElementById('detailType');
@@ -2654,12 +2670,12 @@ function exportToExcel() {
         let sEmail = excuse.student_email || excuse.email;
         let sPhone = excuse.student_phone || excuse.phone;
 
-        if (!sName || !sMajor) {
+        if (!sName || !sMajor || !sEmail || !sLevel || sMajor === '-' || sLevel === '-') {
             const s = allStudentsList.find(st => String(st.id) === String(sId));
             if (s) {
                 if (!sName) sName = s.name || s.student_name;
-                if (!sMajor) sMajor = s.major || s.student_major;
-                if (!sLevel) sLevel = s.level || s.student_level;
+                if (!sMajor || sMajor === '-') sMajor = s.major || s.student_major;
+                if (!sLevel || sLevel === '-') sLevel = s.level || s.student_level;
                 if (!sEmail) sEmail = s.email || s.student_email || s.user_email;
                 if (!sPhone) sPhone = s.phone || s.student_phone;
             }
