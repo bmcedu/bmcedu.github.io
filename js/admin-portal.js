@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set Dashboard Title
     const dashboardTitle = document.getElementById('dashboardTitle');
     if (dashboardTitle) {
-        dashboardTitle.textContent = `أهلاً وسهلاً بك، ${adminName}`;
+        const firstName = adminName.split(' ')[0];
+        dashboardTitle.textContent = `أهلاً وسهلاً بك، ${firstName}`;
     }
 
 

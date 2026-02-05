@@ -207,7 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function refreshDisplayedUserInfo() {
         const name = sessionStorage.getItem('studentName');
         if (name) {
-            document.getElementById('dashboardTitle').textContent = `أهلاً وسهلاً بك، ${name}`;
+            const firstName = name.split(' ')[0];
+            document.getElementById('dashboardTitle').textContent = `أهلاً وسهلاً بك، ${firstName}`;
             const profileNameEl = document.getElementById('profileName');
             if (profileNameEl) profileNameEl.textContent = name;
 
