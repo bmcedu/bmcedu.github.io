@@ -724,8 +724,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         const addLink = (label, url) => {
                             if (!url) return;
                             filesContainer.innerHTML += `
-                                <a href="${url}" target="_blank" class="btn btn-light border d-flex align-items-center gap-2">
-                                    <i class="hgi-stroke hgi-standard hgi-file-text text-primary"></i> ${label}
+                                <a href="${url}" target="_blank" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
+                                    <i class="hgi-stroke hgi-standard hgi-file-01 text-primary"></i> ${label}
                                 </a>
                             `;
                         };
