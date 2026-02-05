@@ -231,6 +231,12 @@
     cursor: default;
 }
 
+/* Prevent inputs (not textareas) from capturing scroll and "jittering" */
+input.form-control[readonly] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Terms Modal - Nearly Fullscreen with margins */
 #termsModal .modal-dialog {
     max-width: 800px;
