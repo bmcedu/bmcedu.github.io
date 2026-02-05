@@ -78,6 +78,13 @@
 .page-item.active .page-link {
     background-color: var(--bs-primary) !important;
     border-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+.page-item.active .page-link:hover {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: white !important;
 }
 
 .page-link {

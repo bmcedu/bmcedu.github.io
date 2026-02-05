@@ -1064,7 +1064,7 @@ function renderPagination(totalItems) {
     html += `
         <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
+                <i class="hgi hgi-stroke hgi-standard hgi-arrow-right-double"></i>
             </a>
         </li>
     `;
@@ -1082,7 +1082,7 @@ function renderPagination(totalItems) {
     html += `
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
+                <i class="hgi hgi-stroke hgi-standard hgi-arrow-left-double"></i>
             </a>
         </li>
     `;
