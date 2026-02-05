@@ -547,7 +547,7 @@ function setupStaticDropdown(inputId, hiddenId, listId) {
         const item = e.target.closest('.dropdown-item');
         if (item) {
             const value = item.getAttribute('data-value');
-            const text = item.textContent;
+            const text = item.textContent.replace(/\s+/g, ' ').trim();
 
             hiddenInput.value = value;
             input.value = value ? text : ''; // Show text or empty if "All"
