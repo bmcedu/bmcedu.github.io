@@ -98,7 +98,7 @@ function loadAllExcuses() {
                 // Extract dynamic filter options
                 extractFilterOptions();
 
-                renderExcusesTable();
+                applyFilters();
             })
             .catch(error => {
                 console.error('Error loading excuses:', error);
@@ -575,6 +575,14 @@ document.addEventListener('DOMContentLoaded', function () {
     setupStaticDropdown('filterTypeInput', 'filterType', 'typeDropdownList');
     setupStaticDropdown('filterEmployeeDecisionInput', 'filterEmployeeDecision', 'employeeDecisionDropdownList');
     setupStaticDropdown('filterCommitteeDecisionInput', 'filterCommitteeDecision', 'committeeDecisionDropdownList');
+
+    // Default "Employee Decision" to "Pending"
+    const empInput = document.getElementById('filterEmployeeDecisionInput');
+    const empHidden = document.getElementById('filterEmployeeDecision');
+    if (empInput && empHidden) {
+        empHidden.value = 'pending';
+        empInput.value = 'قيد المراجعة';
+    }
 });
 
 
@@ -721,20 +729,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterDateRange = document.getElementById('filterDateRange');
     const btnResetFilters = document.getElementById('btnResetFilters');
 
-    // Initialize Flatpickr
-    let datePickerInstance = null;
-    if (filterDateRange) {
-        datePickerInstance = flatpickr(filterDateRange, {
-            mode: "range",
-            locale: {
-                ...flatpickr.l10ns.ar,
-                firstDayOfWeek: 0,
-                rtl: true
+    // Initialize Tempus Dominus
+    const pickerElement = document.getElementById('tempusDominusWrapper');
+    let pickerInstance = null;
+    if (pickerElement) {
+        pickerInstance = new tempusDominus.TempusDominus(pickerElement, {
+            dateRange: true,
+            display: {
+                theme: 'light',
+                icons: {
+                    type: 'icons',
+                    time: 'hgi hgi-stroke hgi-standard hgi-clock-01',
+                    date: 'hgi hgi-stroke hgi-standard hgi-calendar-01',
+                    up: 'hgi hgi-stroke hgi-standard hgi-arrow-up-01',
+                    down: 'hgi hgi-stroke hgi-standard hgi-arrow-down-01',
+                    previous: 'hgi hgi-stroke hgi-standard hgi-arrow-left-01',
+                    next: 'hgi hgi-stroke hgi-standard hgi-arrow-right-01',
+                    today: 'hgi hgi-stroke hgi-standard hgi-home-01',
+                    clear: 'hgi hgi-stroke hgi-standard hgi-delete-02',
+                    close: 'hgi hgi-stroke hgi-standard hgi-cancel-01'
+                },
+                components: {
+                    clock: false
+                }
             },
-            dateFormat: "Y-m-d",
-            onChange: function (selectedDates, dateStr, instance) {
-                applyFilters();
+            localization: {
+                locale: 'en-US',
+                format: 'yyyy-MM-dd'
             }
+        });
+
+        // Listen for changes
+        pickerElement.addEventListener('change.td', (e) => {
+            applyFilters();
         });
     }
 
@@ -788,10 +815,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hiddenType) hiddenType.value = '';
 
             // Reset Date Range
-            if (datePickerInstance) {
-                datePickerInstance.clear();
-            } else if (filterDateRange) {
-                filterDateRange.value = '';
+            if (pickerInstance) {
+                pickerInstance.dates.clear();
+            } else {
+                const rangeInput = document.getElementById('filterDateRange');
+                if (rangeInput) rangeInput.value = '';
             }
 
             applyFilters();
@@ -814,15 +842,17 @@ function applyFilters() {
     // Use hidden input for course filter
     const course = document.getElementById('filterCourse')?.value || '';
 
-    // Parse Date Range
+    // Parse Date Range from Tempus Dominus
     let dateStart = '';
     let dateEnd = '';
     const dateRangeVal = document.getElementById('filterDateRange')?.value || '';
-    if (dateRangeVal.includes(' to ')) {
-        [dateStart, dateEnd] = dateRangeVal.split(' to ');
-    } else if (dateRangeVal) { // Single day selected
-        dateStart = dateRangeVal;
-        dateEnd = dateRangeVal;
+
+    // Tempus Dominus range is usually "YYYY-MM-DD, YYYY-MM-DD" or similar
+    if (dateRangeVal.includes(',')) {
+        [dateStart, dateEnd] = dateRangeVal.split(',').map(s => s.trim());
+    } else if (dateRangeVal) {
+        dateStart = dateRangeVal.trim();
+        dateEnd = dateRangeVal.trim();
     }
 
     filteredExcuses = allExcuses.filter(excuse => {
@@ -884,7 +914,8 @@ function saveEmployeeDecision(id) {
         Swal.fire({
             icon: 'warning',
             title: 'تنبيه',
-            text: 'يرجى اختيار القرار أولاً'
+            text: 'يرجى اختيار القرار أولاً',
+
         });
         return;
     }
@@ -921,10 +952,20 @@ function saveEmployeeDecision(id) {
                 });
                 loadAllExcuses();
             } else {
-                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: data.message || 'فشل الحفظ',
+                    icon: 'error',
+
+                });
             }
         })
-        .catch(err => Swal.fire('خطأ', 'خطأ في الاتصال', 'error'))
+        .catch(err => Swal.fire({
+            title: 'خطأ',
+            text: 'خطأ في الاتصال',
+            icon: 'error',
+
+        }))
         .finally(() => {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -943,7 +984,8 @@ function saveCommitteeDecision(id) {
         Swal.fire({
             icon: 'warning',
             title: 'تنبيه',
-            text: 'يرجى اختيار قرار اللجنة أولاً'
+            text: 'يرجى اختيار قرار اللجنة أولاً',
+
         });
         return;
     }
@@ -982,10 +1024,20 @@ function saveCommitteeDecision(id) {
                 });
                 loadAllExcuses();
             } else {
-                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+                Swal.fire({
+                    title: 'خطأ',
+                    text: data.message || 'فشل الحفظ',
+                    icon: 'error',
+
+                });
             }
         })
-        .catch(err => Swal.fire('خطأ', 'خطأ في الاتصال', 'error'))
+        .catch(err => Swal.fire({
+            title: 'خطأ',
+            text: 'خطأ في الاتصال',
+            icon: 'error',
+
+        }))
         .finally(() => {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -1430,7 +1482,8 @@ function confirmDelete(id) {
         text: "لن تتمكن من استرجاع هذا العذر بعد حذفه!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: primaryColor,
+        showCancelButton: true,
+        confirmButtonColor: 'var(--bs-danger)',
         cancelButtonColor: secondaryColor,
         confirmButtonText: 'نعم، احذفه!',
         cancelButtonText: 'إلغاء',
@@ -1676,7 +1729,7 @@ function saveItem() {
             text: 'الرجاء إدخال الاسم',
             icon: 'error',
             confirmButtonText: 'موافق',
-            confirmButtonColor: '#004185'
+
         });
         return;
     }
@@ -1701,7 +1754,7 @@ function saveItem() {
                     text: id ? 'تم تحديث العنصر بنجاح' : 'تمت إضافة العنصر بنجاح',
                     icon: 'success',
                     confirmButtonText: 'موافق',
-                    confirmButtonColor: '#004185'
+
                 });
                 loadSettingsData();
             } else {
@@ -1710,7 +1763,7 @@ function saveItem() {
                     text: data.message || 'فشلت العملية',
                     icon: 'error',
                     confirmButtonText: 'موافق',
-                    confirmButtonColor: '#004185'
+
                 });
             }
         })
@@ -1720,7 +1773,7 @@ function saveItem() {
                 text: 'حدث خطأ في الاتصال',
                 icon: 'error',
                 confirmButtonText: 'موافق',
-                confirmButtonColor: '#004185'
+
             });
         });
 }
@@ -1734,7 +1787,7 @@ function deleteSettingsItem(category, id) {
         text: 'هل أنت متأكد من حذف هذا العنصر؟',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#dc3545',
+        confirmButtonColor: 'var(--bs-danger)',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'نعم، احذف',
         cancelButtonText: 'إلغاء'
@@ -1755,7 +1808,7 @@ function deleteSettingsItem(category, id) {
                             text: 'تم حذف العنصر بنجاح',
                             icon: 'success',
                             confirmButtonText: 'موافق',
-                            confirmButtonColor: '#004185'
+
                         });
                         loadSettingsData();
                     } else {
@@ -1764,7 +1817,7 @@ function deleteSettingsItem(category, id) {
                             text: data.message || 'فشل الحذف',
                             icon: 'error',
                             confirmButtonText: 'موافق',
-                            confirmButtonColor: '#004185'
+
                         });
                     }
                 })
@@ -1774,7 +1827,7 @@ function deleteSettingsItem(category, id) {
                         text: 'حدث خطأ في الاتصال',
                         icon: 'error',
                         confirmButtonText: 'موافق',
-                        confirmButtonColor: '#004185'
+
                     });
                 });
         }
@@ -1845,7 +1898,7 @@ async function savePolicy() {
                 text: fileId ? 'تم حفظ السياسة والملف بنجاح' : 'تم حفظ السياسة بنجاح',
                 icon: 'success',
                 confirmButtonText: 'موافق',
-                confirmButtonColor: '#004185'
+
             });
 
             // Clear file input and show status
@@ -1863,7 +1916,7 @@ async function savePolicy() {
             text: err.message || 'حدث خطأ في الاتصال',
             icon: 'error',
             confirmButtonText: 'موافق',
-            confirmButtonColor: '#004185'
+
         });
     } finally {
         saveBtn.disabled = false;
@@ -1913,7 +1966,7 @@ function setupPolicyFileUpload() {
                     text: 'يجب أن يكون الملف بصيغة PDF',
                     icon: 'error',
                     confirmButtonText: 'موافق',
-                    confirmButtonColor: '#004185'
+
                 });
                 this.value = ''; // Clear input
                 return;
@@ -2125,7 +2178,12 @@ function renderSignaturesList() {
 
 function openAddSignatureModal() {
     if (signaturesList.length >= 5) {
-        Swal.fire('تنبيه', 'لقد وصلت للحد الأقصى (5 تواقيع). يرجى حذف توقيع لإضافة جديد.', 'warning');
+        Swal.fire({
+            title: 'تنبيه',
+            text: 'لقد وصلت للحد الأقصى (5 تواقيع). يرجى حذف توقيع لإضافة جديد.',
+            icon: 'warning',
+
+        });
         return;
     }
     document.getElementById('sigId').value = '';
@@ -2172,7 +2230,7 @@ async function saveSignature() {
     const fileInput = document.getElementById('sigImage');
 
     if (!name || !position) {
-        Swal.fire('خطأ', 'الاسم والمنصب مطلوبان', 'error');
+        Swal.fire({ title: 'خطأ', text: 'الاسم والمنصب مطلوبان', icon: 'error', });
         return;
     }
 
@@ -2183,7 +2241,7 @@ async function saveSignature() {
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
         if (file.size > 2 * 1024 * 1024) { // 2MB
-            Swal.fire('خطأ', 'حجم الصورة كبير جداً (اكبر من 2 ميجابايت)', 'error');
+            Swal.fire({ title: 'خطأ', text: 'حجم الصورة كبير جداً (اكبر من 2 ميجابايت)', icon: 'error', });
             return;
         }
         try {
@@ -2217,12 +2275,12 @@ async function saveSignature() {
             if (data.status === 'success') {
                 addSignatureModal.hide();
                 loadSignatures();
-                Swal.fire('تم', 'تم حفظ التوقيع بنجاح', 'success');
+                Swal.fire({ title: 'تم', text: 'تم حفظ التوقيع بنجاح', icon: 'success', });
             } else {
-                Swal.fire('خطأ', data.message || 'فشل الحفظ', 'error');
+                Swal.fire({ title: 'خطأ', text: data.message || 'فشل الحفظ', icon: 'error', });
             }
         })
-        .catch(err => Swal.fire('خطأ', 'فشل الاتصال', 'error'))
+        .catch(err => Swal.fire({ title: 'خطأ', text: 'فشل الاتصال', icon: 'error', }))
         .finally(() => {
             btn.disabled = false;
             spinner.classList.add('d-none');
@@ -2235,6 +2293,7 @@ function deleteSignature(id) {
         text: "لا يمكن التراجع عن هذا الإجراء",
         icon: 'warning',
         showCancelButton: true,
+        confirmButtonColor: 'var(--bs-danger)',
         confirmButtonText: 'نعم، حذف',
         cancelButtonText: 'إلغاء'
     }).then((result) => {
@@ -2248,9 +2307,9 @@ function deleteSignature(id) {
                 .then(data => {
                     if (data.status === 'success') {
                         loadSignatures();
-                        Swal.fire('تم', 'تم الحذف بنجاح', 'success');
+                        Swal.fire({ title: 'تم', text: 'تم الحذف بنجاح', icon: 'success', });
                     } else {
-                        Swal.fire('خطأ', 'فشل الحذف', 'error');
+                        Swal.fire({ title: 'خطأ', text: 'فشل الحذف', icon: 'error', });
                     }
                 });
         }
@@ -2482,4 +2541,248 @@ async function downloadExcusePDF(id) {
         console.error(err);
         Swal.fire({ icon: 'error', title: 'خطأ', text: 'حدث خطأ أثناء معالجة الملف: ' + err.message });
     }
+}
+/**
+ * Collect Emails from Filtered Results and Show in Modal
+ */
+function collectEmails() {
+    const emails = new Set();
+
+    filteredExcuses.forEach(excuse => {
+        let email = excuse.student_email || excuse.email;
+
+        // If not in excuse object, lookup in student list
+        if (!email && excuse.student_id) {
+            const student = allStudentsList.find(s => String(s.id) === String(excuse.student_id));
+            if (student) {
+                // Check likely keys based on data standardization
+                email = student.student_email || student.email || student.user_email;
+            }
+        }
+
+        if (email && email.trim() !== '') {
+            emails.add(email.trim());
+        }
+    });
+
+    const emailList = Array.from(emails);
+
+    if (emailList.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'لا يوجد إيميلات',
+            text: 'لم يتم العثور على أي إيميلات للطلاب في القائمة الحالية.',
+            confirmButtonText: 'حسناً'
+        });
+        return;
+    }
+
+    const emailString = emailList.join(', ');
+
+    Swal.fire({
+        title: 'نسخ الإيميلات',
+        html: `
+            <p>تم العثور على <strong>${emailList.length}</strong> إيميل:</p>
+            <textarea id="emailsTextarea" class="form-control bg-light" rows="10" readonly onclick="this.select()">${emailString}</textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="hgi hgi-stroke hgi-standard hgi-copy-01"></i> نسخ الكل',
+        cancelButtonText: 'إغلاق',
+        didOpen: () => {
+            // Auto-select text
+            const textarea = document.getElementById('emailsTextarea');
+            if (textarea) textarea.select();
+        },
+        preConfirm: () => {
+            const textarea = document.getElementById('emailsTextarea');
+            if (textarea) {
+                textarea.select();
+                document.execCommand('copy'); // Fallback
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textarea.value);
+                }
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: 'success',
+                title: 'تم النسخ!',
+                text: 'تم نسخ الإيميلات إلى الحافظة بنجاح.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    });
+}
+
+// Attach Event Listener
+// Attach Event Listener
+document.addEventListener('DOMContentLoaded', function () {
+    const btnCollectEmails = document.getElementById('btnCollectEmails');
+    if (btnCollectEmails) {
+        btnCollectEmails.addEventListener('click', collectEmails);
+    }
+
+    const btnExportExcel = document.getElementById('btnExportExcel');
+    if (btnExportExcel) {
+        btnExportExcel.addEventListener('click', exportToExcel);
+    }
+});
+
+/**
+ * Export Filtered Excuses to Excel
+ */
+function exportToExcel() {
+    if (!filteredExcuses || filteredExcuses.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'لا توجد بيانات',
+            text: 'لا توجد أعذار مطابقة للتصفية الحالية لتصديرها.',
+            confirmButtonText: 'حسناً'
+        });
+        return;
+    }
+
+    // Prepare Data for Excel
+    const data = filteredExcuses.map(excuse => {
+        // Resolve Student Extra Info
+        let sName = excuse.student_name;
+        let sId = excuse.student_id;
+        let sMajor = excuse.student_major;
+        let sLevel = excuse.student_level;
+        let sEmail = excuse.student_email || excuse.email;
+        let sPhone = excuse.student_phone || excuse.phone;
+
+        if (!sName || !sMajor) {
+            const s = allStudentsList.find(st => String(st.id) === String(sId));
+            if (s) {
+                if (!sName) sName = s.name || s.student_name;
+                if (!sMajor) sMajor = s.major || s.student_major;
+                if (!sLevel) sLevel = s.level || s.student_level;
+                if (!sEmail) sEmail = s.email || s.student_email || s.user_email;
+                if (!sPhone) sPhone = s.phone || s.student_phone;
+            }
+        }
+
+        // Translate Status
+        const statusMap = {
+            'pending': 'قيد المراجعة',
+            'approved': 'مقبول',
+            'rejected': 'مرفوض',
+            'mismatch': 'غير مطابق',
+            'late': 'متأخر'
+        };
+
+        // Format Courses
+        let coursesStr = '';
+        if (excuse.affected_courses) {
+            try {
+                let courses = [];
+                if (typeof excuse.affected_courses === 'string') {
+                    if (excuse.affected_courses.startsWith('[')) courses = JSON.parse(excuse.affected_courses);
+                    else courses = [{ course: excuse.affected_courses, reason: excuse.reason }];
+                } else if (Array.isArray(excuse.affected_courses)) {
+                    courses = excuse.affected_courses;
+                }
+
+                if (courses.length > 0) {
+                    coursesStr = courses.map(c => {
+                        // Resolve names using global lookups
+                        const cId = String(c.course);
+                        const cName = typeof coursesLookup !== 'undefined' && coursesLookup[cId] ? coursesLookup[cId] : c.course;
+
+                        const rId = String(c.reason);
+                        const rReason = typeof reasonsLookup !== 'undefined' && reasonsLookup[rId] ? reasonsLookup[rId] : (c.reason || c.type || '-');
+
+                        return `${cName} (${rReason})`;
+                    }).join(' | ');
+                }
+            } catch (e) {
+                coursesStr = excuse.affected_courses;
+            }
+        }
+
+        // Translate Hospital Type
+        let hTypeStr = excuse.hospital_type || '-';
+        if (hTypeStr && typeof hTypeStr === 'string') {
+            const lowerType = hTypeStr.toLowerCase();
+            if (lowerType.includes('private')) hTypeStr = 'خاص';
+            else if (lowerType.includes('gov') || lowerType.includes('public')) hTypeStr = 'حكومي';
+        }
+
+        // Translate Relationship
+        const relMap = {
+            'father': 'أب',
+            'mother': 'أم',
+            'sibling': 'أخ/أخت',
+            'grandparent': 'جد/جدة',
+            'husband': 'زوج',
+            'wife': 'زوجة',
+            'son': 'ابن',
+            'daughter': 'ابنة',
+            'other': 'أخرى'
+        };
+        const relStr = relMap[excuse.relationship] || excuse.relationship || '-';
+
+        return {
+            "رقم الطلب": excuse.id,
+            "الرقم الجامعي": sId,
+            "اسم الطالب": sName,
+            "البريد الإلكتروني": sEmail || '-',
+            "التخصص": sMajor || '-',
+            "المستوى": sLevel || '-',
+            "تاريخ التقديم": excuse.date ? new Date(excuse.date).toLocaleDateString('en-GB') : '-',
+            "نوع العذر": excuse.excuse_type === 'health' ? 'عذر صحي' : (excuse.excuse_type === 'death' ? 'حالة وفاة' : excuse.excuse_type),
+            "تاريخ العذر": excuse.excuse_date,
+            "عدد الأيام": excuse.num_days,
+            "السبب": excuse.reason || '-',
+            "المستشفى/الجهة": excuse.hospital || '-',
+            "نوع المستشفى": hTypeStr,
+            "درجة القرابة": relStr,
+            "التصنيف المبدئي": statusMap[excuse.status] || excuse.status,
+            "قرار الموظف": statusMap[excuse.employee_decision] || excuse.employee_decision || 'قيد المراجعة',
+            "قرار اللجنة": statusMap[excuse.committee_decision] || excuse.committee_decision || 'قيد المراجعة',
+            "تعليق اللجنة": excuse.committee_comment || '-',
+            "المواد المتأثرة": coursesStr,
+            "رابط التقرير الطبي": excuse.medical_link || '-',
+            "رابط عذر صحتي": excuse.sehaty_link || '-',
+            "رابط نموذج الكلية": excuse.college_link || '-'
+        };
+    });
+
+    // Create Worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Auto-width for columns
+    const colWidths = [
+        { wch: 10 }, // ID
+        { wch: 15 }, // Student ID
+        { wch: 30 }, // Name
+        { wch: 20 }, // Major
+        { wch: 10 }, // Level
+        { wch: 15 }, // Date
+        { wch: 15 }, // Type
+        { wch: 15 }, // Excuse Date
+        { wch: 10 }, // Days
+        { wch: 30 }, // Reason
+        { wch: 20 }, // Location
+        { wch: 15 }, // Status
+        { wch: 15 }, // Employee
+        { wch: 15 }, // Committee
+        { wch: 30 }, // Comment
+        { wch: 50 }, // Courses
+        { wch: 40 }, // Link 1
+        { wch: 40 }, // Link 2
+        { wch: 40 }  // Link 3
+    ];
+    worksheet['!cols'] = colWidths;
+
+    // Create Workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Excuses");
+
+    // Generate File Name with Date
+    const dateStr = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `Excuses_Export_${dateStr}.xlsx`);
 }

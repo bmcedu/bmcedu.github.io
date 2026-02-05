@@ -20,10 +20,23 @@
     <link rel="stylesheet" href="css/custom.css">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css"> <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/rtl.css">
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Popper.js for Tempus Dominus -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <!-- Tempus Dominus Styles -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
+    <!-- Import Map for ESM resolution -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/+esm",
+        "@eonasdan/tempus-dominus": "https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.esm.js"
+      }
+    }
+    </script>
+
 </head>
 
 <body>
@@ -137,16 +150,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- 3. Date Range -->
+                                    <!-- 3. Date Range (Tempus Dominus) -->
                                     <div class="col-md-3">
-                                        <label class="form-label small text-muted">تاريخ تقديم العذر</label>
-                                        <div class="searchable-select position-relative">
-                                            <input type="text" class="form-control" id="filterDateRange"
-                                                placeholder="اختر الفترة..." style="background-color: #fff;"
-                                                autocomplete="off">
-                                            <!-- Icon -->
-                                            <i class="hgi hgi-stroke hgi-standard hgi-calendar-03 position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                                                style="pointer-events: none;"></i>
+                                        <label class="form-label small text-muted">تاريخ التقديم</label>
+                                        <div class="input-group" id="tempusDominusWrapper"
+                                            data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="filterDateRange" type="text" class="form-control"
+                                                data-td-target="#tempusDominusWrapper" placeholder="اختر الفترة..." />
+                                            <span class="input-group-text" data-td-target="#tempusDominusWrapper"
+                                                data-td-toggle="datetimepicker">
+                                                <i class="hgi hgi-stroke hgi-standard hgi-calendar-03"></i>
+                                            </span>
                                         </div>
                                     </div>
                                     <!-- 4. Type (Custom Static Select) -->
@@ -278,7 +292,17 @@
                                         </div>
                                     </div>
                                     <!-- Actions -->
-                                    <div class="col-12 d-flex justify-content-end">
+                                    <div class="col-12 d-flex justify-content-end gap-3">
+                                        <button
+                                            class="btn btn-outline-secondary px-4 d-inline-flex align-items-center gap-2"
+                                            id="btnCollectEmails">
+                                            <i class="hgi hgi-stroke hgi-standard hgi-mail-01"></i> نسخ الإيميلات
+                                        </button>
+                                        <button
+                                            class="btn btn-outline-success px-4 d-inline-flex align-items-center gap-2"
+                                            id="btnExportExcel">
+                                            <i class="hgi hgi-stroke hgi-standard hgi-file-export"></i> تصدير إكسل
+                                        </button>
                                         <button class="btn btn-primary px-4 d-inline-flex align-items-center gap-2"
                                             id="btnResetFilters">
                                             <i class="hgi hgi-stroke hgi-standard hgi-refresh"></i> إعادة تعيين
@@ -778,13 +802,16 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Flatpickr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+
     <!-- PDF-Lib for signature overlay -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/admin-portal.js"></script>
+    <!-- Tempus Dominus JavaScript (Module Bridge) -->
+    <script type="module">
+        import { TempusDominus } from '@eonasdan/tempus-dominus';
+        window.tempusDominus = { TempusDominus };
+    </script>
+    <script src="js/config.js" defer></script>
+    <script src="js/admin-portal.js" defer></script>
 </body>
 
 </html>

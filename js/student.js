@@ -236,7 +236,34 @@ document.addEventListener('DOMContentLoaded', function () {
     verifyAndRefreshSession();
 
     // Allow any date (Past dates are handled by backend classification)
-    const excuseDateInput = document.getElementById('excuseDate');
+    const pickerElement = document.getElementById('tempusDominusWrapper');
+    let pickerInstance = null;
+    if (pickerElement) {
+        pickerInstance = new tempusDominus.TempusDominus(pickerElement, {
+            display: {
+                theme: 'light',
+                icons: {
+                    type: 'icons',
+                    time: 'hgi hgi-stroke hgi-standard hgi-clock-01',
+                    date: 'hgi hgi-stroke hgi-standard hgi-calendar-01',
+                    up: 'hgi hgi-stroke hgi-standard hgi-arrow-up-01',
+                    down: 'hgi hgi-stroke hgi-standard hgi-arrow-down-01',
+                    previous: 'hgi hgi-stroke hgi-standard hgi-arrow-left-01',
+                    next: 'hgi hgi-stroke hgi-standard hgi-arrow-right-01',
+                    today: 'hgi hgi-stroke hgi-standard hgi-home-01',
+                    clear: 'hgi hgi-stroke hgi-standard hgi-delete-02',
+                    close: 'hgi hgi-stroke hgi-standard hgi-cancel-01'
+                },
+                components: {
+                    clock: false
+                }
+            },
+            localization: {
+                locale: 'en-US',
+                format: 'yyyy-MM-dd'
+            }
+        });
+    }
 
     // 2. Display User Info
     if (studentName) {
@@ -731,6 +758,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('addRequestForm');
             if (form) form.reset();
 
+            // 2b. Reset Date Picker
+            if (pickerInstance) {
+                pickerInstance.dates.clear();
+            }
+
             // 2b. Reset Policy Checkbox (uncheck it for next time)
             const policyCheckbox = document.getElementById('policyCheckbox');
             if (policyCheckbox) {
@@ -1182,7 +1214,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 icon: 'warning',
                 title: 'الحد الأقصى',
                 text: 'لا يمكن إضافة أكثر من 8 مواد لكل طلب',
-                confirmButtonText: 'حسناً'
+                confirmButtonText: 'حسناً',
+
             });
             return;
         }
@@ -1214,19 +1247,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         newRow.innerHTML = `
             <td>
-                <select class="form-select" required>
-                    <option value="" selected disabled>-- اختر المادة --</option>
-                    ${courseOptions}
-                </select>
+<select class="form-select" required>
+    <option value="" selected disabled>-- اختر المادة --</option>
+    ${courseOptions}
+</select>
             </td>
             <td>
-                <select class="form-select" required>
-                    <option value="" selected disabled>-- السبب --</option>
-                    ${reasonOptions}
-                </select>
+<select class="form-select" required>
+    <option value="" selected disabled>-- السبب --</option>
+    ${reasonOptions}
+</select>
             </td>
             <td class="text-center">
-                <i class="hgi-stroke hgi-standard hgi-delete-02 text-danger delete-course-btn mx-auto d-block" style="font-size: 1.25rem; cursor: pointer;"></i>
+<i class="hgi-stroke hgi-standard hgi-delete-02 text-danger delete-course-btn mx-auto d-block" style="font-size: 1.25rem; cursor: pointer;"></i>
             </td>
         `;
         coursesTableBody.appendChild(newRow);
@@ -1611,7 +1644,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: 'تم إرسال طلب العذر بنجاح!',
                 text: 'تم تقديم طلب العذر بنجاح وسيتم تحديث النتيجة من قبل الفريق المعني.',
                 confirmButtonText: 'تم بنجاح',
-                confirmButtonColor: 'var(--bs-primary)',
+
                 timer: 3000,
                 timerProgressBar: true
             });

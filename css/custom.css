@@ -300,3 +300,25 @@ body {
     z-index: 0;
     pointer-events: none;
 }
+
+/**
+ * Tempus Dominus v6 Refinements
+ * Ensure the picker itself is always LTR regardless of page direction
+ */
+.tempus-dominus-widget {
+    direction: ltr !important;
+}
+
+/* SweetAlert Overrides */
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+    background-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.5) !important;
+}
+
+/* Ensure danger buttons override the primary default if needed */
+/* Ensure danger buttons override the primary default if needed */
+/* Default styles for deny/cancel are sufficient, but this block is reserved for future overrides */
