@@ -173,201 +173,193 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Edit Email Button (replaces Back Button)
-    if (editEmailBtn) {
-        editEmailBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            // Reverse Progressive Switch:
-            emailInput.readOnly = false;
-            emailInput.classList.remove('bg-light');
-            editEmailBtn.classList.add('d-none');
-            if (step1Buttons) step1Buttons.classList.remove('d-none');
+    // Simplified form: No Edit button/handler needed
 
-            step2.classList.add('d-none');
-            if (otpInput) otpInput.value = '';
-            if (loginError) loginError.classList.add('d-none');
-            emailInput.focus();
-        });
+    step2.classList.add('d-none');
+    if (otpInput) otpInput.value = '';
+    if (loginError) loginError.classList.add('d-none');
+    emailInput.focus();
+});
     }
 
-    // Step 2: Verify OTP and Login
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
+// Step 2: Verify OTP and Login
+if (loginForm) {
+    loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-            const otp = otpInput.value.trim();
-            const otpGroup = otpInput.closest('.input-group');
+        const otp = otpInput.value.trim();
+        const otpGroup = otpInput.closest('.input-group');
 
-            // Validate OTP
-            if (!otp || otp.length !== 6) {
-                setError(otpError, 'يرجى إدخال الرمز المكون من 6 أرقام.', otpGroup);
-                return;
-            }
-
-            clearError(otpError, otpGroup);
-            if (loginError) loginError.classList.add('d-none');
-
-            // Check Config
-            const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
-            if (!scriptUrl) {
-                if (loginError) {
-                    loginError.textContent = 'خطأ في النظام: رابط السكربت غير موجود';
-                    loginError.classList.remove('d-none');
-                }
-                return;
-            }
-
-            // Disable button and show loading
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = 'جاري التحقق... <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
-            loginBtn.disabled = true;
-
-            try {
-                const response = await fetch(scriptUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'admin_login',
-                        email: adminEmail,
-                        otp: otp
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    // LOGIN SUCCESS
-                    const admin = data.admin || {};
-
-                    sessionStorage.setItem('isAdminLoggedIn', 'true');
-                    sessionStorage.setItem('adminId', admin.id || '');
-                    sessionStorage.setItem('adminName', admin.name || '');
-                    sessionStorage.setItem('adminEmail', admin.email || adminEmail);
-                    sessionStorage.setItem('adminNotifyPref', admin.receive_notifications); // Added
-
-                    // Notify other tabs (original login tab) about successful login
-                    localStorage.setItem('admin_login_success', Date.now().toString());
-                    // Clean up after a delay to ensure other tabs detect the change
-                    setTimeout(() => localStorage.removeItem('admin_login_success'), 2000);
-
-                    // Redirect to admin dashboard
-                    window.location.href = 'admin';
-                } else {
-                    // Error - Show under OTP input
-                    setError(otpError, data.message || 'رمز التحقق غير صحيح أو منتهي الصلاحية.', otpGroup);
-                    if (loginError) loginError.classList.add('d-none');
-                }
-            } catch (error) {
-                console.error('Login Error:', error);
-                if (loginError) {
-                    loginError.textContent = 'خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.';
-                    loginError.classList.remove('d-none');
-                }
-            } finally {
-                loginBtn.innerHTML = originalText;
-                loginBtn.disabled = false;
-            }
-        });
-    }
-
-    // --- Resend OTP Logic ---
-    const resendLink = document.getElementById('resendLink');
-    let resendInterval;
-
-    function startResendTimer(duration) {
-        let timer = duration;
-
-        // Initial State
-        if (resendLink) {
-            resendLink.classList.add('disabled', 'text-muted');
-            resendLink.classList.remove('text-primary');
-            resendLink.style.pointerEvents = 'none';
+        // Validate OTP
+        if (!otp || otp.length !== 6) {
+            setError(otpError, 'يرجى إدخال الرمز المكون من 6 أرقام.', otpGroup);
+            return;
         }
 
-        // Clear existing interval if any
-        if (resendInterval) clearInterval(resendInterval);
+        clearError(otpError, otpGroup);
+        if (loginError) loginError.classList.add('d-none');
 
-        // Update function for reuse - gets span dynamically each time
-        const updateDisplay = () => {
-            const timerSpan = document.getElementById('resendTimer');
-            if (timerSpan) timerSpan.textContent = `(${timer})`;
-        };
-
-        updateDisplay(); // Run once immediately
-
-        resendInterval = setInterval(function () {
-            if (--timer < 0) {
-                clearInterval(resendInterval);
-                // Enable Link
-                if (resendLink) {
-                    resendLink.classList.remove('disabled', 'text-muted');
-                    resendLink.classList.add('text-primary');
-                    resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
-                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span>';
-                }
-            } else {
-                updateDisplay();
+        // Check Config
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+        if (!scriptUrl) {
+            if (loginError) {
+                loginError.textContent = 'خطأ في النظام: رابط السكربت غير موجود';
+                loginError.classList.remove('d-none');
             }
-        }, 1000);
-    }
+            return;
+        }
 
-    // Resend Click Handler
+        // Disable button and show loading
+        const originalText = loginBtn.innerHTML;
+        loginBtn.innerHTML = 'جاري التحقق... <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
+        loginBtn.disabled = true;
+
+        try {
+            const response = await fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'admin_login',
+                    email: adminEmail,
+                    otp: otp
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // LOGIN SUCCESS
+                const admin = data.admin || {};
+
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                sessionStorage.setItem('adminId', admin.id || '');
+                sessionStorage.setItem('adminName', admin.name || '');
+                sessionStorage.setItem('adminEmail', admin.email || adminEmail);
+                sessionStorage.setItem('adminNotifyPref', admin.receive_notifications); // Added
+
+                // Notify other tabs (original login tab) about successful login
+                localStorage.setItem('admin_login_success', Date.now().toString());
+                // Clean up after a delay to ensure other tabs detect the change
+                setTimeout(() => localStorage.removeItem('admin_login_success'), 2000);
+
+                // Redirect to admin dashboard
+                window.location.href = 'admin';
+            } else {
+                // Error - Show under OTP input
+                setError(otpError, data.message || 'رمز التحقق غير صحيح أو منتهي الصلاحية.', otpGroup);
+                if (loginError) loginError.classList.add('d-none');
+            }
+        } catch (error) {
+            console.error('Login Error:', error);
+            if (loginError) {
+                loginError.textContent = 'خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.';
+                loginError.classList.remove('d-none');
+            }
+        } finally {
+            loginBtn.innerHTML = originalText;
+            loginBtn.disabled = false;
+        }
+    });
+}
+
+// --- Resend OTP Logic ---
+const resendLink = document.getElementById('resendLink');
+let resendInterval;
+
+function startResendTimer(duration) {
+    let timer = duration;
+
+    // Initial State
     if (resendLink) {
-        resendLink.addEventListener('click', async function (e) {
-            e.preventDefault();
-            if (this.classList.contains('disabled')) return;
-
-            // Reset UI state
-            this.classList.add('disabled', 'text-muted');
-            this.style.pointerEvents = 'none';
-            this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i> جاري الإرسال...';
-
-            const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
-            if (!scriptUrl) return;
-
-            try {
-                const response = await fetch(scriptUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'admin_request_otp',
-                        email: adminEmail
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    // Start timer immediately without intermediate "Sent" message
-                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary">(30)</span>';
-                    startResendTimer(30);
-                } else {
-                    if (loginError) {
-                        loginError.textContent = data.message;
-                        loginError.classList.remove('d-none');
-                    }
-                    startResendTimer(30); // Penalty wait
-                }
-            } catch (error) {
-                console.error("Resend Error", error);
-                startResendTimer(10);
-            }
-        });
+        resendLink.classList.add('disabled', 'text-muted');
+        resendLink.classList.remove('text-primary');
+        resendLink.style.pointerEvents = 'none';
     }
 
-    // Helper Functions
-    function setError(errorEl, message, group) {
-        if (errorEl) {
-            errorEl.textContent = message || '';
-            if (message) {
-                errorEl.classList.remove('d-none');
-            } else {
-                errorEl.classList.add('d-none');
+    // Clear existing interval if any
+    if (resendInterval) clearInterval(resendInterval);
+
+    // Update function for reuse - gets span dynamically each time
+    const updateDisplay = () => {
+        const timerSpan = document.getElementById('resendTimer');
+        if (timerSpan) timerSpan.textContent = `(${timer})`;
+    };
+
+    updateDisplay(); // Run once immediately
+
+    resendInterval = setInterval(function () {
+        if (--timer < 0) {
+            clearInterval(resendInterval);
+            // Enable Link
+            if (resendLink) {
+                resendLink.classList.remove('disabled', 'text-muted');
+                resendLink.classList.add('text-primary');
+                resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
+                resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span>';
             }
+        } else {
+            updateDisplay();
         }
-        if (group) group.classList.add('is-invalid');
-    }
+    }, 1000);
+}
 
-    function clearError(errorEl, group) {
-        if (errorEl) errorEl.classList.add('d-none');
-        if (group) group.classList.remove('is-invalid');
+// Resend Click Handler
+if (resendLink) {
+    resendLink.addEventListener('click', async function (e) {
+        e.preventDefault();
+        if (this.classList.contains('disabled')) return;
+
+        // Reset UI state
+        this.classList.add('disabled', 'text-muted');
+        this.style.pointerEvents = 'none';
+        this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i> جاري الإرسال...';
+
+        const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
+        if (!scriptUrl) return;
+
+        try {
+            const response = await fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'admin_request_otp',
+                    email: adminEmail
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // Start timer immediately without intermediate "Sent" message
+                this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary">(30)</span>';
+                startResendTimer(30);
+            } else {
+                if (loginError) {
+                    loginError.textContent = data.message;
+                    loginError.classList.remove('d-none');
+                }
+                startResendTimer(30); // Penalty wait
+            }
+        } catch (error) {
+            console.error("Resend Error", error);
+            startResendTimer(10);
+        }
+    });
+}
+
+// Helper Functions
+function setError(errorEl, message, group) {
+    if (errorEl) {
+        errorEl.textContent = message || '';
+        if (message) {
+            errorEl.classList.remove('d-none');
+        } else {
+            errorEl.classList.add('d-none');
+        }
     }
+    if (group) group.classList.add('is-invalid');
+}
+
+function clearError(errorEl, group) {
+    if (errorEl) errorEl.classList.add('d-none');
+    if (group) group.classList.remove('is-invalid');
+}
 });
