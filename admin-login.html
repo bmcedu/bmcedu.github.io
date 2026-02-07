@@ -22,13 +22,18 @@
 <body>
     <div class="container-fluid row p-2 vh-100 overflow-hidden m-0 position-relative">
 
-        <!-- Student Login Switch -->
-        <a href="./"
-            class="btn btn-secondary position-absolute top-0 start-0 m-4 z-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm"
-            style="width: auto;">
-            <i class="hgi hgi-stroke hgi-standard hgi-student me-2"></i> <!-- Changed icon to group/student -->
-            <span class="fw-medium">دخول الطلاب</span>
-        </a>
+        <!-- Portal Switcher (Tab Style) -->
+        <div class="position-absolute top-0 start-50 translate-middle-x mt-4 z-3">
+            <div class="bg-secondary bg-opacity-10 p-1 rounded-3 d-flex gap-1" style="width: fit-content;">
+                <div class="btn btn-sm px-4 rounded-2 bg-white shadow-sm fw-semibold text-dark">
+                    <i class="hgi hgi-stroke hgi-standard hgi-user-settings me-1"></i> الإدارة
+                </div>
+                <a href="./"
+                    class="btn btn-sm px-4 rounded-2 text-muted fw-medium border-0 hover-bg-light transition-all d-flex align-items-center">
+                    <i class="hgi hgi-stroke hgi-standard hgi-student me-1"></i> الطلاب
+                </a>
+            </div>
+        </div>
 
         <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center">
             <div class="col-md-6">
