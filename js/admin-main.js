@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const otpInput = document.getElementById('otp');
     const emailError = document.getElementById('emailError');
     const otpError = document.getElementById('otpError');
-    const step1 = document.getElementById('step1');
+    const step1Buttons = document.getElementById('step1Buttons');
     const step2 = document.getElementById('step2');
     const requestOtpBtn = document.getElementById('requestOtpBtn');
     const loginBtn = document.getElementById('loginBtn');
@@ -148,13 +148,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === 'success') {
                     // Success - move to step 2
                     adminEmail = email;
-                    const userEmailDisplay = document.getElementById('userEmailDisplay');
-                    if (userEmailDisplay) userEmailDisplay.textContent = email;
 
-                    step1.classList.add('d-none');
+                    // Progressive Switch:
+                    emailInput.readOnly = true;
+                    emailInput.classList.add('bg-light'); // Add subtle bg to indicate readonly
+                    if (editEmailBtn) editEmailBtn.classList.remove('d-none');
+                    if (step1Buttons) step1Buttons.classList.add('d-none');
+
                     step2.classList.remove('d-none');
                     otpInput.focus();
                     startResendTimer(30); // Start 30s countdown
+                    if (resendLink) resendLink.classList.remove('d-none');
                 } else {
                     // Error
                     setError(emailError, data.message || 'البريد الإلكتروني غير مسجل في النظام.', emailGroup);
@@ -170,12 +174,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Edit Email Button (replaces Back Button)
-    const editEmailBtn = document.getElementById('editEmailBtn');
     if (editEmailBtn) {
         editEmailBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            // Reverse Progressive Switch:
+            emailInput.readOnly = false;
+            emailInput.classList.remove('bg-light');
+            editEmailBtn.classList.add('d-none');
+            if (step1Buttons) step1Buttons.classList.remove('d-none');
+
             step2.classList.add('d-none');
-            step1.classList.remove('d-none');
             if (otpInput) otpInput.value = '';
             if (loginError) loginError.classList.add('d-none');
             emailInput.focus();
@@ -281,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update function for reuse - gets span dynamically each time
         const updateDisplay = () => {
             const timerSpan = document.getElementById('resendTimer');
-            if (timerSpan) timerSpan.textContent = timer;
+            if (timerSpan) timerSpan.textContent = `(${timer})`;
         };
 
         updateDisplay(); // Run once immediately
@@ -294,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     resendLink.classList.remove('disabled', 'text-muted');
                     resendLink.classList.add('text-primary');
                     resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
-                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;"></span>';
+                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span>';
                 }
             } else {
                 updateDisplay();
@@ -329,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.status === 'success') {
                     // Start timer immediately without intermediate "Sent" message
-                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
+                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary">(30)</span>';
                     startResendTimer(30);
                 } else {
                     if (loginError) {

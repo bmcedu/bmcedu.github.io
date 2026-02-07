@@ -46,53 +46,40 @@
             </div>
             <div class="col-md-6 mt-5">
                 <form id="loginForm" novalidate>
-                    <!-- Step 1: Email Input -->
-                    <div id="step1" class="step">
-                        <div class="mb-3 text-start">
-                            <label for="email" class="form-label fw-medium">البريد الإلكتروني</label>
-                            <div class="input-group">
-                                <span class="input-group-text text-muted"><i
-                                        class="hgi hgi-stroke hgi-standard hgi-mail-01"></i></span>
-                                <input type="email" class="form-control" id="email"
-                                    placeholder="أدخل البريد الإلكتروني الوظيفي" autocomplete="email"
-                                    style="direction: ltr; text-align: right;" required>
-                            </div>
-                            <div id="emailError" class="text-danger small mt-1 d-none fw-medium"></div>
+                    <!-- Email Input (Always visible) -->
+                    <div class="mb-3 text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label for="email" class="form-label fw-medium mb-0">البريد الإلكتروني</label>
+                            <a href="#" id="editEmailBtn"
+                                class="text-decoration-none small d-none align-items-center gap-1 fw-medium transition-all">
+                                <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-01"></i>
+                                تعديل
+                            </a>
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="button" id="requestOtpBtn"
-                                class="btn btn-primary rounded-3 d-flex align-items-center justify-content-center gap-2">
-                                إرسال رمز التحقق
-                                <i class="hgi hgi-stroke hgi-standard hgi-arrow-left-02"></i>
-                            </button>
+                        <div class="input-group" id="emailGroup">
+                            <span class="input-group-text text-muted"><i
+                                    class="hgi hgi-stroke hgi-standard hgi-mail-01"></i></span>
+                            <input type="email" class="form-control" id="email"
+                                placeholder="أدخل البريد الإلكتروني الوظيفي" autocomplete="email"
+                                style="direction: ltr; text-align: right;" required>
                         </div>
+                        <div id="emailError" class="text-danger small mt-1 d-none fw-medium"></div>
                     </div>
 
-                    <!-- Step 2: OTP Input -->
-                    <div id="step2" class="step d-none">
-                        <div class="alert alert-info border-0 mb-4 px-3 py-3 rounded-4">
-                            <div class="d-flex align-items-center gap-2 mb-2 text-dark">
-                                <i class="hgi hgi-stroke hgi-standard hgi-information-circle"></i>
-                                <span class="small fw-medium">تم إرسال رمز التحقق إلى:</span>
-                            </div>
-                            <div
-                                class="d-flex align-items-center justify-content-between bg-white bg-opacity-75 p-2 px-3 rounded-3 border border-white">
-                                <span id="userEmailDisplay" class="fw-bold text-dark text-truncate"
-                                    style="direction: ltr;"></span>
-                                <a href="#" id="editEmailBtn"
-                                    class="btn btn-sm btn-link text-decoration-none p-0 d-flex align-items-center gap-1 text-primary fw-medium"
-                                    style="white-space: nowrap;">
-                                    <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-01"></i>
-                                    تعديل
-                                </a>
-                            </div>
-                            <div class="mt-2 text-info-emphasis" style="font-size: 0.8em;">
-                                الرمز صالح لمدة 5 دقائق.
-                            </div>
-                        </div>
-                        <div class="mb-3 text-start">
+                    <!-- Step 1 Button (Hidden after request) -->
+                    <div id="step1Buttons" class="d-grid gap-2 mb-3">
+                        <button type="button" id="requestOtpBtn"
+                            class="btn btn-primary rounded-3 d-flex align-items-center justify-content-center gap-2">
+                            إرسال رمز التحقق
+                            <i class="hgi hgi-stroke hgi-standard hgi-arrow-left-02"></i>
+                        </button>
+                    </div>
+
+                    <!-- Step 2: OTP Input (Shown after request) -->
+                    <div id="step2" class="d-none">
+                        <div class="mb-4 text-start">
                             <label for="otp" class="form-label fw-medium">رمز التحقق</label>
-                            <div class="input-group">
+                            <div class="input-group" id="otpGroup">
                                 <span class="input-group-text text-muted"><i
                                         class="hgi hgi-stroke hgi-standard hgi-key-01"></i></span>
                                 <input type="text" class="form-control text-center fw-medium" id="otp"
@@ -100,10 +87,15 @@
                                     style="letter-spacing: 8px; padding-left: 42px;" required>
                             </div>
                             <div id="otpError" class="text-danger small mt-1 d-none fw-medium"></div>
+                            <div class="mt-2 text-muted" style="font-size: 0.8em;">
+                                <i class="hgi hgi-stroke hgi-standard hgi-information-circle me-1 text-info"></i>
+                                الرمز صالح لمدة 5 دقائق.
+                            </div>
                         </div>
 
                         <div id="loginError" class="text-danger d-none mt-1 small fw-medium text-center mb-3"
                             role="alert"></div>
+
                         <div class="d-grid gap-2 mb-4">
                             <button type="submit" id="loginBtn"
                                 class="btn btn-primary rounded-3 d-flex align-items-center justify-content-center gap-2">
@@ -112,14 +104,13 @@
                             </button>
                         </div>
 
-                        <!-- Resend Code Section -->
+                        <!-- Resend OTP Section -->
                         <div class="text-center">
                             <a href="#" id="resendLink"
-                                class="text-decoration-none small text-muted disabled d-inline-flex align-items-center gap-2"
-                                style="pointer-events: none;">
+                                class="btn btn-link text-decoration-none d-none align-items-center justify-content-center gap-2 text-muted fw-medium py-1">
                                 <i class="hgi hgi-stroke hgi-standard hgi-redo"></i>
-                                إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block"
-                                    style="width: 25px;">30</span>
+                                إعادة إرسال الرمز
+                                <span id="resendTimer" class="fw-bold text-primary">(30)</span>
                             </a>
                         </div>
                     </div>
