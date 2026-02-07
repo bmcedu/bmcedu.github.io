@@ -46,16 +46,9 @@
             </div>
             <div class="col-md-6 mt-5">
                 <form id="loginForm" novalidate>
-                    <!-- Email Input (Always visible) -->
+                    <!-- Email Input (Always visible & editable) -->
                     <div class="mb-3 text-start">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label for="email" class="form-label fw-medium mb-0">البريد الإلكتروني</label>
-                            <a href="#" id="editEmailBtn"
-                                class="text-decoration-none small d-none align-items-center gap-1 fw-medium transition-all">
-                                <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-01"></i>
-                                تعديل
-                            </a>
-                        </div>
+                        <label for="email" class="form-label fw-medium mb-2">البريد الإلكتروني</label>
                         <div class="input-group" id="emailGroup">
                             <span class="input-group-text text-muted"><i
                                     class="hgi hgi-stroke hgi-standard hgi-mail-01"></i></span>
@@ -87,10 +80,6 @@
                                     style="letter-spacing: 8px; padding-left: 42px;" required>
                             </div>
                             <div id="otpError" class="text-danger small mt-1 d-none fw-medium"></div>
-                            <div class="mt-2 text-muted" style="font-size: 0.8em;">
-                                <i class="hgi hgi-stroke hgi-standard hgi-information-circle me-1 text-info"></i>
-                                الرمز صالح لمدة 5 دقائق.
-                            </div>
                         </div>
 
                         <div id="loginError" class="text-danger d-none mt-1 small fw-medium text-center mb-3"
