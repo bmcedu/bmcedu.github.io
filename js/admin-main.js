@@ -155,7 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     step2.classList.remove('d-none');
                     otpInput.focus();
                     startResendTimer(30); // Start 30s countdown
-                    if (resendLink) resendLink.classList.remove('d-none');
+                    if (resendLink) {
+                        resendLink.classList.remove('d-none');
+                        resendLink.classList.add('d-inline-flex');
+                    }
                 } else {
                     // Error
                     setError(emailError, data.message || 'البريد الإلكتروني غير مسجل في النظام.', emailGroup);
@@ -282,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Enable Link
                 if (resendLink) {
                     resendLink.classList.remove('disabled', 'text-muted');
-                    resendLink.classList.add('text-primary');
+                    resendLink.classList.add('text-primary', 'd-inline-flex');
                     resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
                     resendLink.innerHTML = 'إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span> <i class="hgi hgi-stroke hgi-standard hgi-redo ms-1"></i>';
                 }
@@ -301,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset UI state
             this.classList.add('disabled', 'text-muted');
             this.style.pointerEvents = 'none';
-            this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i> جاري الإرسال...';
+            this.innerHTML = 'جاري الإرسال... <i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin ms-1"></i>';
 
             const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
             if (!scriptUrl) return;
