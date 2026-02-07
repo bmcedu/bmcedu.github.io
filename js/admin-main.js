@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let resendInterval;
 
     function startResendTimer(duration) {
-        let timer = duration, minutes, seconds;
+        let timer = duration;
 
         // Initial State
         if (resendLink) {
@@ -273,7 +273,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update function for reuse - gets span dynamically each time
         const updateDisplay = () => {
-            if (timerSpan) timerSpan.textContent = seconds;
+            const timerSpan = document.getElementById('resendTimer');
+            if (timerSpan) timerSpan.textContent = timer;
         };
 
         updateDisplay(); // Run once immediately
@@ -285,9 +286,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (resendLink) {
                     resendLink.classList.remove('disabled', 'text-muted');
                     resendLink.classList.add('text-primary');
-                    resendLink.style.pointerEvents = 'auto';
-                    const timerSpan = document.getElementById('resendTimer');
-                    if (timerSpan) timerSpan.textContent = "";
+                    resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
+                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-refresh me-1"></i> إعادة إرسال الرمز';
                 }
             } else {
                 updateDisplay();
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     setTimeout(() => {
                         this.style.color = '';
-                        this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-refresh me-1"></i> إعادة إرسال الرمز <span id="resendTimer">(00:30)</span>';
+                        this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-refresh me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
 
                         // Restart timer
                         startResendTimer(30);
