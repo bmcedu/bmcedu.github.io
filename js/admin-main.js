@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     resendLink.classList.remove('disabled', 'text-muted');
                     resendLink.classList.add('text-primary');
                     resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
-                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span>';
+                    resendLink.innerHTML = 'إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary"></span> <i class="hgi hgi-stroke hgi-standard hgi-redo ms-1"></i>';
                 }
             } else {
                 updateDisplay();
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.status === 'success') {
                     // Start timer immediately without intermediate "Sent" message
-                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary">(30)</span>';
+                    this.innerHTML = 'إعادة إرسال الرمز <span id="resendTimer" class="fw-bold text-primary">(30)</span> <i class="hgi hgi-stroke hgi-standard hgi-redo ms-1"></i>';
                     startResendTimer(30);
                 } else {
                     if (loginError) {
