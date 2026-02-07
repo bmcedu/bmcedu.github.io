@@ -328,18 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    // Success Feedback
-                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-tick-01 me-1"></i> تم الإرسال';
-                    this.style.color = 'green';
-
-                    setTimeout(() => {
-                        this.style.color = '';
-                        this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
-
-                        // Restart timer
-                        startResendTimer(30);
-                    }, 2000);
-
+                    // Start timer immediately without intermediate "Sent" message
+                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
+                    startResendTimer(30);
                 } else {
                     if (loginError) {
                         loginError.textContent = data.message;
