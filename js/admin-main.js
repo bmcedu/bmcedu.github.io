@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (error) {
                 console.error('OTP Request Error:', error);
-                alert('خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.');
+                setError(emailError, 'خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.', emailGroup);
             } finally {
                 this.innerHTML = originalText;
                 this.disabled = false;
