@@ -1,7 +1,7 @@
 // Configuration
 const CONFIG = {
     // URL for Backend (Modular Single Script)
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby-sNGTdX5ZpvkiJc8xYfWd6K-q6zcFHA8dZ1AyQIB7iXoyAdibhefYhR9aUWMMIxQXjA/exec',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxCaHJy3uN3YmWdkrsFRXsPL27zw1ARF5N7vbMk-V_OeHlBKlge3LX77qVYTZGMP73N1w/exec',
 
     // Branding
     // Colors are now handled via CSS (custom.css)
