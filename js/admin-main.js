@@ -322,16 +322,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(() => {
                         this.style.color = '';
                         this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-refresh me-1"></i> إعادة إرسال الرمز <span id="resendTimer">(00:30)</span>';
-                        // Re-acquire span since we just destroyed it
-                        // Note: startResendTimer relies on the global 'resendTimerSpan' which refers to the OLD element.
-                        // We need to re-query it if we want the timer to update the text.
-                        const newSpan = document.getElementById('resendTimer');
-                        // Gross hack: update the variable reference if simple let (but it's const).
-                        // Better approach: Don't destroy innerHTML. Just start timer. 
-                        // For this minimal implementation, simply restarting the process works, 
-                        // but visual timer might break if span ref is lost.
-                        // Let's just reload page? No.
-                        // Let's rely on the user not staring at the timer for 2 seconds.
+
+                        // Restart timer
                         startResendTimer(30);
                     }, 2000);
 
