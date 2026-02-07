@@ -296,7 +296,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset UI state
             this.classList.add('disabled', 'text-muted');
             this.style.pointerEvents = 'none';
-            if (resendTimerSpan) resendTimerSpan.innerHTML = '<i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
+
+            const timerSpan = document.getElementById('resendTimer');
+            if (timerSpan) timerSpan.innerHTML = '<i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
 
             const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
             if (!scriptUrl) return;
