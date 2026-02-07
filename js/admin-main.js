@@ -38,8 +38,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (magicEmail && magicOtp) {
         // Auto-fill and submit
-        if (emailInput) emailInput.value = magicEmail;
-        if (otpInput) otpInput.value = magicOtp;
+        if (emailInput) {
+            emailInput.value = magicEmail;
+            emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (otpInput) {
+            otpInput.value = magicOtp;
+            otpInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
 
         // Switch to Step 2 immediately
         if (step1 && step2) {
@@ -50,11 +56,15 @@ document.addEventListener('DOMContentLoaded', function () {
         adminEmail = magicEmail; // Set global var
 
         // Trigger Login
-        if (loginBtn) {
+        if (loginForm) {
             // Wait a brief moment for UI to settle
             setTimeout(() => {
-                loginBtn.click();
-            }, 500);
+                if (loginForm.requestSubmit) {
+                    loginForm.requestSubmit(loginBtn);
+                } else {
+                    loginBtn.click();
+                }
+            }, 800);
         }
     }
 
@@ -216,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Notify other tabs (original login tab) about successful login
                     localStorage.setItem('admin_login_success', Date.now().toString());
-                    // Clean up after a short delay to ensure other tabs detect the change
-                    setTimeout(() => localStorage.removeItem('admin_login_success'), 100);
+                    // Clean up after a delay to ensure other tabs detect the change
+                    setTimeout(() => localStorage.removeItem('admin_login_success'), 2000);
 
                     // Redirect to admin dashboard
                     window.location.href = 'admin';
