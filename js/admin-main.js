@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     resendLink.classList.remove('disabled', 'text-muted');
                     resendLink.classList.add('text-primary');
                     resendLink.style.pointerEvents = 'auto'; // Re-enable clicks
-                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;"></span>';
+                    resendLink.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-2"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;"></span>';
                 }
             } else {
                 updateDisplay();
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset UI state
             this.classList.add('disabled', 'text-muted');
             this.style.pointerEvents = 'none';
-            this.innerHTML = 'جاري الإرسال... <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
+            this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-2"></i> جاري الإرسال...';
 
             const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
             if (!scriptUrl) return;
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.status === 'success') {
                     // Start timer immediately without intermediate "Sent" message
-                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-1"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
+                    this.innerHTML = '<i class="hgi hgi-stroke hgi-standard hgi-redo me-2"></i> إعادة إرسال الرمز <span id="resendTimer" class="d-inline-block" style="width: 25px;">30</span>';
                     startResendTimer(30);
                 } else {
                     if (loginError) {
