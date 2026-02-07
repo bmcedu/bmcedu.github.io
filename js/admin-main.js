@@ -273,14 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update function for reuse - gets span dynamically each time
         const updateDisplay = () => {
-            const timerSpan = document.getElementById('resendTimer');
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            if (timerSpan) timerSpan.textContent = "(" + minutes + ":" + seconds + ")";
+            if (timerSpan) timerSpan.textContent = seconds;
         };
 
         updateDisplay(); // Run once immediately
