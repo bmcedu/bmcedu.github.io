@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Check Config
             const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
             if (!scriptUrl) {
-                alert('خطأ في النظام: رابط السكربت غير موجود');
+                setError(emailError, 'خطأ في النظام: رابط السكربت غير موجود', emailGroup);
                 return;
             }
 
@@ -198,7 +198,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Check Config
             const scriptUrl = typeof CONFIG !== 'undefined' ? CONFIG.SCRIPT_URL : '';
             if (!scriptUrl) {
-                alert('خطأ في النظام: رابط السكربت غير موجود');
+                if (loginError) {
+                    loginError.textContent = 'خطأ في النظام: رابط السكربت غير موجود';
+                    loginError.classList.remove('d-none');
+                }
                 return;
             }
 
@@ -246,7 +249,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (error) {
                 console.error('Login Error:', error);
-                alert('خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.');
+                if (loginError) {
+                    loginError.textContent = 'خطأ في الاتصال بالنظام! يرجى المحاولة مرة أخرى.';
+                    loginError.classList.remove('d-none');
+                }
             } finally {
                 loginBtn.innerHTML = originalText;
                 loginBtn.disabled = false;
