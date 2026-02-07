@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Disable button and show loading
             const originalText = this.innerHTML;
-            this.innerHTML = '<i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-1"></i> جاري الإرسال...';
+            this.innerHTML = 'جاري الإرسال... <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
             this.disabled = true;
 
             try {
