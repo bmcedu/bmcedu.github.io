@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Disable button and show loading
             const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin me-1"></i> جاري التحقق...';
+            loginBtn.innerHTML = 'جاري التحقق... <i class="hgi-stroke hgi-standard hgi-loading-03 hgi-spin"></i>';
             loginBtn.disabled = true;
 
             try {
