@@ -165,9 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Back Button
-    if (backBtn) {
-        backBtn.addEventListener('click', function () {
+    // Edit Email Button (replaces Back Button)
+    const editEmailBtn = document.getElementById('editEmailBtn');
+    if (editEmailBtn) {
+        editEmailBtn.addEventListener('click', function (e) {
+            e.preventDefault();
             step2.classList.add('d-none');
             step1.classList.remove('d-none');
             if (otpInput) otpInput.value = '';
