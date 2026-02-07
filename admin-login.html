@@ -64,16 +64,24 @@
 
                     <!-- Step 2: OTP Input -->
                     <div id="step2" class="step d-none">
-                        <div class="alert alert-info border-0 d-flex align-items-start gap-2 mb-3">
-                            <i class="hgi hgi-stroke hgi-standard hgi-information-circle mt-1"></i>
-                            <div>
-                                <small>تم إرسال رمز التحقق إلى بريدك الإلكتروني <span id="userEmailDisplay"
-                                        class="fw-bold"></span>
-                                    <a href="#" id="editEmailBtn"
-                                        class="text-decoration-none ms-2 d-inline-flex align-items-center bg-white px-2 py-0 rounded border border-info-subtle text-primary"
-                                        style="font-size: 0.85em;">
-                                        <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-01 me-1"></i>تعديل
-                                    </a>. الرمز صالح لمدة 5 دقائق.</small>
+                        <div class="alert alert-info border-0 mb-4 px-3 py-3 rounded-4">
+                            <div class="d-flex align-items-center gap-2 mb-2 text-dark">
+                                <i class="hgi hgi-stroke hgi-standard hgi-information-circle"></i>
+                                <span class="small fw-medium">تم إرسال رمز التحقق إلى:</span>
+                            </div>
+                            <div
+                                class="d-flex align-items-center justify-content-between bg-white bg-opacity-75 p-2 px-3 rounded-3 border border-white">
+                                <span id="userEmailDisplay" class="fw-bold text-dark text-truncate"
+                                    style="direction: ltr;"></span>
+                                <a href="#" id="editEmailBtn"
+                                    class="btn btn-sm btn-link text-decoration-none p-0 d-flex align-items-center gap-1 text-primary fw-medium"
+                                    style="white-space: nowrap;">
+                                    <i class="hgi hgi-stroke hgi-standard hgi-pencil-edit-01"></i>
+                                    تعديل
+                                </a>
+                            </div>
+                            <div class="mt-2 text-info-emphasis" style="font-size: 0.8em;">
+                                الرمز صالح لمدة 5 دقائق.
                             </div>
                         </div>
                         <div class="mb-3 text-start">
