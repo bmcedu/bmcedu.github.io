@@ -589,12 +589,12 @@ document.addEventListener('DOMContentLoaded', function () {
     setupStaticDropdown('filterEmployeeDecisionInput', 'filterEmployeeDecision', 'employeeDecisionDropdownList');
     setupStaticDropdown('filterCommitteeDecisionInput', 'filterCommitteeDecision', 'committeeDecisionDropdownList');
 
-    // Default "Employee Decision" to "Pending"
-    const empInput = document.getElementById('filterEmployeeDecisionInput');
-    const empHidden = document.getElementById('filterEmployeeDecision');
-    if (empInput && empHidden) {
-        empHidden.value = 'pending';
-        empInput.value = 'قيد المراجعة';
+    // Default "Committee Decision" to "Pending"
+    const commInput = document.getElementById('filterCommitteeDecisionInput');
+    const commHidden = document.getElementById('filterCommitteeDecision');
+    if (commInput && commHidden) {
+        commHidden.value = 'pending';
+        commInput.value = 'قيد المراجعة';
     }
 });
 
@@ -816,11 +816,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (inputEmp) inputEmp.value = '';
             if (hiddenEmp) hiddenEmp.value = '';
 
-            // Reset Committee Decision
+            // Reset Committee Decision (Restore Default)
             const inputComm = document.getElementById('filterCommitteeDecisionInput');
             const hiddenComm = document.getElementById('filterCommitteeDecision');
-            if (inputComm) inputComm.value = '';
-            if (hiddenComm) hiddenComm.value = '';
+            if (inputComm) inputComm.value = 'قيد المراجعة';
+            if (hiddenComm) hiddenComm.value = 'pending';
 
             // Reset Type
             const inputType = document.getElementById('filterTypeInput');
