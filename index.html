@@ -20,13 +20,19 @@
 <body>
     <div class="container-fluid row p-2 vh-100 overflow-hidden m-0 position-relative">
 
-        <!-- Admin Login Switch -->
-        <a href="admin-login"
-            class="btn btn-secondary position-absolute top-0 start-0 m-4 z-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm"
-            style="width: auto;">
-            <i class="hgi hgi-stroke hgi-standard hgi-user-03"></i>
-            <span class="fw-medium">دخول المشرفين</span>
-        </a>
+        <!-- Portal Switcher (Tab Style) -->
+        <div class="position-absolute top-0 start-50 translate-middle-x mt-4 z-3">
+            <div class="bg-secondary bg-opacity-10 p-1 rounded-3 d-flex gap-1" style="width: fit-content;">
+                <a href="admin-login"
+                    class="btn btn-sm px-4 rounded-2 text-muted fw-medium border-0 hover-bg-light transition-all d-flex align-items-center">
+                    <i class="hgi hgi-stroke hgi-standard hgi-user-03 me-1"></i> الإدارة
+                </a>
+                <div
+                    class="btn btn-sm px-4 rounded-2 bg-white shadow-sm fw-semibold text-dark d-flex align-items-center">
+                    <i class="hgi hgi-stroke hgi-standard hgi-student me-1"></i> الطلاب
+                </div>
+            </div>
+        </div>
 
         <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center">
             <div class="col-md-6">
