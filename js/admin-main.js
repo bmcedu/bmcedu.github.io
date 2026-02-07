@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Switch to Step 2 immediately
-        if (step1 && step2) {
-            step1.classList.add('d-none');
+        if (step1Buttons && step2) {
+            step1Buttons.classList.add('d-none');
             step2.classList.remove('d-none');
         }
 
