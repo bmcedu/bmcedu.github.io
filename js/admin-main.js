@@ -144,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === 'success') {
                     // Success - move to step 2
                     adminEmail = email;
+                    const userEmailDisplay = document.getElementById('userEmailDisplay');
+                    if (userEmailDisplay) userEmailDisplay.textContent = email;
+
                     step1.classList.add('d-none');
                     step2.classList.remove('d-none');
                     otpInput.focus();
